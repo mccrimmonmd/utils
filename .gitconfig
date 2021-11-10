@@ -1,0 +1,21 @@
+[user]
+  email = saturnhs@gmail.com
+  name = Malcolm McCrimmon
+[alias]
+  gconf = config --global
+  st = status
+  ci = commit
+  ca = commit -a
+  cam = commit -am
+  br = branch
+  ba = branch -a
+  ch = checkout
+  cm = checkout main
+  nb = checkout -b
+  su = push --set-upstream origin
+  ap = add -p
+  fe = fetch
+  pr = fetch --prune
+  loo = log --oneline
+  lo = log --oneline -20
+  
