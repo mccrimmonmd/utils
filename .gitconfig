@@ -1,14 +1,18 @@
 [user]
   email = saturnhs@gmail.com
   name = Malcolm McCrimmon
+[pull]
+  ff = only
 [alias]
   gconf = config --global
+  rebasem = rebase main --rebase-merges
+  mergem = merge main
   st = status
   ci = commit
-  ca = commit -a
+  ca = commit --all
   cam = commit -am
   br = branch
-  ba = branch -a
+  ba = branch --all
   ch = checkout
   cm = checkout main
   nb = checkout -b
