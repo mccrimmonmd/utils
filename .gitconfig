@@ -4,6 +4,7 @@
 [pull]
   ff = only
 [alias]
+  cg = config --global
   gconf = config --global
   rebasem = rebase main --rebase-merges
   mergem = merge main
@@ -13,9 +14,10 @@
   cam = commit -am
   br = branch
   ba = branch --all
-  ch = checkout
-  cm = checkout main
-  nb = checkout -b
+  si = switch
+  sb = switch -
+  sm = switch main
+  nb = switch -c
   su = push --set-upstream origin
   ap = add -p
   fe = fetch --all
