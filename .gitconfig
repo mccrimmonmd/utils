@@ -15,6 +15,7 @@
   br = branch
   ba = branch --all
   si = switch
+  sw = switch
   sb = switch -
   sm = switch main
   nb = switch -c
