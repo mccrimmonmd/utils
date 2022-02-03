@@ -11,7 +11,8 @@
   st = status
   ci = commit
   ca = commit --all
-  cam = commit -am
+  cim = commit -m
+  cam = commit --all -m
   br = branch
   ba = branch --all
   si = switch
