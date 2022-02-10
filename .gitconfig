@@ -21,7 +21,7 @@
   sm = switch main
   nb = switch -c
   su = push --set-upstream origin
-  ap = add -p
+  ap = add --patch
   fe = fetch --all
   pr = fetch --prune
   loo = log --oneline
