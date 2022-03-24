@@ -20,7 +20,7 @@
   sb = switch -
   sm = switch main
   nb = switch -c
-  su = push --set-upstream origin
+  su = push --set-upstream origin HEAD
   ap = add --patch
   fe = fetch --all
   pr = fetch --prune
