@@ -13,6 +13,9 @@
   ca = commit --all
   cim = commit -m
   cam = commit --all -m
+  sub = restore --staged
+  unstash = stash pop
+  unst = stash pop
   br = branch
   ba = branch --all
   si = switch
