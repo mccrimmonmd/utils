@@ -1,6 +1,6 @@
 [user]
-  email = saturnhs@gmail.com
-  name = Malcolm Maes-McCrimmon
+  email = malcolm.mccrimmon@dish.com
+  name = Malcolm McCrimmon
 [pull]
   ff = only
 [core]
@@ -9,8 +9,8 @@
 [alias]
   cg = config --global
   mig = remote set-url origin
-  rebasem = rebase main --rebase-merges
-  mergem = merge main
+  rebasem = rebase master --rebase-merges
+  mergem = merge master
   st = status
   dif = diff -- . ':(exclude)package-lock.json'
   sdiff = diff --staged
@@ -36,7 +36,7 @@
   ba = branch --all
   si = switch
   sb = switch -
-  sm = switch main
+  sm = switch master
   nb = switch -c
   ch = checkout
   su = push --set-upstream origin HEAD
