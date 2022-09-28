@@ -7,3 +7,15 @@ module.exports.allValues = (collection, field) => {
     return vals.concat(val)
   }, [])
 }
+
+module.exports.allKeys = (collection, regex=/(?:)/) => {
+  let uniqueKeys = []
+  collection.forEach((object) => {
+    Object.keys(object).forEach((key) => {
+      if (regex.test(key) && !uniqueKeys.includes(key)) {
+        uniqueKeys = uniqueKeys.concat(key)
+      }
+    })
+  })
+  return uniqueKeys
+}
