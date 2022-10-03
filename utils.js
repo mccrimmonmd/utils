@@ -9,13 +9,10 @@ module.exports.allValues = (listOfObjects, field) => {
 }
 
 module.exports.allKeys = (listOfObjects, regex=/(?:)/) => {
-  let uniqueKeys = []
-  listOfObjects.forEach((object) => {
-    Object.keys(object).forEach((key) => {
-      if (regex.test(key) && !uniqueKeys.includes(key)) {
-        uniqueKeys = uniqueKeys.concat(key)
-      }
+  return listOfObjects.reduce((vals, obj) => {
+    let newVals = Object.keys(obj).filter((key) => {
+      return regex.test(key) && !vals.includes(key)
     })
-  })
-  return uniqueKeys
+    return vals.concat(newVals)
+  }, [])
 }
