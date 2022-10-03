@@ -1,5 +1,5 @@
-module.exports.allValues = (collection, field) => {
-  return collection.reduce((vals, obj) => {
+module.exports.allValues = (listOfObjects, field) => {
+  return listOfObjects.reduce((vals, obj) => {
     var val = obj[field]
     if (vals.includes(val)) {
       return vals
@@ -8,9 +8,9 @@ module.exports.allValues = (collection, field) => {
   }, [])
 }
 
-module.exports.allKeys = (collection, regex=/(?:)/) => {
+module.exports.allKeys = (listOfObjects, regex=/(?:)/) => {
   let uniqueKeys = []
-  collection.forEach((object) => {
+  listOfObjects.forEach((object) => {
     Object.keys(object).forEach((key) => {
       if (regex.test(key) && !uniqueKeys.includes(key)) {
         uniqueKeys = uniqueKeys.concat(key)
