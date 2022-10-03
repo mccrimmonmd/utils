@@ -1,6 +1,6 @@
 module.exports.allValues = (listOfObjects, field) => {
   return listOfObjects.reduce((vals, obj) => {
-    var val = obj[field]
+    let val = obj[field]
     if (vals.includes(val)) {
       return vals
     }
