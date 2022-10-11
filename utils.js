@@ -1,19 +1,19 @@
 module.exports.allValues = (listOfObjects, field) => {
-  return listOfObjects.reduce((vals, obj) => {
+  return listOfObjects.reduce((results, obj) => {
     let val = obj[field]
-    if (vals.includes(val)) {
-      return vals
+    if (results.includes(val)) {
+      return results
     }
-    return vals.concat(val)
+    return results.concat(val)
   }, [])
 }
 
 module.exports.allKeys = (listOfObjects, regex=/(?:)/) => {
-  return listOfObjects.reduce((vals, obj) => {
-    let newVals = Object.keys(obj).filter((key) => {
-      return regex.test(key) && !vals.includes(key)
-    })
-    return vals.concat(newVals)
+  return listOfObjects.reduce((results, obj) => {
+    let newKeys = Object.keys(obj).filter(
+      key => regex.test(key) && !results.includes(key)
+    )
+    return results.concat(newKeys)
   }, [])
 }
 
