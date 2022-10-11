@@ -16,3 +16,29 @@ module.exports.allKeys = (listOfObjects, regex=/(?:)/) => {
     return vals.concat(newVals)
   }, [])
 }
+
+let objEquals = (objA, objB) => {
+	let typeOfA = typeof objA
+	if (typeOfA !== typeof objB) {
+		return false
+	}
+	if (typeOfA === 'function') {
+		throw new Error('cannot compare equality for functions')
+	}
+	if (typeOfA === 'object' && objA !== null) {
+		let aKeys = Object.keys(objA).sort()
+		let bKeys = Object.keys(objB).sort()
+		if (aKeys.length !== bKeys) {
+			return false
+		}
+		for (let i = 0; i < aKeys.length; i++) {
+			let aKey = aKeys[i]
+			if (aKey !== bKeys[i] || !objEquals(objA[aKey], objB[aKey])) {
+				return false
+			}
+		}
+		return true
+	}
+	return objA === objB
+}
+module.exports.objEquals = objEquals
