@@ -17,6 +17,22 @@ module.exports.allKeys = (listOfObjects, regex=/(?:)/) => {
   }, [])
 }
 
+module.exports.deDup = (
+  someList, 
+  identifier = (item) => item, 
+  decider = (itemA, itemB) => itemA
+) => {
+  return someList.reduce((results, itemA) => {
+    let i = results.findIndex(itemB => identifier(itemA) === identifier(itemB))
+    if (i >= 0) {
+      let itemB = results[i]
+      results[i] = decider(itemA, itemB)
+      return results
+    }
+    return results.concat(itemA)
+  }, [])
+}
+
 let objEquals = (objA, objB) => {
 	let typeOfA = typeof objA
 	if (typeOfA !== typeof objB) {
