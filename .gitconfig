@@ -14,6 +14,7 @@
   cim = commit -m
   cam = commit --all -m
   sub = restore --staged
+  stashl = stash list
   unstash = stash pop
   unst = stash pop
   br = branch
@@ -27,6 +28,9 @@
   ap = add --patch
   fe = fetch --all
   pr = fetch --prune
+  delete-remote = push -d origin
   low = log -10
   loo = log --oneline
   lo = log --oneline -20
+  gloo = log --oneline --graph
+  glo = log --oneline --graph -20
