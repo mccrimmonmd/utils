@@ -1,3 +1,13 @@
+module.exports.range = (start=0, stop, step=1) => {
+  if (stop === undefined) {
+    stop = start
+    start = 0
+  }
+  // TODO: negative step
+  // https://docs.python.org/3/library/stdtypes.html#range
+  return [...Array(stop).keys()].map(i => step * i + start)
+}
+
 module.exports.allValues = (listOfObjects, field) => {
   return listOfObjects.reduce((results, obj) => {
     let val = obj[field]
@@ -9,6 +19,7 @@ module.exports.allValues = (listOfObjects, field) => {
 }
 
 module.exports.allKeys = (listOfObjects, regex=/(?:)/) => {
+  // The empty regex /(?:)/ matches any string
   return listOfObjects.reduce((results, obj) => {
     let newKeys = Object.keys(obj).filter(
       key => regex.test(key) && !results.includes(key)
