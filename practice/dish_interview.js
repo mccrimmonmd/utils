@@ -5,15 +5,14 @@ Please write a function that returns an object where the keys are each topping,
 and the values are the amount of that topping I need to buy
 */
 
-let amountInStock = (list) => //{
-  list.map(cake => cake.inStock).reduce((total, current) => total + current, 0);
+let amountInStock = (cakes) => //{
+  cakes.map(cake => cake.inStock).reduce((total, current) => total + current, 0);
   // let sum = 0;
   // for (let i = 0; i < list.length; i++) {
   //   sum += list[i].inStock;
   // }
   // return sum;
 // };
-
 
 let groceryList = (cakes) => //{
   cakes.reduce((list, cake) => {
