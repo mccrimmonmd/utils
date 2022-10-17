@@ -5,6 +5,20 @@ Please write a function that returns an object where the keys are each topping,
 and the values are the amount of that topping I need to buy
 */
 
+/*
+59
+{
+  'dutch process cocoa': 1,
+  'toasted sugar': 3,
+  'smoked sea salt': 3,
+  berries: 2,
+  'edible flowers': 2,
+  mint: 1,
+  cranberry: 1,
+  'crystallized ginger': 2
+}
+*/
+
 let amountInStock = (cakes) => //{
   cakes.map(cake => cake.inStock).reduce((total, current) => total + current, 0);
   // let sum = 0;
