@@ -3,9 +3,13 @@ var range = (start=0, stop, step=1) => {
     stop = start
     start = 0
   }
-  // TODO: negative step
-  // https://docs.python.org/3/library/stdtypes.html#range
-  return [...Array(stop).keys()].map(i => step * i + start)
+  let nums = []
+  if (start < stop && step <= 0) return nums
+  if (start > stop && step >= 0) return nums
+  for (let i = start; (start < stop ? i < stop : i > stop); i += step) {
+    nums.push(i)
+  }
+  return nums
 }
 
 var allValues = (listOfObjects, field) => {
