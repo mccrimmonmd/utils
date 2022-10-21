@@ -1,4 +1,4 @@
-module.exports.range = (start=0, stop, step=1) => {
+var range = (start=0, stop, step=1) => {
   if (stop === undefined) {
     stop = start
     start = 0
@@ -8,7 +8,7 @@ module.exports.range = (start=0, stop, step=1) => {
   return [...Array(stop).keys()].map(i => step * i + start)
 }
 
-module.exports.allValues = (listOfObjects, field) => {
+var allValues = (listOfObjects, field) => {
   return listOfObjects.reduce((results, obj) => {
     let val = obj[field]
     if (results.includes(val)) {
@@ -18,7 +18,7 @@ module.exports.allValues = (listOfObjects, field) => {
   }, [])
 }
 
-module.exports.allKeys = (listOfObjects, regex=/(?:)/) => {
+var allKeys = (listOfObjects, regex=/(?:)/) => {
   // The empty regex /(?:)/ matches any string
   return listOfObjects.reduce((results, obj) => {
     let newKeys = Object.keys(obj).filter(
@@ -28,7 +28,7 @@ module.exports.allKeys = (listOfObjects, regex=/(?:)/) => {
   }, [])
 }
 
-module.exports.deDup = (
+var deDup = (
   someList, 
   identifier = (item) => item, 
   decider = (itemA, itemB) => itemA
@@ -37,35 +37,44 @@ module.exports.deDup = (
     let i = results.findIndex(itemB => identifier(itemA) === identifier(itemB))
     if (i >= 0) {
       let itemB = results[i]
-      results[i] = decider(itemA, itemB)
-      return results
+      results[i] = decider(itemB, itemA)
     }
-    return results.concat(itemA)
+    else {
+      results.push(itemA)
+    }
+    return results
   }, [])
 }
 
 let objEquals = (objA, objB) => {
-	let typeOfA = typeof objA
-	if (typeOfA !== typeof objB) {
-		return false
-	}
-	if (typeOfA === 'function') {
-		throw new Error('cannot compare equality for functions')
-	}
-	if (typeOfA === 'object' && objA !== null) {
-		let aKeys = Object.keys(objA).sort()
-		let bKeys = Object.keys(objB).sort()
-		if (aKeys.length !== bKeys) {
-			return false
-		}
-		for (let i = 0; i < aKeys.length; i++) {
-			let aKey = aKeys[i]
-			if (aKey !== bKeys[i] || !objEquals(objA[aKey], objB[aKey])) {
-				return false
-			}
-		}
-		return true
-	}
-	return objA === objB
+  let typeOfA = typeof objA
+  if (typeOfA !== typeof objB) {
+    return false
+  }
+  if (typeOfA === 'function') {
+    throw new Error('cannot compare equality for functions')
+  }
+  if (typeOfA === 'object' && objA !== null) {
+    let aKeys = Object.keys(objA).sort()
+    let bKeys = Object.keys(objB).sort()
+    if (aKeys.length !== bKeys.length) {
+      return false
+    }
+    for (let i = 0; i < aKeys.length; i++) {
+      let aKey = aKeys[i]
+      if (aKey !== bKeys[i] || !objEquals(objA[aKey], objB[aKey])) {
+        return false
+      }
+    }
+    return true
+  }
+  return objA === objB
 }
-module.exports.objEquals = objEquals
+
+module.exports = {
+  range,
+  allValues,
+  allKeys,
+  deDup,
+  objEquals,
+} // = require('./utils.js')
