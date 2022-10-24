@@ -1,4 +1,5 @@
-var range = (start=0, stop, step=1) => {
+const range = (start=0, stop, step=1) => {
+  // TODO: rewrite as an iterator (for large ranges)
   if (stop === undefined) {
     stop = start
     start = 0
@@ -12,7 +13,7 @@ var range = (start=0, stop, step=1) => {
   return nums
 }
 
-var allValues = (listOfObjects, field) => {
+const allValues = (listOfObjects, field) => {
   return listOfObjects.reduce((results, obj) => {
     let val = obj[field]
     if (results.includes(val)) {
@@ -22,7 +23,7 @@ var allValues = (listOfObjects, field) => {
   }, [])
 }
 
-var allKeys = (listOfObjects, regex=/(?:)/) => {
+const allKeys = (listOfObjects, regex=/(?:)/) => {
   // The empty regex /(?:)/ matches any string
   return listOfObjects.reduce((results, obj) => {
     let newKeys = Object.keys(obj).filter(
@@ -32,16 +33,16 @@ var allKeys = (listOfObjects, regex=/(?:)/) => {
   }, [])
 }
 
-var deDup = (
+const deDup = (
   someList, 
   identifier = (item) => item, 
-  decider = (itemA, itemB) => itemA
+  decider = (itemA, itemB) => itemB
 ) => {
   return someList.reduce((results, itemA) => {
     let i = results.findIndex(itemB => identifier(itemA) === identifier(itemB))
     if (i >= 0) {
       let itemB = results[i]
-      results[i] = decider(itemB, itemA)
+      results[i] = decider(itemA, itemB)
     }
     else {
       results.push(itemA)
@@ -50,7 +51,7 @@ var deDup = (
   }, [])
 }
 
-let objEquals = (objA, objB) => {
+const objEquals = (objA, objB) => {
   let typeOfA = typeof objA
   if (typeOfA !== typeof objB) {
     return false
@@ -58,7 +59,13 @@ let objEquals = (objA, objB) => {
   if (typeOfA === 'function') {
     throw new Error('cannot compare equality for functions')
   }
+  if (typeOfA === 'number' && isNaN(objA)) {
+    return isNaN(objB)
+  }
   if (typeOfA === 'object' && objA !== null) {
+    if (objB === null) {
+      return false
+    }
     let aKeys = Object.keys(objA).sort()
     let bKeys = Object.keys(objB).sort()
     if (aKeys.length !== bKeys.length) {
