@@ -66,11 +66,13 @@ const objEquals = (objA, objB) => {
     if (objB === null) {
       return false
     }
-    let aKeys = Object.keys(objA).sort()
-    let bKeys = Object.keys(objB).sort()
+    let aKeys = Object.keys(objA)
+    let bKeys = Object.keys(objB)
     if (aKeys.length !== bKeys.length) {
       return false
     }
+    aKeys.sort()
+    bKeys.sort()
     for (let i = 0; i < aKeys.length; i++) {
       let aKey = aKeys[i]
       if (aKey !== bKeys[i] || !objEquals(objA[aKey], objB[aKey])) {
