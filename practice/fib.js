@@ -1,9 +1,10 @@
 /*
 ## The Fibonacci sequence:
 
-- The first two numbers in the sequence are: 0, 1
-- The nth number in the sequence is the (n-1)th number plus the (n-2)nd number
-- So, the first ten numbers are: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34 
+- fib(0): 0
+- fib(1): 1
+- fib(n), n > 1: fib(n-1) + fib(n-2)
+- fib(0...10): [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
 */
 
 const fib = (n, mem=[0,1]) => {
@@ -14,8 +15,9 @@ const fib = (n, mem=[0,1]) => {
   return mem[n]
 }
 
-module.exports.printFib = (n) =>
+module.exports.printFib = (n) => {
   [...Array(n).keys()].forEach(i => console.log(fib(i)))
+}
 
 /*
 0
