@@ -51,7 +51,7 @@ const deDup = (
   }, [])
 }
 
-let filterKeys = (obj, regex) => {
+const filterKeys = (obj, regex) => {
   let keys = Object.keys(obj).filter(key => regex.test(key))
   let miniObj = {}
   keys.forEach(key => {
@@ -60,7 +60,7 @@ let filterKeys = (obj, regex) => {
   return miniObj
 }
 
-let objEquals = (objA, objB) => {
+const objEquals = (objA, objB) => {
   let typeOfA = typeof objA
   if (typeOfA !== typeof objB) {
     return false
