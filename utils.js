@@ -51,7 +51,16 @@ const deDup = (
   }, [])
 }
 
-const objEquals = (objA, objB) => {
+let filterKeys = (obj, regex) => {
+  let keys = Object.keys(obj).filter(key => regex.test(key))
+  let miniObj = {}
+  keys.forEach(key => {
+    miniObj[key] = obj[key]
+  })
+  return miniObj
+}
+
+let objEquals = (objA, objB) => {
   let typeOfA = typeof objA
   if (typeOfA !== typeof objB) {
     return false
@@ -89,5 +98,6 @@ module.exports = {
   allValues,
   allKeys,
   deDup,
+  filterKeys,
   objEquals,
 } // = require('./utils.js')
