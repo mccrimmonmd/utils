@@ -93,6 +93,10 @@ const objEquals = (objA, objB) => {
   return objA === objB
 }
 
+// Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
+const multilineRegex = (...parts) =>
+  new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''))
+
 module.exports = {
   range,
   allValues,
@@ -100,4 +104,5 @@ module.exports = {
   deDup,
   filterKeys,
   objEquals,
+  multilineRegex,
 } // = require('./utils.js')
