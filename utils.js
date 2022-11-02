@@ -50,11 +50,10 @@ const deDup = (
 
 const filterKeys = (obj, regex) => {
   let keys = Object.keys(obj).filter(key => regex.test(key))
-  let miniObj = {}
-  keys.forEach(key => {
+  return keys.reduce((miniObj, key) => {
     miniObj[key] = obj[key]
-  })
-  return miniObj
+    return miniObj
+  }, {})
 }
 
 const objEquals = (objA, objB) => {
