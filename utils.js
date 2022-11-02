@@ -1,16 +1,13 @@
-const range = (start=0, stop, step=1) => {
-  // TODO: rewrite as an iterator (for large ranges)
+const range = function* (start=0, stop, step=1) {
   if (stop === undefined) {
     stop = start
     start = 0
   }
-  let nums = []
-  if (start < stop && step <= 0) return nums
-  if (start > stop && step >= 0) return nums
+  if (start < stop && step <= 0) return
+  if (start > stop && step >= 0) return
   for (let i = start; (start < stop ? i < stop : i > stop); i += step) {
-    nums.push(i)
+    yield i
   }
-  return nums
 }
 
 const allValues = (listOfObjects, field) => {
