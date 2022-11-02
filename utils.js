@@ -81,6 +81,8 @@ const objEquals = (objA, objB) => {
     for (let i = 0; i < aKeys.length; i++) {
       let aKey = aKeys[i]
       if (aKey !== bKeys[i] || !objEquals(objA[aKey], objB[aKey])) {
+        // TODO: will crash on circularly-nested objects
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
         return false
       }
     }
