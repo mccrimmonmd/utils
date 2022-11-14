@@ -1,7 +1,7 @@
 const fs = require("fs")
 const process = require("process")
 
-fs.readFile(String.raw`.\Jabberwocky.txt`, (err, data) => {
+fs.readFile("Jabberwocky.txt", (err, data) => {
   if (err) {
     console.log(err)
     throw err
@@ -13,20 +13,29 @@ fs.readFile(String.raw`.\Jabberwocky.txt`, (err, data) => {
   }
 })
 
-let masticate = (text) => {
-  let charCounts = {}
+const masticate = (text) => {
+  console.log(charCounts(text))
+  console.log(charCountsFunc(text))
+  console.log("--------------------------------------------")
+  console.log(wordCounts(text))
+  console.log(wordCountsFunc(text))
+}
+
+const charCounts = (text) => {
+  let counts = {}
   let charArr = [...text].sort()
   charArr.forEach(c => {
-    if (charCounts.hasOwnProperty(c)) {
-      charCounts[c] += 1
+    if (counts[c] == null) {
+      counts[c] += 1
     } else {
-      charCounts[c] = 1
+      counts[c] = 1
     }
   })
-  console.log(charCounts)
-  
-  // functional version
-  let charCounts2 = [...text].sort().reduce((counts, chara) => {
+  return counts
+}
+
+const charCountsFunc = (text) => {
+  return [...text].sort().reduce((counts, chara) => {
     if (counts[chara] == null) {
       counts[chara] = 1
     } else {
@@ -34,8 +43,9 @@ let masticate = (text) => {
     }
     return counts
   }, {})
-  console.log(charCounts2)
-  
+}
+
+const wordCounts = (text) => {
   let textArr = text.split(/\s/)
   let sorter = (a, b) => {
     a = a.replace(/[^\w]/g, '')
@@ -45,20 +55,21 @@ let masticate = (text) => {
     return 0
   }
   let sorted = [...textArr].filter(c => c !== '').sort(sorter)
-  let wordCounts = {}
+  let counts = {}
   sorted.forEach(word => {
     word = word.replace(/[^\w]/g, '')
-    if (wordCounts.hasOwnProperty(word)) wordCounts[word] += 1
-    else wordCounts[word] = 1
+    if (counts[word] == null) counts[word] += 1
+    else counts[word] = 1
   })
-  console.log(wordCounts)
-  
-  // functional version
-  textArr = text.replace(/[^\w]/g, ' ')
+  return counts
+}
+
+const wordCountsFunc = (text) => {
+  let textArr = text.replace(/[^\w]/g, ' ')
     .split(/\s/)
     .filter(w => w !== '')
     .sort()
-  let wordCounts2 = textArr.reduce((counts, word) => {
+  return textArr.reduce((counts, word) => {
     if (counts[word] == null) {
       counts[word] = 1
     } else {
@@ -66,5 +77,4 @@ let masticate = (text) => {
     }
     return counts
   }, {})
-  console.log(wordCounts2)
 }
