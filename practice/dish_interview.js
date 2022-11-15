@@ -19,16 +19,10 @@ and the values are the amount of that topping I need to buy
 }
 */
 
-let amountInStock = (cakes) => //{
+let amountInStock = (cakes) =>
   cakes.map(cake => cake.inStock).reduce((total, current) => total + current, 0);
-  // let sum = 0;
-  // for (let i = 0; i < list.length; i++) {
-  //   sum += list[i].inStock;
-  // }
-  // return sum;
-// };
 
-let groceryList = (cakes) => //{
+let groceryList = (cakes) =>
   cakes.reduce((list, cake) => {
     cake.toppings.forEach(topping => {
       if (list.hasOwnProperty(topping))
@@ -39,19 +33,6 @@ let groceryList = (cakes) => //{
     return list;
   }, 
   {});
-  // let list = {};
-  // for (let i = 0; i < cakes.length; i++) {
-  //   let toppings = cakes[i].toppings;
-  //   for (let j = 0; j < toppings.length; j++) {
-  //     if (list.hasOwnProperty(toppings[j]))
-  //       list[toppings[j]] += 1;
-  //     else {
-  //       list[toppings[j]] = 1;
-  //     }
-  //   }
-  // }
-  // return list;
-// };
 
 const cakes = [
   {
