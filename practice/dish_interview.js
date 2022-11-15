@@ -20,7 +20,7 @@ and the values are the amount of that topping I need to buy
 */
 
 let amountInStock = (cakes) =>
-  cakes.map(cake => cake.inStock).reduce((total, current) => total + current, 0);
+  cakes.reduce((total, cake) => total + cake.inStock, 0);
 
 let groceryList = (cakes) =>
   cakes.reduce((list, cake) => {
