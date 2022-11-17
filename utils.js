@@ -56,16 +56,21 @@ const filterKeys = (obj, regex) => {
   }, {})
 }
 
-const objEquals = (objA, objB) => {
+const objEquals = (objA, objB, allFuncsEqual=false) => {
   let typeOfA = typeof objA
   if (typeOfA !== typeof objB) {
     return false
   }
-  if (typeOfA === 'function') {
-    throw new Error('cannot compare equality for functions')
-  }
   if (typeOfA === 'number' && isNaN(objA)) {
     return isNaN(objB)
+  }
+  if (typeOfA === 'function') {
+    if (allFuncsEqual || objA === objB) {
+      return true
+    }
+    else {
+      throw new Error('cannot compare functions by value (call with allFuncsEqual=true to override)')
+    }
   }
   if (typeOfA === 'object' && objA !== null) {
     if (objB === null) {
@@ -80,7 +85,7 @@ const objEquals = (objA, objB) => {
     bKeys.sort()
     for (let i = 0; i < aKeys.length; i++) {
       let aKey = aKeys[i]
-      if (aKey !== bKeys[i] || !objEquals(objA[aKey], objB[aKey])) {
+      if (aKey !== bKeys[i] || !objEquals(objA[aKey], objB[aKey], allFuncsEqual)) {
         // TODO: will crash on circularly-nested objects
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
         return false
