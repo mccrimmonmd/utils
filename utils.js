@@ -108,5 +108,6 @@ module.exports = {
   filterKeys,
   objEquals,
   multilineRegex,
-  ...require('./random')
+  ...require('./random'),
+  randomObject: require('./randomObject'),
 } // = require('./utils.js')
