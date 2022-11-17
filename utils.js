@@ -108,4 +108,5 @@ module.exports = {
   filterKeys,
   objEquals,
   multilineRegex,
+  ...require('./random')
 } // = require('./utils.js')
