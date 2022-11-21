@@ -57,6 +57,9 @@ const filterKeys = (obj, regex) => {
 }
 
 const objEquals = (objA, objB, allFuncsEqual=false) => {
+  if (objA === objB) {
+    return true
+  }
   let typeOfA = typeof objA
   if (typeOfA !== typeof objB) {
     return false
@@ -93,7 +96,7 @@ const objEquals = (objA, objB, allFuncsEqual=false) => {
     }
     return true
   }
-  return objA === objB
+  return false
 }
 
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
