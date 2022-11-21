@@ -86,15 +86,11 @@ const objEquals = (objA, objB, allFuncsEqual=false) => {
     }
     aKeys.sort()
     bKeys.sort()
-    for (let i = 0; i < aKeys.length; i++) {
-      let aKey = aKeys[i]
-      if (aKey !== bKeys[i] || !objEquals(objA[aKey], objB[aKey], allFuncsEqual)) {
-        // TODO: will crash on circularly-nested objects
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
-        return false
-      }
-    }
-    return true
+    return [...aKeys.entries()].every(([i, aKey]) => 
+      // TODO: will crash on circularly-nested objects
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
+      aKey === bKeys[i] && objEquals(objA[aKey], objB[aKey], allFuncsEqual)
+    )
   }
   return false
 }
