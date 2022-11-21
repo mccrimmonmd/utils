@@ -1,0 +1,80 @@
+GET /sev_incidents/_search
+{
+  "query": {
+    "match": {
+      "number": "INC1088576"
+    }
+  }
+}
+
+GET /sev_incidents/_mapping
+
+GET /_cat/indices?v&h=index,docs.count,docs.deleted,store.size,pri.store.size&s=store.size:desc
+#index:desc
+#store.size:desc
+
+POST /calls_dish_metrics/_forcemerge?only_expunge_deletes=true
+
+GET /sev_bridges/_search
+
+POST sev_bridges/object/1/_update
+{
+  "doc": {
+    "in_use" : false,
+    "status": "",
+    "incident" : "",
+    "sev" : ""
+  }
+}
+
+GET /logs/_search
+{
+  "from" : 0, "size" : 50,
+  "sort": [{
+    "timestamp": { "order": "desc" }
+  }],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "range": {
+            "timestamp": {
+              "gte": "2022-09-22",
+              "lt": "2022-09-23"
+              /* "gte": "now-1d" */
+            }
+          }
+        },
+        {
+          "prefix": {
+            "app_name": "sev"
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET /logs/_search
+{
+  "sort": [{
+    "timestamp": { "order": "asc" }
+  }],
+  "query": {
+    "match": {
+      "alert_message": {
+        "query": "INC1121416"
+      }
+    }
+  }
+}
+
+GET /sev_companies/_delete_by_query
+{
+  "query": {
+    "match": {
+      "company": "Wireless"
+    }
+  }
+}
+
