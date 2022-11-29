@@ -68,12 +68,9 @@ const objEquals = (objA, objB, allFuncsEqual=false) => {
     return isNaN(objB)
   }
   if (typeOfA === 'function') {
-    if (allFuncsEqual || objA === objB) {
-      return true
-    }
-    else {
-      throw new Error('cannot compare functions by value (call with allFuncsEqual=true to override)')
-    }
+    return allFuncsEqual || throw new Error(
+      'cannot compare functions by value (call with allFuncsEqual=true to override)'
+    )
   }
   if (typeOfA === 'object' && objA !== null) {
     if (objB === null) {
