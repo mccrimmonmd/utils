@@ -96,6 +96,7 @@ const objEquals = (objA, objB, allFuncsEqual=false) => {
 const multilineRegex = (...parts) =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''))
 
+var random = require('./random')
 module.exports = {
   range,
   allValues,
@@ -104,6 +105,6 @@ module.exports = {
   filterKeys,
   objEquals,
   multilineRegex,
-  ...require('./random'),
+  ...random,
   randomObject: require('./randomObject'),
 } // = require('./utils.js')
