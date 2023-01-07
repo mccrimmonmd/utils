@@ -68,9 +68,10 @@ const objEquals = (objA, objB, allFuncsEqual=false) => {
     return isNaN(objB)
   }
   if (typeOfA === 'function') {
-    return allFuncsEqual || throw new Error(
-      'cannot compare functions by value (call with allFuncsEqual=true to override)'
-    )
+	if (allFuncsEqual) return true
+	else throw new Error(
+	  'cannot compare functions by value (call with allFuncsEqual=true to override)'
+	)
   }
   if (typeOfA === 'object' && objA !== null) {
     if (objB === null) {
@@ -97,6 +98,7 @@ const multilineRegex = (...parts) =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''))
 
 var random = require('./random')
+var randomObject = require('./randomObject')
 module.exports = {
   range,
   allValues,
@@ -105,6 +107,6 @@ module.exports = {
   filterKeys,
   objEquals,
   multilineRegex,
+  randomObject,
   ...random,
-  randomObject: require('./randomObject'),
 } // = require('./utils.js')
