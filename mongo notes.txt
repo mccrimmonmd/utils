@@ -1,32 +1,45 @@
+// basic search on 'date' field
+db.getCollection('slingmetrics.CMW')
+  .find({date: '09/14/2021'})
+
+// find objects with requests > 0; sort by creation date (descending)
 db.getCollection('slingmetrics.CMW')
   .find({'endpoints.totalRequests': {$gt: 0}})
   .sort({createdAt: -1})
-  .aggregate({$match: {'endpoints.totalRequests': {$gt: 0}}})
-  .find({date: '09/14/2021'})
 
+// this doesn't work--not sure what I was trying
+db.getCollection('slingmetrics.CMW')
+  .aggregate({$match: {'endpoints.totalRequests': {$gt: 0}}})
+
+// search using regular expression literal
 db.getCollection('locations')
   .find({name: /Meridian/})
 
+// search with logic conditions; count number of results
 db.getCollection('logViewer.log')
   .find({level: {$ne: 'error'}, appName: {$ne: 'slingmetrics'}})
   .sort({createdAt: -1})
   .count()
 
+// middleware query for loading paged data
 models.Cert.find({ active: true })
   .skip(offset)
   .limit(limit)
   .sort({ [field]: order })
   .lean()
 
+// adding new fields to search results
 db.getCollection('cyclone.certs')
   .aggregate([{$addFields: {
     digiOrderNumber: "$digicertInfo.orderNumber",
     commonName: {$arrayElemAt: ["$sans.name", 0]}
   }}])
-  
+
+// searching nested objects
 db.getCollection('cyclone.certs')
   .find({"sans.name": "www.blackbegonias.dish.com"})
-  
+
+// searching for multiple values 
 db.getCollection('interfaces').find({_id: 
   { $in: [
     ObjectId("608a678ae44894ccba332602"),
