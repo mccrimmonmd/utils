@@ -5,7 +5,6 @@
   ff = only
 [alias]
   cg = config --global
-  gconf = config --global
   rebasem = rebase main --rebase-merges
   mergem = merge main
   st = status
