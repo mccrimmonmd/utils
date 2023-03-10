@@ -29,11 +29,11 @@
   fe = fetch --all
   pr = fetch --prune
   delete-remote = push -d origin
-  low = log -10
+  low = log -5
   loo = log --oneline
   lo = log --oneline -20
   gloo = log --oneline --graph
   glo = log --oneline --graph -20
   lop = log --patch
-  lp = log --patch -1
+  op = log --patch -1
   
