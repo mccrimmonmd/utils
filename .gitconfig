@@ -14,6 +14,9 @@
   cim = commit -m
   cam = commit --all -m
   sub = restore --staged
+  undo = revert HEAD
+  undo-soft = revert HEAD
+  undo-hard = reset --mixed HEAD~
   stashl = stash list
   stashs = stash show
   stashd = stash show --patch
