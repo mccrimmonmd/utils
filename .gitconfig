@@ -17,8 +17,9 @@
   cam = commit --all -m
   sub = restore --staged
   undo = revert HEAD
-  undo-soft = revert HEAD
+  undo-soft = revert --no-commit HEAD
   undo-hard = reset --mixed HEAD~
+  undo-range = revert --no-commit
   stashl = stash list
   stashs = stash show
   stashd = stash show --patch
