@@ -8,7 +8,9 @@
   rebasem = rebase main --rebase-merges
   mergem = merge main
   st = status
-  sdiff = diff --staged
+  dif = diff -- . ':(exclude)package-lock.json'
+  sdif = diff --staged -- . ':(exclude)package-lock.json'
+  sdiff = diff --staged -- . ':(exclude)package-lock.json'
   ci = commit
   ca = commit --all
   cim = commit -m
