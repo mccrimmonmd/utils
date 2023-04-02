@@ -5,7 +5,7 @@ module.exports = {
   randDigitString: (length) => {
     let digits = []
     for (let i = 0; i < length; i++) {
-      digits.push(randDigit())
+      digits[i] = randDigit()
     }
     return digits.join('')
   },
