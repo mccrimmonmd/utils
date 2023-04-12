@@ -32,6 +32,7 @@
   sb = switch -
   sm = switch main
   nb = switch -c
+  ch = checkout
   su = push --set-upstream origin HEAD
   ap = add --patch
   fe = fetch --all
