@@ -3,10 +3,11 @@
 2. I need to make a grocery list of the unique toppings for cakes I am making.
 Please write a function that returns an object where the keys are each topping,
 and the values are the amount of that topping I need to buy
-*/
 
-/*
+## Answers:
+
 59
+
 {
   'dutch process cocoa': 1,
   'toasted sugar': 3,

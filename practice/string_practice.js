@@ -1,19 +1,23 @@
 const fs = require("fs")
 const process = require("process")
 
-fs.readFile("Jabberwocky.txt", (err, data) => {
-  if (err) {
+const jabberwocky = (filePath='Jabberwocky.txt') => {
+  try {
+    let data = fs.readFileSync(filePath)
+    if (data) {
+      return data.toString().trim() //trim() removes BOM
+    } else {
+      console.log("No data!")
+      return ''
+    }
+  } catch (err) {
     console.log(err)
     throw err
   }
-  else if (data) masticate(data.toString().trim()) //trim() removes BOM
-  else {
-    console.log("No data!")
-    process.exit()
-  }
-})
+}
 
 const masticate = (text) => {
+  if (text == null) text = jabberwocky()
   console.log(charCounts(text))
   console.log(charCountsFunc(text))
   console.log("--------------------------------------------")
@@ -26,9 +30,9 @@ const charCounts = (text) => {
   let charArr = [...text].sort()
   charArr.forEach(c => {
     if (counts[c] == null) {
-      counts[c] += 1
-    } else {
       counts[c] = 1
+    } else {
+      counts[c] += 1
     }
   })
   return counts
@@ -58,8 +62,8 @@ const wordCounts = (text) => {
   let counts = {}
   sorted.forEach(word => {
     word = word.replace(/[^\w]/g, '')
-    if (counts[word] == null) counts[word] += 1
-    else counts[word] = 1
+    if (counts[word] == null) counts[word] = 1
+    else counts[word] += 1
   })
   return counts
 }
@@ -77,4 +81,15 @@ const wordCountsFunc = (text) => {
     }
     return counts
   }, {})
+}
+
+if (false) { // DEBUG
+  masticate()
+}
+
+module.exports = {
+  jabberwocky,
+  masticate,
+  charCounts: charCountsFunc,
+  wordCounts: wordCountsFunc,
 }
