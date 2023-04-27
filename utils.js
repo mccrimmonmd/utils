@@ -56,7 +56,8 @@ const filterKeys = (obj, regex) => {
   }, {})
 }
 
-const objEquals = (objA, objB, allFuncsEqual=false) => {
+const objEquals = (objA, objB, allFuncsEqual=false, coerceBigInt=false) => {
+  // TODO: treat BigInts as Numbers if coerceBigInt is true
   if (objA === objB) {
     return true
   }
