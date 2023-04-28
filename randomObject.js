@@ -1,9 +1,9 @@
-const { randInt, randChoice, coinFlip } = require('./random')
+const { randInt, randDigit, randChoice, coinFlip } = require('./random')
 
-const getNum = () => randInt(10) * coinFlip() ? -1 : 1
+const getNum = () => randDigit() * coinFlip() ? -1 : 1
 const getString = () => {
   let str = ''
-  for (let i = 0; i < randInt(10) + 1; i++) {
+  for (let i = 0; i < randDigit() + 1; i++) {
     str += randChoice(LETTERS)
   }
   return str
