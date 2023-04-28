@@ -127,6 +127,7 @@ const objEquals = (
 }
 
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
+// TODO: add some way of setting flags e.g. `ignoreCase = parts.some(x => (x instanceof RegExp) ? x.ignoreCase : false)`
 const multilineRegex = (...parts) =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''))
 
