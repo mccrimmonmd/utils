@@ -56,13 +56,27 @@ const filterKeys = (obj, regex) => {
   }, {})
 }
 
-const objEquals = (objA, objB, allFuncsEqual=false, coerceBigInt=false) => {
-  // TODO: treat BigInts as Numbers if coerceBigInt is true
+const objEquals = (objA, objB, allFuncsEqual=false, compareBigIntToNumber=false) => {
   if (objA === objB) {
     return true
   }
   let typeOfA = typeof objA
   if (typeOfA !== typeof objB) {
+    if (compareBigIntToNumber && (typeOfA === 'bigint' || typeOfA === 'number')) {
+      try {
+        if (typeOfA === 'number') {
+          return BigInt(objA) === objB
+        } else {
+          return typeof objB === 'number' && BigInt(objB) === objA
+        }
+      } catch (err) {
+        if (err instanceof RangeError) {
+          return false
+        } else {
+          throw err
+        }
+      }
+    }
     return false
   }
   if (typeOfA === 'number' && isNaN(objA)) {
