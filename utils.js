@@ -74,8 +74,11 @@ const objEquals = (objA, objB, allFuncsEqual=false, coerceBigInt=false) => {
 	  'cannot compare functions by value (call with allFuncsEqual=true to override)'
 	)
   }
-  if (typeOfA === 'object' && objA !== null) {
-    if (objB === null) {
+  if (typeOfA === 'object') {
+    if (objA === null) {
+      return false
+    }
+    if (Array.isArray(objA) !== Array.isArray(objB)) {
       return false
     }
     let aKeys = Object.keys(objA)
