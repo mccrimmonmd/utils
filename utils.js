@@ -56,7 +56,14 @@ const filterKeys = (obj, regex) => {
   }, {})
 }
 
-const objEquals = (objA, objB, allFuncsEqual=false, compareBigIntToNumber=false) => {
+const objEquals = (
+  objA,
+  objB, 
+  {
+    compareFuncsWith = false,
+    compareBigIntToNumber = false
+  } = {}
+) => {
   if (objA === objB) {
     return true
   }
@@ -83,10 +90,18 @@ const objEquals = (objA, objB, allFuncsEqual=false, compareBigIntToNumber=false)
     return isNaN(objB)
   }
   if (typeOfA === 'function') {
-	if (allFuncsEqual) return true
-	else throw new Error(
-	  'cannot compare functions by value (call with allFuncsEqual=true to override)'
-	)
+    if (!compareFuncsWith) {
+      throw new Error(
+        'function comparison is disabled, set `compareFuncsWith` to enable\n' + 
+        '  (possible values: `toString`, `noneEqual`, `allEqual` [default])'
+      )
+    } else if (compareFuncsWith === 'toString') {
+      return objA.toString() === objB.toString()
+    } else if (compareFuncsWith === 'noneEqual') {
+      return false
+    } else {
+      return true
+    }
   }
   if (typeOfA === 'object') {
     if (objA === null) {
