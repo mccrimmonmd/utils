@@ -11,23 +11,24 @@ const range = function* (start=0, stop, step=1) {
 }
 
 const allValues = (listOfObjects, field) => {
-  return listOfObjects.reduce((results, obj) => {
-    let val = obj[field]
-    if (results.includes(val)) {
-      return results
-    }
-    return results.concat(val)
-  }, [])
+  let values = listOfObjects.reduce((results, obj) => {
+    results.add(obj[field])
+    return results
+  }, new Set())
+  return [...values]
 }
 
 const allKeys = (listOfObjects, regex=/(?:)/) => {
   // The empty regex /(?:)/ matches any string
-  return listOfObjects.reduce((results, obj) => {
-    let newKeys = Object.keys(obj).filter(
-      key => regex.test(key) && !results.includes(key)
-    )
-    return results.concat(newKeys)
-  }, [])
+  let keys = listOfObjects.reduce((results, obj) => {
+    Object.keys(obj).forEach((key) => {
+      if (regex.test(key)) {
+        results.add(key)
+      }
+    })
+    return results
+  }, new Set())
+  return [...keys]
 }
 
 const deDup = (
