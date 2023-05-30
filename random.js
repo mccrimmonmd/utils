@@ -1,8 +1,14 @@
 const randNum = (lessThan) => Math.random() * lessThan
 const randInt = (lessThan) => Math.floor(randNum(lessThan))
 const randDigit = () => randInt(10)
-const randDigitString = (length) => 
-  new Array(length).fill(0).map(_ => randDigit()).join('')
+const randDigitString = (length) => {
+  let digits = []
+  while (length > 0) {
+    digits.push(randInt())
+    length -= 1
+  }
+  return digits.join('')
+}
 const randChoice = (arr) => arr[randInt(arr.length)]
 const shuffle = (arr) => {
   for (let i = arr.length; i > 1; i--) {
