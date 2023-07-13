@@ -87,7 +87,6 @@ module.exports = {
   allKeys,
   deDup,
   filterKeys,
-  objEquals,
   multilineRegex,
   randomObject,
   ...random,
