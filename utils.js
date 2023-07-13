@@ -58,10 +58,18 @@ const findDupes = (someList) => {
   }, [])
 }
 
-const filterKeys = (obj, regex) => {
+const filterKeys = (obj, filter, matchPasses=true) => {
+  const passesFilter = (value) => {
+    if (Array.isArray(filter)) {
+      return filter.includes(value) === matchPasses
+    }
+    else {
+      return filter.test(value) === matchPasses
+    }
+  }
   let filteredObj = {}
   Object.keys(obj).forEach(key => {
-    if (regex.test(key)) filteredObj[key] = obj[key]
+    if (passesFilter(key)) filteredObj[key] = obj[key]
   })
   return filteredObj
 }
