@@ -31,6 +31,17 @@ const allKeys = (listOfObjects, regex=/(?:)/) => {
   return [...keys]
 }
 
+const filterKeys = (obj, filter, includeOnMatch=true) => {
+  const passesFilter = Array.isArray(filter)
+    ? (value) => filter.includes(value) === includeOnMatch
+    : (value) => filter.test(value) === includeOnMatch
+  let filteredObj = {}
+  Object.keys(obj).forEach(key => {
+    if (passesFilter(key)) filteredObj[key] = obj[key]
+  })
+  return filteredObj
+}
+
 const deDup = (
   someList, 
   identifier = (item) => item, 
@@ -56,17 +67,6 @@ const findDupes = (someList) => {
     all.add(item)
     return dupes
   }, [])
-}
-
-const filterKeys = (obj, filter, matchPasses=true) => {
-  const passesFilter = Array.isArray(filter)
-    ? (value) => filter.includes(value) === matchPasses
-    : (value) => filter.test(value) === matchPasses
-  let filteredObj = {}
-  Object.keys(obj).forEach(key => {
-    if (passesFilter(key)) filteredObj[key] = obj[key]
-  })
-  return filteredObj
 }
 
 // Source: <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
