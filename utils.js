@@ -79,7 +79,6 @@ const multilineRegex = (parts, flags='') =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
 
 var random = require('./random')
-var randomObject = require('./randomObject')
 module.exports = {
   range,
   allValues,
@@ -87,6 +86,5 @@ module.exports = {
   deDup,
   filterKeys,
   multilineRegex,
-  randomObject,
   ...random,
 } // = require('./utils.js')
