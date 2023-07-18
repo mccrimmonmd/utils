@@ -62,6 +62,8 @@ module.exports = (
     return [...aKeys.entries()].every(([i, aKey]) => 
       // TODO: will crash on circularly-nested objects
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol
+      // aUID = Symbol(); bUID = Symbol(); a[Symbol.for('uniqueId')] = aUID; <...> ancestors.push(aUID); if (ancestors.includes(aUID)) <...>
       aKey === bKeys[i] && objEquals(objA[aKey], objB[aKey], allFuncsEqual)
     )
   }
