@@ -75,9 +75,8 @@ const arrayEquals = (a, b) =>
   a.every((element, index) => element === b[index])
 
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
-// TODO: add some way of setting flags e.g. `ignoreCase = parts.some(x => (x instanceof RegExp) ? x.ignoreCase : false)`
-const multilineRegex = (...parts) =>
-  new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''))
+const multilineRegex = (parts, flags='') =>
+  new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
 
 var random = require('./random')
 var randomObject = require('./randomObject')
