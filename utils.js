@@ -10,6 +10,11 @@ const range = function* (start=0, stop, step=1) {
   }
 }
 
+const print = (obj, depth=null) => {
+  console.dir(obj, { depth })
+  return obj
+}
+
 const allValues = (listOfObjects, field) => {
   let values = listOfObjects.reduce((results, obj) => {
     results.add(obj[field])
