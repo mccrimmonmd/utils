@@ -85,13 +85,17 @@ const arrayEquals = (a, b) =>
 const multilineRegex = (parts, flags='') =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
 
-var random = require('./random')
+const random = require('./random')
+
 module.exports = {
   range,
+  print,
   allValues,
   allKeys,
-  deDup,
   filterKeys,
+  deDup,
+  findDupes,
+  arrayEquals,
   multilineRegex,
-  ...random,
+  random,
 } // = require('./utils.js')
