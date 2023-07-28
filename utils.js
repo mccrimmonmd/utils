@@ -26,6 +26,7 @@ const allValues = (listOfObjects, field) => {
 const allKeys = (listOfObjects, regex=/(?:)/) => {
   // The empty regex /(?:)/ matches any string
   let keys = listOfObjects.reduce((results, obj) => {
+    if (obj == null) return results
     Object.keys(obj).forEach((key) => {
       if (regex.test(key)) {
         results.add(key)
@@ -37,6 +38,7 @@ const allKeys = (listOfObjects, regex=/(?:)/) => {
 }
 
 const filterKeys = (obj, filter, includeOnMatch=true) => {
+  if (obj == null) return obj
   const passesFilter = Array.isArray(filter)
     ? (value) => filter.includes(value) === includeOnMatch
     : (value) => filter.test(value) === includeOnMatch
