@@ -27,7 +27,7 @@ const allKeys = (listOfObjects, regex=/(?:)/) => {
   // The empty regex /(?:)/ matches any string
   let keys = listOfObjects.reduce((results, obj) => {
     if (obj == null) return results
-    Object.keys(obj).forEach((key) => {
+    Object.keys(obj).forEach(key => {
       if (regex.test(key)) {
         results.add(key)
       }
@@ -49,32 +49,35 @@ const filterKeys = (obj, filter, includeOnMatch=true) => {
   return filteredObj
 }
 
+const groupSimilar = (someList, identifier = (item) => item) => {
+  let groups = []
+  someList.reduce((remaining, itemA) => {
+    let group = []
+    let rest = []
+    remaining.forEach(itemB => {
+      if (identifier(itemA) === identifier(itemB)) {
+        group.push(itemB)
+      }
+      else {
+        rest.push(itemB)
+      }
+    })
+    if (group.length) groups.push(group)
+    return rest
+  }, someList)
+  return groups
+}
+
 const deDup = (
   someList, 
   identifier = (item) => item, 
   decider = (itemA, itemB) => itemB
-) => {
-  return someList.reduce((results, itemA) => {
-    let i = results.findIndex(itemB => identifier(itemA) === identifier(itemB))
-    if (i >= 0) {
-      let itemB = results[i]
-      results[i] = decider(itemA, itemB)
-    }
-    else {
-      results.push(itemA)
-    }
-    return results
-  }, [])
-}
+) => groupSimilar(someList, identifier).map(
+    group => group.reduce(decider, group[0])
+  )
 
-const findDupes = (someList) => {
-  let all = new Set()
-  return someList.reduce((dupes, item) => {
-    if (all.has(item)) dupes.push(item)
-    all.add(item)
-    return dupes
-  }, [])
-}
+const findDupes = (someList, identifier = (item) => item) => 
+  groupSimilar(someList, identifier).filter(group => group.length > 1)
 
 // Source: <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
 const arrayEquals = (a, b) =>
