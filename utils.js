@@ -71,7 +71,7 @@ const groupSimilar = (someList, identifier = (item) => item) => {
 const deDup = (
   someList, 
   identifier = (item) => item, 
-  decider = (itemA, itemB) => itemB
+  decider = (bestSoFar, newItem) => newItem
 ) => groupSimilar(someList, identifier).map(
     group => group.reduce(decider, group[0])
   )
