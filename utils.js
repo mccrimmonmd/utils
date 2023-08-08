@@ -49,35 +49,34 @@ const filterKeys = (obj, filter, includeOnMatch=true) => {
   return filteredObj
 }
 
-const groupSimilar = (someList, identifier = (item) => item) => {
-  let groups = []
-  someList.reduce((remaining, itemA) => {
-    let group = []
-    let rest = []
-    remaining.forEach(itemB => {
-      if (identifier(itemA) === identifier(itemB)) {
-        group.push(itemB)
-      }
-      else {
-        rest.push(itemB)
-      }
-    })
-    if (group.length) groups.push(group)
-    return rest
-  }, someList)
+const makeGroups = (someList, idFunc = (item) => item, strong = false) => {
+  let identifier = strong
+    ? idFunc
+    : (item) => {
+      let id = idFunc(item)
+      return typeof id === 'symbol' ? id : String(id)
+    }
+  let groups = new Map()
+  someList.forEach((item) => {
+    let id = identifier(item)
+    let group = groups.has(id) ? groups.get(id) : []
+    groups.set(id, group.concat([item]))
+  })
   return groups
 }
 
 const deDup = (
   someList, 
   identifier = (item) => item, 
-  decider = (bestSoFar, newItem) => newItem
-) => groupSimilar(someList, identifier).map(
+  decider = (bestSoFar, candidate) => candidate
+) => [...makeGroups(someList, identifier, true).values()].map(
     group => group.reduce(decider, group[0])
   )
 
-const findDupes = (someList, identifier = (item) => item) => 
-  groupSimilar(someList, identifier).filter(group => group.length > 1)
+const findDupes = (someList, identifier = (item) => item) => {
+  return [...makeGroups(someList, identifier, true).values()]
+  .filter(group => group.length > 1)
+}
 
 // Source: <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
 const arrayEquals = (a, b) =>
