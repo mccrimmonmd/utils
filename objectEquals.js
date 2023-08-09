@@ -61,13 +61,31 @@ module.exports = (
     }
     aKeys.sort()
     bKeys.sort()
-    return [...aKeys.entries()].every(([i, aKey]) => 
+    let hasBeenSeen = Symbol.for('circularRefKey')
+    let uid = Symbol()
+    let aList = objA[hasBeenSeen]
+    let bList = objB[hasBeenSeen]
+    objA[hasBeenSeen] = aList ? aList.concat([uid]) : [uid]
+    objB[hasBeenSeen] = bList ? bList.concat([uid]) : [uid]
+    let options = { allFuncsEqual, compareBigIntToNumber }
+    return Object.entries(aKeys).every(([i, aKey]) => {
+      if (aKey !== bKeys[i]) {
+        return false
+      }
+      let aChild = objA[aKey]
+      let bChild = objB[aKey]
+      if (aChild[hasBeenSeen]) {
+        return bChild[hasBeenSeen] && aChild[hasBeenSeen].some(
+          id => bChild[hasBeenSeen].includes(id)
+        )
+      }
+      return objEquals(aChild, bChild, options)
       // TODO: will crash on circularly-nested objects
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol
       // aUID = Symbol(); bUID = Symbol(); a[Symbol.for('uniqueId')] = aUID; <...> ancestors.push(aUID); if (ancestors.includes(aUID)) <...>
-      aKey === bKeys[i] && objEquals(objA[aKey], objB[aKey], allFuncsEqual)
-    )
+      // return aKey === bKeys[i] && objEquals(objA[aKey], objB[aKey], options)
+    })
   }
   return false
 }
