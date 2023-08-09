@@ -1,3 +1,5 @@
+// Array.from({ length: n }, (v, i) => i)
+// [...Array(n).keys()]
 const range = function* (start=0, stop, step=1) {
   if (stop === undefined) {
     stop = start
