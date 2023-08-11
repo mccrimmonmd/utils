@@ -75,14 +75,12 @@ module.exports = (
         return aSeen.some(id => bSeen.includes(id))
       }
       let uid = Symbol()
-      aChild[hasBeenSeen] = aSeen ? aSeen.concat([uid]) : [uid]
-      bChild[hasBeenSeen] = bSeen ? bSeen.concat([uid]) : [uid]
+      aChild[hasBeenSeen] = aSeen ? aSeen.concat(uid) : [uid]
+      bChild[hasBeenSeen] = bSeen ? bSeen.concat(uid) : [uid]
       return objEquals(aChild, bChild, options)
-      // TODO: will crash on circularly-nested objects
+      // TODO: test on circularly-nested objects
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol
-      // aUID = Symbol(); bUID = Symbol(); a[Symbol.for('uniqueId')] = aUID; <...> ancestors.push(aUID); if (ancestors.includes(aUID)) <...>
-      // return aKey === bKeys[i] && objEquals(objA[aKey], objB[aKey], options)
     })
   }
   return false
