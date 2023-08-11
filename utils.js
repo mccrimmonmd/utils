@@ -59,7 +59,7 @@ const makeGroups = (someList, idFunc = (item) => item, strong = false) => {
       return typeof id === 'symbol' ? id : String(id)
     }
   let groups = new Map()
-  someList.forEach((item) => {
+  someList.forEach(item => {
     let id = identifier(item)
     let group = groups.has(id) ? groups.get(id) : []
     groups.set(id, group.concat([item]))
@@ -78,6 +78,18 @@ const deDup = (
 const findDupes = (someList, identifier = (item) => item) => {
   return [...makeGroups(someList, identifier, true).values()]
   .filter(group => group.length > 1)
+}
+
+const diff = (a, b) => {(
+  let left = Object.keys(a).reduce((diffs, key) => {
+    if (a[key] !== b[key]) diffs[key] = a[key]
+    return diffs
+  }, {})
+  let right = Object.keys(b).reduce((diffs, key) => {
+    if (b[key] !== a[key]) diffs[key] = b[key]
+    return diffs
+  }, {})
+  return { left, right }
 }
 
 // Source: <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
