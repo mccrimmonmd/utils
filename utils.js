@@ -118,9 +118,12 @@ const multiDiff = (listOfObjects) => {
   listOfObjects.reduce((a, b, i) => {
     let { left, right } = diff(a, b)
     if (Object.keys(left).length || Object.keys(right).length) {
-      let newDiffs = {}
-      newDiffs[`left-${i-1}`] = left
-      newDiffs[`right-${i}`] = right
+      let newDiffs = {
+        left,
+        leftIndex: i - 1,
+        right,
+        rightIndex: i,
+      }
       allDiffs.push(newDiffs)
     }
     return b
