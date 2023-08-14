@@ -26,6 +26,19 @@ const isEmpty = (value) => {
   }
   return !value
 }
+const mergeObjects = (a, b, decider = (one, two) => one) => {
+  if (a == null || b == null) return a ?? b
+  let primary = decider(a, b)
+  let secondary = primary === a ? b : a
+  let merged = { ...primary }
+  Object.keys(secondary).forEach(key => {
+    let val = secondary[key]
+    if (isEmpty(merged[key]) && !isEmpty(val)) {
+      merged[key] = val
+    }
+  })
+  return merged
+}
 
 const allValues = (listOfObjects, field) => {
   let values = listOfObjects.reduce((results, obj) => {
@@ -76,7 +89,6 @@ const makeGroups = (someList, idFunc = (item) => item, strong = false) => {
   })
   return groups
 }
-
 const deDup = (
   someList, 
   identifier = (item) => item, 
@@ -84,7 +96,6 @@ const deDup = (
 ) => [...makeGroups(someList, identifier, true).values()].map(
     group => group.reduce(decider, group[0])
   )
-
 const findDupes = (someList, identifier = (item) => item) => {
   return [...makeGroups(someList, identifier, true).values()]
   .filter(group => group.length > 1)
@@ -100,6 +111,21 @@ const diff = (a, b) => {(
     return diffs
   }, {})
   return { left, right }
+}
+const multiDiff = (listOfObjects) => {
+  if (listOfObjects.length <= 1) return []
+  let allDiffs = []
+  listOfObjects.reduce((a, b, i) => {
+    let { left, right } = diff(a, b)
+    if (Object.keys(left).length || Object.keys(right).length) {
+      let newDiffs = {}
+      newDiffs[`left-${i-1}`] = left
+      newDiffs[`right-${i}`] = right
+      allDiffs.push(newDiffs)
+    }
+    return b
+  })
+  return allDiffs
 }
 
 // Source: <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
