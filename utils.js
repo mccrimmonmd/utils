@@ -17,6 +17,16 @@ const print = (obj, depth=null) => {
   return obj
 }
 
+const isEmpty = (value) => {
+  if (value === undefined) return true
+  if (value.length != null && value.length === 0) return true
+  if (typeof value === 'object') {
+    if (value === null) return true
+    if (Object.keys(value).length === 0) return true
+  }
+  return !value
+}
+
 const allValues = (listOfObjects, field) => {
   let values = listOfObjects.reduce((results, obj) => {
     results.add(obj[field])
