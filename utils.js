@@ -101,7 +101,7 @@ const findDupes = (someList, identifier = (item) => item) => {
   .filter(group => group.length > 1)
 }
 
-const diff = (a, b) => {(
+const diff = (a, b) => {
   let left = Object.keys(a).reduce((diffs, key) => {
     if (a[key] !== b[key]) diffs[key] = a[key]
     return diffs
