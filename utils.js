@@ -18,11 +18,10 @@ const print = (obj, depth=null) => {
 }
 
 const isEmpty = (value) => {
-  if (value === undefined) return true
+  if (value == null) return true
   if (value.length != null && value.length === 0) return true
   if (typeof value === 'object') {
-    if (value === null) return true
-    if (Object.keys(value).length === 0) return true
+    return Object.keys(value).length === 0
   }
   return !value
 }
@@ -67,11 +66,11 @@ const filterKeys = (obj, filter, includeOnMatch=true) => {
   const passesFilter = Array.isArray(filter)
     ? (value) => filter.includes(value) === includeOnMatch
     : (value) => filter.test(value) === includeOnMatch
-  let filteredObj = {}
+  let filtered = {}
   Object.keys(obj).forEach(key => {
-    if (passesFilter(key)) filteredObj[key] = obj[key]
+    if (passesFilter(key)) filtered[key] = obj[key]
   })
-  return filteredObj
+  return filtered
 }
 
 const makeGroups = (someList, idFunc = (item) => item, strong = false) => {
@@ -93,9 +92,10 @@ const deDup = (
   someList, 
   identifier = (item) => item, 
   decider = (bestSoFar, candidate) => candidate
-) => [...makeGroups(someList, identifier, true).values()].map(
-    group => group.reduce(decider, group[0])
-  )
+) => {
+  return [...makeGroups(someList, identifier, true).values()]
+  .map(group => group.reduce(decider, group[0]))
+}
 const findDupes = (someList, identifier = (item) => item) => {
   return [...makeGroups(someList, identifier, true).values()]
   .filter(group => group.length > 1)
