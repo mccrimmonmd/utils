@@ -57,4 +57,5 @@
   lop = log --patch
   pol = log --patch --reverse
   op = log --patch -1
-  
+[core]
+  editor = 'C:\\Program Files (x86)\\Notepad++\\notepad++.exe' -multiInst -notabbar -nosession -noPlugin
