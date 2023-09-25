@@ -46,4 +46,5 @@
   glo = log --oneline --graph -20
   lop = log --patch
   op = log --patch -1
-  
+[core]
+  editor = 'C:\\Program Files (x86)\\Notepad++\\notepad++.exe' -multiInst -notabbar -nosession -noPlugin
