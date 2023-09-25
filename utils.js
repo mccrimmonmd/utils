@@ -94,7 +94,7 @@ const deDup = (
   decider = (bestSoFar, candidate) => candidate
 ) => {
   return [...makeGroups(someList, identifier, true).values()]
-  .map(group => group.reduce(decider, group[0]))
+  .map(group => group.reduce(decider))
 }
 const findDupes = (someList, identifier = (item) => item) => {
   return [...makeGroups(someList, identifier, true).values()]
