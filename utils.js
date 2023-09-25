@@ -101,15 +101,15 @@ const findDupes = (someList, identifier = (item) => item) => {
   .filter(group => group.length > 1)
 }
 
-const diff = (a, b) => {
-  let left = Object.keys(a).reduce((diffs, key) => {
+const oneWayDiff = (a, b) => {
+  return Object.keys(a).reduce((diffs, key) => {
     if (a[key] !== b[key]) diffs[key] = a[key]
     return diffs
   }, {})
-  let right = Object.keys(b).reduce((diffs, key) => {
-    if (b[key] !== a[key]) diffs[key] = b[key]
-    return diffs
-  }, {})
+}
+const diff = (a, b) => {
+  let left = oneWayDiff(a, b)
+  let right = oneWayDiff(b, a)
   return { left, right }
 }
 const multiDiff = (listOfObjects) => {
