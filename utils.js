@@ -17,22 +17,30 @@ const print = (obj, depth=null) => {
   return obj
 }
 
-const isEmpty = (value) => {
+const isEmpty = (value, coerceStrings=['undefined', 'null']) => {
   if (value == null) return true
-  if (value.length != null && value.length === 0) return true
-  if (typeof value === 'object') {
-    return Object.keys(value).length === 0
+  if (typeof value === 'boolean') return false
+  if (typeof value === 'object' && Object.keys(value).length === 0) return true
+  if (typeof value === 'string' && coerceStrings &&
+      coerceStrings.includes(value.toLowerCase())) {
+    return true
   }
+  if (value.length === 0) return true
+  if (value.size === 0) return true
   return !value
 }
-const mergeObjects = (a, b, decider = (one, two) => one) => {
+const mergeObjects = (
+  a, b, 
+  decider = (one, two) => one, 
+  noValueStrings = ['undefined', 'null']
+) => {
   if (a == null || b == null) return a ?? b
   let primary = decider(a, b)
   let secondary = primary === a ? b : a
   let merged = { ...primary }
   Object.keys(secondary).forEach(key => {
     let val = secondary[key]
-    if (isEmpty(merged[key]) && !isEmpty(val)) {
+    if (isEmpty(merged[key], noValueStrings) && !isEmpty(val, noValueStrings)) {
       merged[key] = val
     }
   })
