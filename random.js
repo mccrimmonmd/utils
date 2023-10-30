@@ -11,11 +11,11 @@ const randDigitString = (length) => {
 }
 const randChoice = (arr) => arr[randInt(arr.length)]
 const shuffle = (arr) => {
-  for (let i = arr.length - 1; i > 0; i--) {
-    let place = randInt(i + 1)
-    let tmp = arr[place]
-    arr[place] = arr[i]
-    arr[i] = tmp
+  for (let swapTo = arr.length - 1; swapTo > 0; swapTo--) {
+    let swapFrom = randInt(swapTo + 1)
+    let swapped = arr[swapFrom]
+    arr[swapFrom] = arr[swapTo]
+    arr[swapTo] = swapped
   }
   return arr
 }
