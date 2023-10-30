@@ -17,14 +17,13 @@ const print = (obj, depth=null) => {
   return obj
 }
 
-const isEmpty = (value, coerceStrings=['undefined', 'null']) => {
+const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
+  if (alwaysEmpty.includes(value)) return true
+  if (neverEmpty.includes(value)) return false
+  
   if (value == null) return true
   if (typeof value === 'boolean') return false
   if (typeof value === 'object' && Object.keys(value).length === 0) return true
-  if (typeof value === 'string' && coerceStrings &&
-      coerceStrings.includes(value.toLowerCase())) {
-    return true
-  }
   if (value.length === 0) return true
   if (value.size === 0) return true
   return !value
@@ -32,7 +31,8 @@ const isEmpty = (value, coerceStrings=['undefined', 'null']) => {
 const mergeObjects = (
   a, b, 
   decider = (one, two) => one, 
-  noValueStrings = ['undefined', 'null']
+  alwaysEmpty = ['undefined', 'null'],
+  neverEmpty = [0]
 ) => {
   if (a == null || b == null) return a ?? b
   let primary = decider(a, b)
@@ -40,7 +40,8 @@ const mergeObjects = (
   let merged = { ...primary }
   Object.keys(secondary).forEach(key => {
     let val = secondary[key]
-    if (isEmpty(merged[key], noValueStrings) && !isEmpty(val, noValueStrings)) {
+    if ( isEmpty(merged[key], alwaysEmpty, neverEmpty) && 
+        !isEmpty(val, alwaysEmpty, neverEmpty)) {
       merged[key] = val
     }
   })
@@ -110,6 +111,9 @@ const findDupes = (someList, identifier = (item) => item) => {
 }
 
 const oneWayDiff = (a, b) => {
+  if (a === b) return {}
+  if (a == null) return b ?? {}
+  if (b == null) return a
   return Object.keys(a).reduce((diffs, key) => {
     if (a[key] !== b[key]) diffs[key] = a[key]
     return diffs
