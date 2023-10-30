@@ -49,10 +49,10 @@ const mergeObjects = (
 }
 
 const allValues = (listOfObjects, field) => {
-  let values = listOfObjects.reduce((results, obj) => {
-    results.add(obj[field])
-    return results
-  }, new Set())
+  let values = listOfObjects.reduce(
+    (results, obj) => results.add(obj[field]), 
+    new Set()
+  )
   return [...values]
 }
 
