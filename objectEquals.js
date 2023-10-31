@@ -54,30 +54,43 @@ module.exports = (
     if (Array.isArray(objA) !== Array.isArray(objB)) {
       return false
     }
+    
     let aKeys = Object.keys(objA)
     let bKeys = Object.keys(objB)
     if (aKeys.length !== bKeys.length) {
       return false
     }
+
+    // circular reference tracking
+    let wasComparedTo = Symbol.for('circularRefKey')
+    let aComps = objA[wasComparedTo]
+    let bComps = objB[wasComparedTo]
+    if (aComps && bComps && aComps.some(id => bComps.includes(id))) {
+      // if these objects have already been compared, we know they're
+      // equal up to this point
+      return true
+    }
+    else {
+      // otherwise, we have to follow the references
+      let comparisonId = Symbol()
+      objA[wasComparedTo] = aComps ? aComps.concat(comparisonId) : [comparisonId]
+      objB[wasComparedTo] = bComps ? bComps.concat(comparisonId) : [comparisonId]
+    }
+    
     aKeys.sort()
     bKeys.sort()
-    let hasBeenSeen = Symbol.for('circularRefKey')
-    let options = { compareFuncsWith, compareBigIntToNumber }
     return Object.entries(aKeys).every(([i, aKey]) => {
       if (aKey !== bKeys[i]) {
         return false
       }
       let aChild = objA[aKey]
       let bChild = objB[aKey]
-      let aSeen = aChild[hasBeenSeen]
-      let bSeen = bChild[hasBeenSeen]
-      if (aSeen && bSeen) {
-        return aSeen.some(id => bSeen.includes(id))
-      }
+      let aComps = aChild[wasComparedTo]
+      let bComps = bChild[wasComparedTo]
       let uid = Symbol()
-      aChild[hasBeenSeen] = aSeen ? aSeen.concat(uid) : [uid]
-      bChild[hasBeenSeen] = bSeen ? bSeen.concat(uid) : [uid]
-      return objEquals(aChild, bChild, options)
+      aChild[wasComparedTo] = aComps ? aComps.concat(uid) : [uid]
+      bChild[wasComparedTo] = bComps ? bComps.concat(uid) : [uid]
+      return objEquals(aChild, bChild, {compareFuncsWith, compareBigIntToNumber})
       // TODO: test on circularly-nested objects
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol
