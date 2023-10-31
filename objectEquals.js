@@ -62,7 +62,7 @@ module.exports = (
     aKeys.sort()
     bKeys.sort()
     let hasBeenSeen = Symbol.for('circularRefKey')
-    let options = { allFuncsEqual, compareBigIntToNumber }
+    let options = { compareFuncsWith, compareBigIntToNumber }
     return Object.entries(aKeys).every(([i, aKey]) => {
       if (aKey !== bKeys[i]) {
         return false
