@@ -11,24 +11,24 @@ module.exports = (
   }
   let typeOfA = typeof objA
   if (typeOfA !== typeof objB) {
-    if (compareBigIntToNumber) {
-      let typeOfB = typeof objB
-      try {
-        if (typeOfA === 'bigint' && typeOfB === 'number') {
-          return objA === BigInt(objB)
-        }
-        else if (typeOfA === 'number' && typeOfB === 'bigint') {
-          return BigInt(objA) === objB
-        }
-      } catch (err) {
-        if (err instanceof RangeError) {
-          return false
-        } else {
-          throw err
-        }
+    if (!compareBigIntToNumber) return false
+    let typeOfB = typeof objB
+    if (typeOfA !== 'bigint' && typeOfB !== 'bigint') return false
+    try {
+      if (typeOfA === 'number') {
+        return BigInt(objA) === objB
+      }
+      else if (typeOfB === 'number') {
+        return objA === BigInt(objB)
+      }
+      return false
+    } catch (err) {
+      if (err instanceof RangeError) {
+        return false
+      } else {
+        throw err
       }
     }
-    return false
   }
   if (typeOfA === 'number' && isNaN(objA)) {
     return isNaN(objB)
