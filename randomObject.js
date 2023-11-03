@@ -16,17 +16,19 @@ const getArr = (maxLength) => {
   }
   return arr
 }
-const getObj = (maxLength) => {
-  let obj = {}
+const getObj = (maxLength, isArray=coinFlip()) => {
+  let obj = isArray ? [] : {}
   for (let i = 0; i < randInt(maxLength) + 1; i++) {
-    obj[LETTERS[i]] = randChoice(GETTERS)(maxLength)
+    let index = isArray ? i : LETTERS[i]
+    let options = isArray ? GETTERS : GETTERS.concat(getObj)
+    obj[index] = randChoice(options)(maxLength)
   }
   return obj
 }
 const getFunc = () => ()=>{}
 
 const LETTERS = 'abcdefghijklmnopqrstuvwxyz'.split('')
-const GETTERS = [getNum, getString, getBool, getArr, getObj]
+const GETTERS = [getNum, getString, getBool]
 
 module.exports = ({
   baseLength=5, 
