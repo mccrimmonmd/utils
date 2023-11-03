@@ -100,7 +100,7 @@ const makeGroups = (someList, idFunc = (item) => item, strong = false) => {
 const deDup = (
   someList, 
   identifier = (item) => item, 
-  decider = (bestSoFar, candidate) => candidate
+  decider = (bestSoFar, candidate) => bestSoFar
 ) => {
   return [...makeGroups(someList, identifier, true).values()]
   .map(group => group.reduce(decider))
