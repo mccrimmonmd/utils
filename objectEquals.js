@@ -54,7 +54,6 @@ module.exports = (
     if (Array.isArray(objA) !== Array.isArray(objB)) {
       return false
     }
-    
     let aKeys = Object.keys(objA)
     let bKeys = Object.keys(objB)
     if (aKeys.length !== bKeys.length) {
@@ -66,8 +65,9 @@ module.exports = (
     let aComps = objA[wasComparedTo]
     let bComps = objB[wasComparedTo]
     if (aComps && bComps && aComps.some(id => bComps.includes(id))) {
-      // if these objects have already been compared, we know they're
-      // equal up to this point
+      // if these two objects have already been compared, then we know they
+      // either contain a circular reference, or their parent object contains a
+      // duplicate reference -- either way, they are equal at least to here.
       return true
     }
     else {
@@ -83,14 +83,7 @@ module.exports = (
       if (aKey !== bKeys[i]) {
         return false
       }
-      let aChild = objA[aKey]
-      let bChild = objB[aKey]
-      let aComps = aChild[wasComparedTo]
-      let bComps = bChild[wasComparedTo]
-      let uid = Symbol()
-      aChild[wasComparedTo] = aComps ? aComps.concat(uid) : [uid]
-      bChild[wasComparedTo] = bComps ? bComps.concat(uid) : [uid]
-      return objEquals(aChild, bChild, {compareFuncsWith, compareBigIntToNumber})
+      return objEquals(objA[aKey], objB[aKey], {compareFuncsWith, compareBigIntToNumber})
       // TODO: test on circularly-nested objects
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol
