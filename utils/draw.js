@@ -1,7 +1,7 @@
-const { arrayFrom, stringFrom } = require('./general')
+const { stringFrom } = require('./general')
 
 const draw = (picture) => {
-  console.log(picture.join('\n'))
+  console.log(Array.isArray(picture) ? picture.join('\n') : picture)
   return picture
 }
 const drawRow = (pictures, padding = 0) => draw(combinePics(pictures, padding))
@@ -27,7 +27,7 @@ const combinePics = (pictures, padding = 0) => {
 }
 
 const makeRectangular = (pic) => {
-  if (!Array.isArray(pic)) pic = pic.split('\n')
+  if (typeof pic === 'string') pic = pic.split('\n')
   if (pic == null || pic.length === 0) {
     return ['']
   }
