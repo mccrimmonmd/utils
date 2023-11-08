@@ -1,10 +1,10 @@
 const { arrayFrom, stringFrom } = require('./general')
 
-const drawRow = (pictures, padding = 0) => {
-  let lines = combinePics(pictures, padding)
-  console.log(lines.join('\n'))
-  return lines
+const draw = (picture) => {
+  console.log(picture.join('\n'))
+  return picture
 }
+const drawRow = (pictures, padding = 0) => draw(combinePics(pictures, padding))
 
 const combinePics = (pictures, padding = 0) => {
   pictures = pictures.map(makeRectangular)
@@ -40,6 +40,7 @@ const makeRectangular = (pic) => {
 }
 
 module.exports = {
+  draw,
   drawRow,
   combinePics,
   makeRectangular,
