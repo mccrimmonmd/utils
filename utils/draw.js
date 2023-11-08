@@ -33,7 +33,7 @@ const makeRectangular = (pic) => {
   }
   pic = pic.map(line => line == null ? '' : line)
   let maxLength = pic.reduce((len, line) => {
-    return len < line.length ? line.length : len,
+    return len < line.length ? line.length : len
   }, 0)
   return pic.map(line => line + stringFrom(maxLength - line.length, ' '))
 }
