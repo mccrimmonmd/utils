@@ -58,7 +58,7 @@ const findDupes = (someList, identifier = (item) => item) => {
 }
 
 const arrayFrom = (length, item) => Array.from({ length }, () => item)
-const stringFrom = (length, substr) => arrayFrom(length, substr).join('')
+const stringFrom = (length, snippet) => arrayFrom(length, snippet).join('')
 
 // Source: <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
 const arrayEquals = (a, b) =>
