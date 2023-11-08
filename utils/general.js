@@ -143,6 +143,9 @@ const multiDiff = (listOfObjects) => {
   return allDiffs
 }
 
+const arrayFrom = (length, item) => Array.from({ length }, () => item)
+const stringFrom = (length, character) => arrayFrom(length, character).join('')
+
 // Source: <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
 const arrayEquals = (a, b) =>
   a.length === b.length &&
@@ -151,8 +154,6 @@ const arrayEquals = (a, b) =>
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
 const multilineRegex = (parts, flags='') =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
-
-const random = require('./random')
 
 module.exports = {
   range,
@@ -168,7 +169,8 @@ module.exports = {
   oneWayDiff,
   diff,
   multiDiff,
+  arrayFrom,
+  stringFrom,
   arrayEquals,
   multilineRegex,
-  random,
-} // = require('./utils.js')
+}

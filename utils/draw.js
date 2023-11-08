@@ -1,5 +1,4 @@
-const arrayFrom = (length, item) => Array.from({ length }, () => item)
-const stringFrom = (length, character) => arrayFrom(length, character).join('')
+const { arrayFrom, stringFrom } = require('./general')
 
 const drawRow = (pictures, padding = 0) => {
   let lines = combinePics(pictures, padding)
@@ -38,4 +37,10 @@ const makeRectangular = (pic) => {
     0
   )
   return pic.map(line => line + stringFrom(maxLength - line.length, ' '))
+}
+
+module.exports = {
+  drawRow,
+  combinePics,
+  makeRectangular,
 }
