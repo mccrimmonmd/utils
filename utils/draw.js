@@ -2,7 +2,7 @@ const { arrayFrom, stringFrom } = require('./general')
 
 const drawRow = (pictures, padding = 0) => {
   let lines = combinePics(pictures, padding)
-  console.log(lines.join('\n')
+  console.log(lines.join('\n'))
   return lines
 }
 
