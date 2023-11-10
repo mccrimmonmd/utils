@@ -1,7 +1,7 @@
 const { stringFrom } = require('./general')
 
 const draw = (picture) => {
-  console.log(Array.isArray(picture) ? picture.join('\n') : picture)
+  console.log(typeof picture === 'string' ? picture : picture.join('\n'))
   return picture
 }
 const drawRow = (pictures, padding = 0) => draw(combinePics(pictures, padding))
@@ -31,7 +31,7 @@ const makeRectangular = (pic) => {
   if (pic == null || pic.length === 0) {
     return ['']
   }
-  pic = pic.map(line => line == null ? '' : line)
+  pic = pic.map(line => line ?? '')
   let maxLength = pic.reduce((len, line) => {
     return len < line.length ? line.length : len
   }, 0)
