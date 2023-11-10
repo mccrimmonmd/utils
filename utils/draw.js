@@ -1,4 +1,4 @@
-const { stringFrom } = require('./general')
+const { arrayFrom, stringFrom } = require('./general')
 
 const draw = (picture) => {
   console.log(typeof picture === 'string' ? picture : picture.join('\n'))
@@ -8,20 +8,20 @@ const drawRow = (pictures, padding = 0) => draw(combinePics(pictures, padding))
 
 const combinePics = (pictures, padding = 0) => {
   pictures = pictures.map(makeRectangular)
-  let lines = []
   let width = pictures.reduce((lineWidth, pic) => lineWidth + pic[0].length, 0)
   let height = Math.max(...pictures.map(pic => pic.length))
-  for (let i = 0; i < height; i++) {
-    let line = []
-    for (let j = 0; j < pictures.length; j++) {
-      let pic = pictures[j]
-      let str = pic.length < i + 1 ? stringFrom(pic[0].length, ' ') : pic[i]
-      line.push(str)
-      if (padding) line.push(stringFrom(padding, ' '))
+  let lines = arrayFrom(height, [])
+
+  pictures.forEach(pic => {
+    let i = 0
+    for (; i < pic.length; i++) {
+      lines[i].push(pic[i] + stringFrom(padding, ' '))
     }
-    lines.push(line.join(''))
-  }
-  return lines
+    for (; i < height; i++) {
+      lines[i].push(stringFrom(pic[0].length + padding, ' '))
+    }
+  })
+  return lines.map(line => line.join(''))
 }
 
 const makeRectangular = (picture) => {
