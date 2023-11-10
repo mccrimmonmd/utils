@@ -10,7 +10,8 @@ const randDigitString = (length) => {
   return digits.join('')
 }
 const randChoice = (arr) => arr[randInt(arr.length)]
-const shuffle = (arr) => {
+const shuffled = (arr) => {
+  arr = [...arr]
   for (let swapTo = arr.length - 1; swapTo > 0; swapTo--) {
     let swapFrom = randInt(swapTo + 1)
     let swapped = arr[swapFrom]
