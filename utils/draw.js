@@ -10,9 +10,7 @@ const combinePics = (pictures, padding = 0) => {
   pictures = pictures.map(makeRectangular)
   let lines = []
   let width = pictures.reduce((lineWidth, pic) => lineWidth + pic[0].length, 0)
-  let height = pictures.reduce((maxHeight, pic) => {
-    return maxHeight < pic.length ? pic.length : maxHeight
-  }, 0)
+  let height = Math.max(...pictures.map(pic => pic.length))
   for (let i = 0; i < height; i++) {
     let line = []
     for (let j = 0; j < pictures.length; j++) {
@@ -26,16 +24,14 @@ const combinePics = (pictures, padding = 0) => {
   return lines
 }
 
-const makeRectangular = (pic) => {
-  if (typeof pic === 'string') pic = pic.split('\n')
-  if (pic == null || pic.length === 0) {
+const makeRectangular = (picture) => {
+  if (typeof picture === 'string') picture = picture.split('\n')
+  if (picture == null || picture.length === 0) {
     return ['']
   }
-  pic = pic.map(line => line ?? '')
-  let maxLength = pic.reduce((len, line) => {
-    return len < line.length ? line.length : len
-  }, 0)
-  return pic.map(line => line + stringFrom(maxLength - line.length, ' '))
+  picture = picture.map(line => line ?? '')
+  let maxLength = Math.max(...picture.map(line => line.length))
+  return picture.map(line => line + stringFrom(maxLength - line.length, ' '))
 }
 
 module.exports = {
