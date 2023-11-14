@@ -28,6 +28,6 @@ module.exports = {
   randDigit,
   randDigitString,
   randChoice,
-  shuffle,
+  shuffled,
   coinFlip,
 }
