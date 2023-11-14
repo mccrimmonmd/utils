@@ -7,9 +7,14 @@ const draw = (picture) => {
 const drawRow = (pictures, padding = 0) => draw(combinePics(pictures, padding))
 
 const animate = (frames, interval = 1000) => {
+  let currentFrame = 0
   let intervalId = setInterval(() => {
-    if (frames.length === 0) clearInterval(intervalId)
-    drawRow(frames.shift())
+    if (currentFrame >= frames.length) {
+      clearInterval(intervalId)
+      return
+    }
+    drawRow(frames[currentFrame])
+    currentFrame += 1
   }, interval)
 }
 
