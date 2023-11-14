@@ -9,8 +9,10 @@ const drawRow = (pictures, padding = 0) => draw(combinePics(pictures, padding))
 const animate = (frames, interval = 1000) => {
   let currentFrame = 0
   let intervalId = setInterval(() => {
+    if (currentFrame === 0) console.log()
     if (currentFrame >= frames.length) {
       clearInterval(intervalId)
+      process.stdout.write('> ')
       return
     }
     drawRow(frames[currentFrame])
