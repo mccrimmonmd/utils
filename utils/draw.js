@@ -6,6 +6,13 @@ const draw = (picture) => {
 }
 const drawRow = (pictures, padding = 0) => draw(combinePics(pictures, padding))
 
+const animate = (frames, interval = 1000) => {
+  let intervalId = setInterval(() => {
+    if (frames.length === 0) clearInterval(intervalId)
+    drawRow(frames.shift())
+  }, interval)
+}
+
 const combinePics = (pictures, padding = 0) => {
   pictures = pictures.map(makeRectangular)
   let width = pictures.reduce((lineWidth, pic) => lineWidth + pic[0].length, 0)
@@ -37,6 +44,7 @@ const makeRectangular = (picture) => {
 module.exports = {
   draw,
   drawRow,
+  animate,
   combinePics,
   makeRectangular,
 }
