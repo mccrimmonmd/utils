@@ -23,10 +23,10 @@ const animate = (frames, interval = 1000) => {
 const combinePics = (pictures, padding = 0) => {
   if (typeof pictures === 'string') return pictures
   pictures = pictures.map(makeRectangular)
-  let width = pictures.reduce((lineWidth, pic) => lineWidth + pic[0].length, 0)
+  let width = pictures.reduce((lineWidth, pic) => lineWidth + pic[0].length)
   let height = Math.max(...pictures.map(pic => pic.length))
+  
   let lines = arrayFrom(height, [])
-
   pictures.forEach(pic => {
     let i = 0
     for (; i < pic.length; i++) {
