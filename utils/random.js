@@ -1,3 +1,4 @@
+const coinFlip = () => Math.random() < 0.5
 const randNum = (lessThan) => Math.random() * lessThan
 const randInt = (lessThan) => Math.floor(randNum(lessThan))
 const randDigit = () => randInt(10)
@@ -20,14 +21,13 @@ const shuffled = (arr) => {
   }
   return arr
 }
-const coinFlip = () => Math.random() < 0.5
 
 module.exports = {
+  coinFlip,
   randNum,
   randInt,
   randDigit,
   randDigitString,
   randChoice,
   shuffled,
-  coinFlip,
 }
