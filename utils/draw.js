@@ -6,18 +6,27 @@ const draw = (picture) => {
 }
 const drawRow = (pictures, padding = 0) => draw(combinePics(pictures, padding))
 
-const animate = (frames, interval = 1000) => {
+const animate = (frames, interval = 1000, moreAnimations = []) => {
   let currentFrame = 0
   let intervalId = setInterval(() => {
     if (currentFrame === 0) console.log()
     if (currentFrame >= frames.length) {
       clearInterval(intervalId)
-      process.stdout.write('> ')
-      return
+      if (moreAnimations.length) {
+        return animateInSequence(moreAnimations)
+      }
+      else {
+        return process.stdout.write('> ')
+      }
     }
     drawRow(frames[currentFrame])
     currentFrame += 1
   }, interval)
+}
+const animateInSequence(animations) => {
+  if (!animations?.length) return
+  let { frames, interval } = animations.shift()
+  animate(frames, interval, animations)
 }
 
 const combinePics = (pictures, padding = 0) => {
