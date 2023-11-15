@@ -12,6 +12,14 @@ const randDigitString = (length) => {
 }
 const randChoice = (arr) => arr[randInt(arr.length)]
 const shuffled = (arr) => {
+  // let result = []
+  // let unshuffled = Object.keys(arr)
+  // for (item of arr) {
+    // let grab = randChoice(Object.keys(unshuffled))
+    // result.push(arr[grab])
+    // delete unshuffled[grab]
+  // }
+  // return result
   arr = [...arr]
   for (let swapTo = arr.length - 1; swapTo > 0; swapTo--) {
     let swapFrom = randInt(swapTo + 1)
