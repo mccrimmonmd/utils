@@ -1,4 +1,4 @@
-const { arrayFrom, stringFrom } = require('./general')
+const { arrayOf, stringOf } = require('./general')
 
 const draw = (picture) => {
   console.log(typeof picture === 'string' ? picture : picture.join('\n'))
@@ -26,14 +26,14 @@ const combinePics = (pictures, padding = 0) => {
   let width = pictures.reduce((lineWidth, pic) => lineWidth + pic[0].length)
   let height = Math.max(...pictures.map(pic => pic.length))
   
-  let lines = arrayFrom(height, [])
+  let lines = arrayOf(height, [])
   pictures.forEach(pic => {
     let i = 0
     for (; i < pic.length; i++) {
-      lines[i].push(pic[i] + stringFrom(padding, ' '))
+      lines[i].push(pic[i] + stringOf(padding, ' '))
     }
     for (; i < height; i++) {
-      lines[i].push(stringFrom(pic[0].length + padding, ' '))
+      lines[i].push(stringOf(pic[0].length + padding, ' '))
     }
   })
   return lines.map(line => line.join(''))
@@ -46,7 +46,7 @@ const makeRectangular = (picture) => {
   }
   picture = picture.map(line => line ?? '')
   let maxLength = Math.max(...picture.map(line => line.length))
-  return picture.map(line => line + stringFrom(maxLength - line.length, ' '))
+  return picture.map(line => line + stringOf(maxLength - line.length, ' '))
 }
 
 module.exports = {
