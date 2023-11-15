@@ -58,8 +58,8 @@ const findDupes = (someList, identifier = (item) => item) => {
   .filter(group => group.length > 1)
 }
 
-const arrayOf = (length, item) => Array.from({ length }, () => {
-  if (typeof item === 'function') return item()
+const arrayOf = (length, item) => Array.from({ length }, (v, i) => {
+  if (typeof item === 'function') return item(v, i)
   else if (typeof item !== 'object' || item === null) return item
   else return structuredClone(item)
 })
