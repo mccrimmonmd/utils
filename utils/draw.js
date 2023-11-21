@@ -23,7 +23,7 @@ const animate = (frames, interval = 1000, moreAnimations = []) => {
     currentFrame += 1
   }, interval)
 }
-const animateInSequence(animations) => {
+const animateInSequence = (animations) => {
   if (!animations?.length) return
   let { frames, interval } = animations.shift()
   animate(frames, interval, animations)
