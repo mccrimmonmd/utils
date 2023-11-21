@@ -15,9 +15,9 @@ const shuffled = (arr) => {
   // let result = []
   // let unshuffled = Object.keys(arr)
   // for (item of arr) {
-    // let grab = randChoice(Object.keys(unshuffled))
-    // result.push(arr[grab])
-    // delete unshuffled[grab]
+    // let pick = randChoice(Object.keys(unshuffled))
+    // result.push(arr[pick])
+    // delete unshuffled[pick]
   // }
   // return result
   arr = [...arr]
