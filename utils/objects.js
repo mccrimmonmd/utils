@@ -55,8 +55,7 @@ const filterKeys = (obj, filter, includeOnMatch=true) => {
 
 const oneWayDiff = (a, b) => {
   if (a === b) return {}
-  if (a == null) return b ?? {}
-  if (b == null) return a
+  if (a == null || b == null) return a ?? b ?? {}
   return Object.keys(a).reduce((diffs, key) => {
     if (a[key] !== b[key]) diffs[key] = a[key]
     return diffs
@@ -73,13 +72,12 @@ const multiDiff = (listOfObjects) => {
   listOfObjects.reduce((a, b, i) => {
     let { left, right } = diff(a, b)
     if (Object.keys(left).length || Object.keys(right).length) {
-      let newDiffs = {
+      allDiffs.push({
         left,
         leftIndex: i - 1,
         right,
         rightIndex: i,
-      }
-      allDiffs.push(newDiffs)
+      })
     }
     return b
   })
