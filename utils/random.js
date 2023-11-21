@@ -12,14 +12,6 @@ const randDigitString = (length) => {
 }
 const randChoice = (arr) => arr[randInt(arr.length)]
 const shuffled = (arr) => {
-  // let result = []
-  // let unshuffled = Object.keys(arr)
-  // for (item of arr) {
-    // let pick = randChoice(Object.keys(unshuffled))
-    // result.push(arr[pick])
-    // delete unshuffled[pick]
-  // }
-  // return result
   arr = [...arr]
   for (let swapTo = arr.length - 1; swapTo > 0; swapTo--) {
     let swapFrom = randInt(swapTo + 1)
@@ -28,6 +20,17 @@ const shuffled = (arr) => {
     arr[swapTo] = swapped
   }
   return arr
+  // Alternate implementation - may be slower? (Arguably more intuitive)
+  // let newOrder = []
+  // let unshuffled = Object.keys(arr)
+  // let pickFrom = Object.keys(unshuffled)
+  // while (pickFrom.length) {
+    // let pick = randChoice(pickFrom)
+    // newOrder.push(arr[pick])
+    // delete unshuffled[pick]
+    // pickFrom = Object.keys(unshuffled)
+  // }
+  // return newOrder
 }
 
 module.exports = {
