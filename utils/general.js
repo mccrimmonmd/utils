@@ -46,8 +46,10 @@ const makeGroups = (someList, idFunc = (item) => item, strong = false) => {
   return groups
 }
 const mapToObject = (someMap) => {
-  return [...someMap.entries()]
-  .reduce((groups, group) => groups[group[0]] = group[1], {})
+  return [...someMap.entries()].reduce((groups, group) => {
+    groups[group[0]] = group[1]
+    return groups
+  }, {})
 }
 const deDup = (
   someList, 
