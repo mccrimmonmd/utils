@@ -1,3 +1,6 @@
+const fs = require('fs')
+const path = require('path')
+
 const { isEmpty } = require('./general')
 
 const merge = (
@@ -84,6 +87,53 @@ const multiDiff = (listOfObjects) => {
   return allDiffs
 }
 
+const extractNested = (obj) => {
+  let flat = {}
+  let nested = {}
+  Object.entries(obj).forEach(([key, value]) => {
+    if (value != null && typeof value === 'object') {
+      nested[key] = value
+    }
+    else {
+      flat[key] = value
+    }
+  })
+  return [flat, nested]
+}
+
+const escapeCsvEntry = (entry) => {
+  entry = String(entry)
+  return entry.includes(',') || entry.includes('"') || entry.includes('\n')
+    ? `"${entry.replaceAll('"', '""')}"`
+    : entry
+}
+const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
+  let header = ''
+  let body = []
+  if (listOfObjects.length !== 0) {
+    let uniqueKeys = listOfObjects.reduce((allKeys, obj) => {
+      Object.keys(obj).forEach(key => allKeys.add(key))
+      return allKeys
+    }, new Set())
+    header = [...uniqueKeys].map(escapeCsvEntry).join(',')
+
+    listOfObjects.forEach(obj => {
+      body.push(headers.map(key => escapeCsvEntry(obj[key] ?? '')).join(','))
+    })
+  }
+  else {
+    console.warn(`No data! ${fileName} will be empty.`)
+  }
+  let output = [header, ...body]
+  try {
+    fs.writeFileSync(path.join(filePath, fileName), output.join('\n'))
+  }
+  catch (err) {
+    console.log(`Error writing data to csv file: ${err}`)
+  }
+  return output
+}
+
 module.exports = {
   merge,
   allValues,
@@ -92,4 +142,7 @@ module.exports = {
   oneWayDiff,
   diff,
   multiDiff,
+  extractNested,
+  escapeCsvEntry,
+  toCsv,
 }
