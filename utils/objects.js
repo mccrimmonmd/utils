@@ -112,9 +112,8 @@ const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
     console.warn(`No data! '${fileName}' will be empty.`)
   }
   else {
-    let uniqueKeys = new Set(listOfObjects.reduce(
-      (allKeys, obj) => allKeys.concat(Object.keys(obj)), []
-    )
+    let allKeys = [].concat(...listOfObjects.map(Object.keys))
+    let uniqueKeys = new Set(allKeys)
     header = [...uniqueKeys]
     listOfObjects.forEach(obj => {
       body.push(header.map(key => escapeCsvEntry(obj[key] ?? '')).join(','))
