@@ -103,9 +103,7 @@ const extractNested = (obj) => {
 
 const escapeCsvEntry = (entry) => {
   entry = String(entry)
-  return entry.includes(',') || entry.includes('"') || entry.includes('\n')
-    ? `"${entry.replaceAll('"', '""')}"`
-    : entry
+  return /,|\n|"/.test(entry) ? `"${entry.replaceAll('"', '""')}"` : entry
 }
 const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
   let header = ''
