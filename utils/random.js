@@ -5,7 +5,7 @@ const randDigit = () => randInt(10)
 const randDigitString = (length) => {
   let digits = []
   while (length > 0) {
-    digits.push(randInt())
+    digits.push(randDigit())
     length -= 1
   }
   return digits.join('')
