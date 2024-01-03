@@ -106,7 +106,7 @@ const escapeCsvEntry = (entry) => {
   return /,|\n|"/.test(entry) ? `"${entry.replaceAll('"', '""')}"` : entry
 }
 const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
-  let header = ''
+  let header = []
   let body = []
   if (listOfObjects.length === 0) {
     console.warn(`No data! '${fileName}' will be empty.`)
@@ -115,12 +115,12 @@ const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
     let uniqueKeys = new Set(listOfObjects.reduce(
       (allKeys, obj) => allKeys.concat(Object.keys(obj)), []
     )
-    header = [...uniqueKeys].map(escapeCsvEntry).join(',')
+    header = [...uniqueKeys]
     listOfObjects.forEach(obj => {
-      body.push(headers.map(key => escapeCsvEntry(obj[key] ?? '')).join(','))
+      body.push(header.map(key => escapeCsvEntry(obj[key] ?? '')).join(','))
     })
   }
-  let output = [header, ...body]
+  let output = [header.map(escapeCsvEntry).join(','), ...body]
   try {
     fs.writeFileSync(path.join(filePath, fileName), output.join('\n'))
   }
