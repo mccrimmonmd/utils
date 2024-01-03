@@ -20,17 +20,16 @@ const shuffled = (arr) => {
     arr[swapTo] = swapped
   }
   return arr
-  // Alternate implementation - may be slower? (Arguably more intuitive)
-  // let newOrder = []
-  // let unshuffled = Object.keys(arr)
-  // let pickFrom = Object.keys(unshuffled)
-  // while (pickFrom.length) {
-    // let pick = randChoice(pickFrom)
-    // newOrder.push(arr[pick])
-    // delete unshuffled[pick]
-    // pickFrom = Object.keys(unshuffled)
+  // Alternate implementation - slower, but more intuitive
+  // let pickACard = Object.keys(arr)
+  // let newArr = []
+  // while (pickACard.length) {
+    // let anyCard = randInt(pickACard.length)
+    // let pick = pickACard[anyCard]
+    // newArr.push(arr[pick])
+    // pickACard.splice(anyCard, 1)
   // }
-  // return newOrder
+  // return newArr
 }
 
 module.exports = {
