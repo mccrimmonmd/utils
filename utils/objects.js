@@ -98,7 +98,7 @@ const extractNested = (obj) => {
       flat[key] = value
     }
   })
-  return [flat, nested]
+  return { flat, nested }
 }
 
 const escapeCsvEntry = (entry) => {
