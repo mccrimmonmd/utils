@@ -116,7 +116,6 @@ const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
       (allKeys, obj) => allKeys.concat(Object.keys(obj)), []
     )
     header = [...uniqueKeys].map(escapeCsvEntry).join(',')
-
     listOfObjects.forEach(obj => {
       body.push(headers.map(key => escapeCsvEntry(obj[key] ?? '')).join(','))
     })
@@ -126,7 +125,7 @@ const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
     fs.writeFileSync(path.join(filePath, fileName), output.join('\n'))
   }
   catch (err) {
-    console.log(`Error writing data to csv file: ${err}`)
+    console.log(`Error writing data to '${fileName}': ${err}`)
   }
   return output
 }
