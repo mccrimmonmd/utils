@@ -27,7 +27,7 @@ const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
   if (value.length != null) return value.length === 0
   if (value.size != null) return value.length === 0
   if (typeof value === 'object' && Object.keys(value).length === 0) return true
-  // ^ Doesn't work on Sets, Maps, etc.
+  // ^ Gives false negative on Sets, Maps, etc.
   // (covered by length & size checks, but are there others?)
   return !value
 }
