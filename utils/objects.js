@@ -115,9 +115,9 @@ const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
     let allKeys = [].concat(...listOfObjects.map(Object.keys))
     let uniqueKeys = new Set(allKeys)
     header = [...uniqueKeys]
-    listOfObjects.forEach(obj => {
-      body.push(header.map(key => escapeCsvEntry(obj[key] ?? '')).join(','))
-    })
+    listOfObjects.forEach(obj => body.push(
+      header.map(key => escapeCsvEntry(obj[key] ?? '')).join(',')
+    ))
   }
   let output = [header.map(escapeCsvEntry).join(','), ...body]
   try {
