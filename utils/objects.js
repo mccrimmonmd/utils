@@ -125,6 +125,7 @@ const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
   }
   catch (err) {
     console.log(`Error writing data to '${fileName}': ${err}`)
+    console.debug('Attempted output:\n', output)
   }
   return output
 }
