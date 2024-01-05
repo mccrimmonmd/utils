@@ -44,14 +44,22 @@ const allKeys = (listOfObjects, regex=/(?:)/) => {
   return [...keys]
 }
 
-const filterKeys = (obj, filter, includeOnMatch=true) => {
+const filterObject = (
+  obj,
+  filter,
+  {
+    filterOn = 'keys',
+    includeOnMatch = true
+  } = {}
+) => {
   if (obj == null) return obj
   const passesFilter = Array.isArray(filter)
     ? (value) => filter.includes(value) === includeOnMatch
     : (value) => filter.test(value) === includeOnMatch
   let filtered = {}
-  Object.keys(obj).forEach(key => {
-    if (passesFilter(key)) filtered[key] = obj[key]
+  Object.entries(obj).forEach((key, value) => {
+    let candidate = filterOn === 'keys' ? key : value
+    if (passesFilter(candidate)) filtered[key] = obj[key]
   })
   return filtered
 }
@@ -137,7 +145,15 @@ module.exports = {
   merge,
   allValues,
   allKeys,
-  filterKeys,
+  filter: {
+    object: filterObject,
+    byKeys: (obj, filter) => filterObject(obj, filter),
+    byValues: (obj, filter) => filterObject(obj, filter, { filterOn: 'values' }),
+    excludeKeys: (obj, filter) =>
+      filterObject(obj, filter, { includeOnMatch: false }),
+    excludeValues: (obj, filter) =>
+      filterObject(obj, filter, { filterOn: 'values', includeOnMatch: false }),
+  },
   oneWayDiff,
   diff,
   multiDiff,
