@@ -47,12 +47,6 @@ const makeGroups = (someList, idFunc = (item) => item, strong = false) => {
   })
   return groups
 }
-const mapToObject = (someMap) => {
-  return [...someMap.entries()].reduce((groups, [name, group]) => {
-    groups[name] = group
-    return groups
-  }, {})
-}
 const deDup = (
   someList, 
   identifier = (item) => item, 
@@ -88,7 +82,6 @@ module.exports = {
   print,
   isEmpty,
   makeGroups,
-  mapToObject,
   deDup,
   findDupes,
   arrayOf,
