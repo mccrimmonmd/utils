@@ -57,7 +57,7 @@ const filterObject = (
     ? (value) => filter.includes(value) === includeOnMatch
     : (value) => filter.test(value) === includeOnMatch
   let filtered = {}
-  Object.entries(obj).forEach((key, value) => {
+  Object.entries(obj).forEach(([key, value]) => {
     let candidate = filterOn === 'keys' ? key : value
     if (passesFilter(candidate)) filtered[key] = obj[key]
   })
