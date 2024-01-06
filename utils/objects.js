@@ -113,11 +113,9 @@ const escapeCsvEntry = (entry) => {
   entry = String(entry)
   return /,|\n|"/.test(entry) ? `"${entry.replaceAll('"', '""')}"` : entry
 }
-const makeLine = (header, obj=false) => {
-  return header.map(key =>
-    escapeCsvEntry((obj ? obj[key] : key) ?? '')
-  ).join(',')
-}
+const makeLine = (header, obj=false) =>
+  header.map(key => escapeCsvEntry((obj ? obj[key] : key) ?? ''))
+  .join(',')
 const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
   let header = []
   let body = []
