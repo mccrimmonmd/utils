@@ -4,9 +4,9 @@ const draw = (picture) => {
   console.log(typeof picture === 'string' ? picture : picture.join('\n'))
   return picture
 }
-const drawRow = (pictures, padding = 0) => draw(combinePics(pictures, padding))
+const drawRow = (pictures, padding=0) => draw(combinePics(pictures, padding))
 
-const animate = (frames, interval = 1000, moreAnimations = []) => {
+const animate = (frames, interval=1000, moreAnimations=[]) => {
   let currentFrame = 0
   let intervalId = setInterval(() => {
     if (currentFrame === 0) console.log()
@@ -29,7 +29,7 @@ const animateInSequence = (animations) => {
   animate(frames, interval, animations)
 }
 
-const combinePics = (pictures, padding = 0) => {
+const combinePics = (pictures, padding=0) => {
   if (typeof pictures === 'string') return pictures
   pictures = pictures.map(makeRectangular)
   let width = pictures.reduce((lineWidth, pic) => lineWidth + pic[0].length)
