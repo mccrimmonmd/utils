@@ -13,9 +13,9 @@ const merge = (
   let primary = decider(a, b)
   let secondary = primary === a ? b : a
   let merged = { ...primary }
+  let options = [alwaysEmpty, neverEmpty]
   Object.entries(secondary).forEach(([key, val]) => {
-    if ( isEmpty(merged[key], alwaysEmpty, neverEmpty) && 
-        !isEmpty(val, alwaysEmpty, neverEmpty)) {
+    if (isEmpty(merged[key], ...options) && !isEmpty(val, ...options)) {
       merged[key] = val
     }
   })

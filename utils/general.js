@@ -29,7 +29,7 @@ const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
   if (typeof value === 'object' && Object.keys(value).length === 0) return true
   // ^ Gives false positive on Sets, Maps, etc.
   // (covered by length & size checks, but are there others?)
-  // (maybe test for iterability instead?)
+  // (maybe test for iterability?)
   return !value
 }
 
