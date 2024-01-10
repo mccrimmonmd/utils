@@ -110,11 +110,11 @@ const extractNested = (obj) => {
 }
 
 const escapeCsvEntry = (entry) => {
-  entry = String(entry)
+  entry = String(entry ?? '')
   return /,|\n|"/.test(entry) ? `"${entry.replaceAll('"', '""')}"` : entry
 }
 const makeLine = (header, obj=false) =>
-  header.map(key => escapeCsvEntry((obj ? obj[key] : key) ?? ''))
+  header.map(key => escapeCsvEntry(obj ? obj[key] : key))
   .join(',')
 const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
   let header = []
