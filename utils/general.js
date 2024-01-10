@@ -66,8 +66,11 @@ const arrayOf = (length, item) => Array.from({ length }, (v, i) => {
   else if (typeof item === 'object') return structuredClone(item)
   else return item
 })
-const stringOf = (n, snippet=' ', joinWith='') =>
-  arrayOf(n, String(snippet)).join(joinWith)
+const stringOf = (n, snippet=' ', joinWith='') => {
+  return joinWith
+    ? arrayOf(n, String(snippet)).join(joinWith)
+    : String(snippet).repeat(n)
+}
 
 // Source: <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
 const arrayEquals = (a, b) =>
