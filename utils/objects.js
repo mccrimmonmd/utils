@@ -63,9 +63,11 @@ const filterObject = (
 }
 
 const oneWayDiff = (a, b) => {
-  let [diffs, sames] = [{}, {}]
-  if (a === b) sames = { ...a }
-  else if (a == null || b == null) diffs = { ...a } ?? { ...b } ?? {}
+  let diffs
+  let sames
+  if (a === b) [diffs, sames] = [{}, { ...a }]
+  else if (a == null) [diffs, sames] = [{ ...b }, {}]
+  else if (b == null) [diffs, sames] = [{ ...a }, {}]
   else {
     [diffs, sames] = Object.entries(a).reduce(([diff, same], [key, val]) => {
       if (b[key] === val) same[key] = val
@@ -83,7 +85,14 @@ const biDiff = (a, b) => {
   let right = oneWayDiff(b, a).diffs
   return { left, right }
 }
-// TODO: make results true union/intersection/symmetric difference
+const intersection = (listOfObjects) => {
+  if (listOfObjects == null || !listOfObjects.length) return {}
+  return listOfObjects.reduce((shared, obj) =>
+    oneWayDiff(shared, obj).sames
+  )
+}
+// TODO: ~~make results true union/intersection/symmetric difference~~ figure
+// out what the heck 'multiDiff' even means; why does anyone need this function?
 const multiDiff = (listOfObjects) => {
   if (listOfObjects.length <= 1) return []
   let allDiffs = []
