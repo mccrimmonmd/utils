@@ -33,6 +33,8 @@ const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
   return !value
 }
 
+const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
+
 const makeGroups = (someList, idFunc=(item) => item, strong=false) => {
   let identifier = strong
     ? idFunc
