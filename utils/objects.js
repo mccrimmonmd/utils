@@ -35,9 +35,7 @@ const allKeys = (listOfObjects, regex=/(?:)/) => {
   let keys = listOfObjects.reduce((results, obj) => {
     if (obj == null) return results
     Object.keys(obj).forEach(key => {
-      if (regex.test(key)) {
-        results.add(key)
-      }
+      if (regex.test(key)) results.add(key)
     })
     return results
   }, new Set())
