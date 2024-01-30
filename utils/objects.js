@@ -65,23 +65,32 @@ const filterObject = (
 }
 
 const oneWayDiff = (a, b) => {
-  if (a === b) return {}
-  if (a == null || b == null) return a ?? b ?? {}
-  return Object.keys(a).reduce((diffs, key) => {
-    if (a[key] !== b[key]) diffs[key] = a[key]
-    return diffs
-  }, {})
+  let [diffs, sames] = [{}, {}]
+  if (a === b) sames = { ...a }
+  else if (a == null || b == null) diffs = { ...a } ?? { ...b } ?? {}
+  else {
+    [diffs, sames] = Object.entries(a).reduce(([diff, same], [key, val]) => {
+      if (b[key] === val) same[key] = val
+      else diff[key] = val
+      return [diff, same]
+    }, [{}, {}])
+  }
+  return {
+    diffs,
+    sames,
+  }
 }
-const diff = (a, b) => {
-  let left = oneWayDiff(a, b)
-  let right = oneWayDiff(b, a)
+const biDiff = (a, b) => {
+  let left = oneWayDiff(a, b).diffs
+  let right = oneWayDiff(b, a).diffs
   return { left, right }
 }
+// TODO: make results true union/intersection/symmetric difference
 const multiDiff = (listOfObjects) => {
   if (listOfObjects.length <= 1) return []
   let allDiffs = []
   listOfObjects.reduce((a, b, i) => {
-    let { left, right } = diff(a, b)
+    let { left, right } = biDiff(a, b)
     if (Object.keys(left).length || Object.keys(right).length) {
       allDiffs.push({
         left,
@@ -134,7 +143,13 @@ const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
   }
   catch (err) {
     console.log(`Error writing data to '${fileName}': ${err}`)
-    console.debug('Attempted output:\n', output)
+    let extra = output.length - 100
+    let elided = ''
+    if (extra > 0) {
+      output = output.slice(0, 100)
+      elided = `... ${extra} more items`
+    }
+    console.debug('Attempted output:\n', output, elided)
   }
   return output
 }
@@ -153,7 +168,7 @@ module.exports = {
       filterObject(obj, filter, { filterOn: 'values', includeOnMatch: false }),
   },
   oneWayDiff,
-  diff,
+  diff: biDiff,
   multiDiff,
   extractNested,
   escapeCsvEntry,
