@@ -15,6 +15,10 @@ db.getCollection('slingmetrics.CMW')
 db.getCollection('locations')
   .find({name: /Meridian/})
 
+// search for records with non-null values
+db.getCollection('interfaces')
+  .find({circuitId: {$ne: null}})
+
 // search with logic conditions; count number of results
 db.getCollection('logViewer.log')
   .find({level: {$ne: 'error'}, appName: {$ne: 'slingmetrics'}})
@@ -53,3 +57,16 @@ db.getCollection('interfaces').find({_id:
     ObjectId("608a678be44894ccba33265b")
   ]}
 })
+
+// search for objects with duplicate fields ($date, in this case)
+db.getCollection('slingmetrics.CMW')
+  .aggregate([
+    {"$group" : { 
+        "_id": "$date", 
+        "count": { "$sum": 1 }, 
+        "ID": { $push: "$_id" }
+      }
+    },
+    {"$match": {"_id" :{ "$ne" : null } , "count" : {"$gt": 1} } }
+  ])
+//  .toArray().reduce((ids, doc) => ids.concat(doc.ID), [])

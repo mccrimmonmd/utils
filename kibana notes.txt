@@ -1,3 +1,5 @@
+<cluster URL>/_cat/indices?v=true
+
 GET /sev_incidents/_search
 {
   "query": {
@@ -17,13 +19,20 @@ POST /calls_dish_metrics/_forcemerge?only_expunge_deletes=true
 
 GET /sev_bridges/_search
 
-POST sev_bridges/object/1/_update
+POST sev_bridges/_doc/1/_update
 {
   "doc": {
     "in_use" : false,
     "status": "",
     "incident" : "",
     "sev" : ""
+  }
+}
+
+POST sev_incidents/_doc/xxxxxxxx/_update
+{
+  "doc": {
+    "number": "INC1396824"
   }
 }
 
@@ -78,3 +87,44 @@ GET /sev_companies/_delete_by_query
   }
 }
 
+GET /sev_incidents/_search
+{
+  "size": 65,
+  "sort": [
+    {
+      "creation_timestamp": {
+        "order": "desc"
+      }
+    }
+  ],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "range": {
+            "creation_timestamp": {
+              "gte": "2023-04-01T00:00:00.000Z",
+              "lte": "2023-05-01T00:00:00.000Z",
+              "format": "date_time"
+            }
+          }
+        },
+        {
+          "nested": {
+            "path": "update",
+            "query": {
+              "bool": {
+                "should": [
+                  { "match_phrase": { "update.level": "SEV 2" } },
+                  { "match_phrase": { "update.level": "SEV 1" } },
+                  { "match_phrase": { "update.level": "High" } },
+                  { "match_phrase": { "update.level": "Medium" } }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
