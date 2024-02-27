@@ -23,7 +23,7 @@
 - I or Right Arrow: Move to the pane on the right.
 - J or Down Arrow: Move to the pane below.
 - K or Up Arrow: Move to the pane above.
-- Q: Briefly show pane numbers.
+- Q: Briefly show pane numbers[, then move to the number specified].
 - O: Move through panes in order. Each press takes you to the next, until you loop through all of them.
 - }: Swap the position of the current pane with the next.
 - {: Swap the position of the current pane with the previous.
