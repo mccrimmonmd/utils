@@ -22,7 +22,6 @@ db.getCollection('interfaces')
 // search with logic conditions; count number of results
 db.getCollection('logViewer.log')
   .find({level: {$ne: 'error'}, appName: {$ne: 'slingmetrics'}})
-  .sort({createdAt: -1})
   .count()
 
 // middleware query for loading paged data
@@ -57,6 +56,10 @@ db.getCollection('interfaces').find({_id:
     ObjectId("608a678be44894ccba33265b")
   ]}
 })
+
+// list of all distinct values for a given field
+db.getCollection('cyclone.certs')
+  .distinct('status')
 
 // search for objects with duplicate fields ($date, in this case)
 db.getCollection('slingmetrics.CMW')
