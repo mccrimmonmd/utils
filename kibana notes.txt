@@ -123,8 +123,16 @@ GET /sev_incidents/_search
               }
             }
           }
+        },
+        {
+          "exists": {
+            "field": "affected_apps"
+          }
         }
-      ]
+      ],
+      "must_not": {
+        "match_phrase": { "company": "Dish" }
+      }
     }
   }
 }
