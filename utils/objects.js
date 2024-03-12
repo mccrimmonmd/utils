@@ -57,7 +57,7 @@ const filterObject = (
   let filtered = {}
   Object.entries(obj).forEach(([key, value]) => {
     let candidate = filterOn === 'keys' ? key : value
-    if (passesFilter(candidate)) filtered[key] = obj[key]
+    if (passesFilter(candidate)) filtered[key] = value
   })
   return filtered
 }
