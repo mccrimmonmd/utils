@@ -18,6 +18,13 @@ const print = (obj, depth=null) => {
   return obj
 }
 
+const roundDecimal = (value, places=2) => {
+  if (typeof value !== 'number') return value
+  if (Number.isInteger(value)) return value
+  let magnitude = 10 ** places
+  return Math.floor(value * magnitude) / magnitude
+}
+
 const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
   if (alwaysEmpty.includes(value)) return true
   if (neverEmpty.includes(value)) return false
