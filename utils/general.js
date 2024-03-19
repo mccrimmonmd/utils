@@ -13,9 +13,9 @@ const range = function* (start=0, stop, step=1) {
   }
 }
 
-const print = (obj, depth=null) => {
+const print = (obj, depth=null, repl=false) => {
   console.dir(obj, { depth })
-  return obj
+  return repl ? undefined : obj
 }
 
 const roundDecimal = (value, places=2) => {
