@@ -13,6 +13,13 @@ const range = function* (start=0, stop, step=1) {
   }
 }
 
+const ifFunc = (condition, onTrue, onFalse=() => null) => {
+  let forceTrue = (thingy) => thingy || true
+  let result
+  ;( condition && forceTrue(result = onTrue()) ) || ( result = onFalse() )
+  return result
+}
+
 const print = (obj, depth=null, repl=false) => {
   console.dir(obj, { depth })
   return repl ? undefined : obj
