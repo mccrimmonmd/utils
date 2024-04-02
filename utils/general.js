@@ -50,12 +50,14 @@ const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
 const makeGroups = (someList, idFunc=(item) => item, strong=false) => {
-  let identifier = strong
-    ? idFunc
-    : (item) => {
-      let id = idFunc(item)
-      return typeof id === 'symbol' ? id : String(id)
-    }
+  let cache = new Map()
+  let identifier = (item) => {
+    if (cache.has(item)) return cache.get(item)
+    let id = idFunc(item)
+    id = (strong || typeof id === 'symbol') ? id : String(id)
+    cache.set(item, id)
+    return id
+  }
   let groups = new Map()
   someList.forEach(item => {
     let id = identifier(item)
