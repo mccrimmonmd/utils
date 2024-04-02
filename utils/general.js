@@ -99,7 +99,9 @@ const multilineRegex = (parts, flags='') =>
 
 module.exports = {
   range,
+  ifFunc,
   print,
+  roundDecimal,
   isEmpty,
   makeGroups,
   deDup,
