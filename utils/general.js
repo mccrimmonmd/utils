@@ -29,7 +29,7 @@ const roundDecimal = (value, places=2) => {
   if (typeof value !== 'number') return value
   if (Number.isInteger(value)) return value
   let magnitude = 10 ** places
-  return Math.floor(value * magnitude) / magnitude
+  return Math.trunc(value * magnitude) / magnitude
 }
 
 const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
