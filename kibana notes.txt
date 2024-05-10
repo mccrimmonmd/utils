@@ -36,6 +36,11 @@ POST sev_incidents/_doc/xxxxxxxx/_update
   }
 }
 
+POST sev_incidents/_doc/xxxxxxxx/_update
+{
+  "script": "ctx._source.remove('unwanted_field')"
+}
+
 GET /logs/_search
 {
   "from" : 0, "size" : 50,
