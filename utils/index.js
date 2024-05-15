@@ -1,11 +1,11 @@
 const random = require('./random')
-const draw = require('./draw')
+const drawing = require('./drawing')
 const objects = require('./objects')
 const general = require('./general')
 
 module.exports = {
   ...general,
   random,
-  draw,
+  drawing,
   objects,
 } // = require('./utils')
