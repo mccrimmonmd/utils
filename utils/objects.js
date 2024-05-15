@@ -4,14 +4,16 @@ const path = require('path')
 const { isEmpty } = require('./general')
 
 const merge = (
-  a, b, 
-  decider = (one, two) => one, 
-  alwaysEmpty = ['undefined', 'null'],
-  neverEmpty = [0]
+  a, b,
+  {
+    decider = (one, two) => one, 
+    alwaysEmpty = ['undefined', 'null'],
+    neverEmpty = [0],
+  } = {}
 ) => {
-  if (a == null || b == null) return a ?? b
   let primary = decider(a, b)
   let secondary = primary === a ? b : a
+  if (primary == null || secondary == null) return primary ?? secondary
   let merged = { ...primary }
   let options = [alwaysEmpty, neverEmpty]
   Object.entries(secondary).forEach(([key, val]) => {
