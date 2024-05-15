@@ -85,7 +85,7 @@ const arrayOf = (length, item) => Array.from({ length }, (v, i) => {
   else return item
 })
 const stringOf = (n, snippet=' ', joinWith='') => {
-  return joinWith
+  return String(joinWith)
     ? arrayOf(n, String(snippet)).join(joinWith)
     : String(snippet).repeat(n)
 }
