@@ -45,6 +45,9 @@ module.exports = (
     if (Array.isArray(objA) !== Array.isArray(objB)) {
       return false
     }
+
+    // TODO: test for iterability (otherwise fails on Maps, Sets, etc.)
+
     let aKeys = Object.keys(objA)
     let bKeys = Object.keys(objB)
     if (aKeys.length !== bKeys.length) {
@@ -58,7 +61,7 @@ module.exports = (
     if (aComps && bComps && aComps.some(id => bComps.includes(id))) {
       // if these two objects have already been compared, then we know they
       // either contain a circular reference, or their parent object contains a
-      // duplicate reference -- either way, they are equal at least to here.
+      // duplicate reference -- either way, they are equal up to this point.
       return true
     }
     else {
