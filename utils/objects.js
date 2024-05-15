@@ -24,6 +24,26 @@ const merge = (
   return merged
 }
 
+const recombine = (listOfObjects, getId) => {
+  let mapped = listOfObjects.reduce((combined, obj) => {
+    let id = getId(obj)
+    let referenceObject = combined[id] ?? {}
+    for (const [key, val] of Object.entries(obj)) {
+    // Object.entries(obj).forEach(([key, val]) => {
+      if (val === id) {
+        referenceObject[key] = id
+        continue
+      }
+      let bucket = referenceObject[key] ?? []
+      if (!bucket.includes(val)) bucket.push(val)
+      referenceObject[key] = bucket
+    }//)
+    combined[id] = referenceObject
+    return combined
+  }, {})
+  return Object.values(mapped)
+}
+
 const allValues = (listOfObjects, field) => {
   let values = listOfObjects.reduce(
     (results, obj) => results.add(obj[field]), 
