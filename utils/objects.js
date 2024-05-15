@@ -188,12 +188,13 @@ const excludeValOpts = { filterOn: 'values', includeOnMatch: false }
 
 module.exports = {
   merge,
+  recombine,
   allValues,
   allKeys,
   filter: {
     object: filterObject,
     many: (listOfObjects, filter, options={}) => {
-      return listOfObjects.map(obj => filterObject(obj, filter, options)
+      return listOfObjects.map(obj => filterObject(obj, filter, options))
     },
     byKeys: (obj, filter) => filterObject(obj, filter),
     byValues: (obj, filter) => filterObject(obj, filter, valOpts),
