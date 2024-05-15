@@ -76,12 +76,11 @@ const filterObject = (
   const passesFilter = Array.isArray(filter)
     ? (value) => filter.includes(value) === includeOnMatch
     : (value) => filter.test(value) === includeOnMatch
-  let filtered = {}
-  Object.entries(obj).forEach(([key, value]) => {
+  let filtered = Object.entries(obj).filter(([key, value]) => {
     let candidate = filterOn === 'keys' ? key : value
-    if (passesFilter(candidate)) filtered[key] = value
+    return passesFilter(candidate)
   })
-  return filtered
+  return Object.fromEntries(filtered)
 }
 
 const oneWayDiff = (a, b) => {
