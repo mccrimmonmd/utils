@@ -49,7 +49,7 @@ const filterObject = (
   filter,
   {
     filterOn = 'keys',
-    includeOnMatch = true
+    includeOnMatch = true,
   } = {}
 ) => {
   if (obj == null) return obj
@@ -163,18 +163,23 @@ const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
   return output
 }
 
+const valOpts = { filterOn: 'values' }
+const excludeOpts = { includeOnMatch: false }
+const excludeValOpts = { filterOn: 'values', includeOnMatch: false }
+
 module.exports = {
   merge,
   allValues,
   allKeys,
   filter: {
     object: filterObject,
+    many: (listOfObjects, filter, options={}) => {
+      return listOfObjects.map(obj => filterObject(obj, filter, options)
+    },
     byKeys: (obj, filter) => filterObject(obj, filter),
-    byValues: (obj, filter) => filterObject(obj, filter, { filterOn: 'values' }),
-    excludeKeys: (obj, filter) =>
-      filterObject(obj, filter, { includeOnMatch: false }),
-    excludeValues: (obj, filter) =>
-      filterObject(obj, filter, { filterOn: 'values', includeOnMatch: false }),
+    byValues: (obj, filter) => filterObject(obj, filter, valOpts),
+    excludeKeys: (obj, filter) => filterObject(obj, filter, excludeOpts),
+    excludeValues: (obj, filter) => filterObject(obj, filter, excludeValOpts),
   },
   oneWayDiff,
   diff: biDiff,
