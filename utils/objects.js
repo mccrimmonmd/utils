@@ -29,7 +29,6 @@ const recombine = (listOfObjects, getId) => {
     let id = getId(obj)
     let referenceObject = combined[id] ?? {}
     for (const [key, val] of Object.entries(obj)) {
-    // Object.entries(obj).forEach(([key, val]) => {
       if (val === id) {
         referenceObject[key] = id
         continue
@@ -37,7 +36,7 @@ const recombine = (listOfObjects, getId) => {
       let bucket = referenceObject[key] ?? []
       if (!bucket.includes(val)) bucket.push(val)
       referenceObject[key] = bucket
-    }//)
+    }
     combined[id] = referenceObject
     return combined
   }, {})
@@ -135,14 +134,15 @@ const multiDiff = (listOfObjects) => {
 const extractNested = (obj) => {
   let flat = {}
   let nested = {}
-  Object.entries(obj).forEach(([key, value]) => {
+  for (const [key, value] of Object.entries(obj)) {
+  // Object.entries(obj).forEach(([key, value]) => {
     if (value != null && typeof value === 'object') {
       nested[key] = value
     }
     else {
       flat[key] = value
     }
-  })
+  }//)
   return { flat, nested }
 }
 
