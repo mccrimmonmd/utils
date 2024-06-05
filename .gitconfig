@@ -5,12 +5,13 @@
   ff = only
 [alias]
   cg = config --global
+  mig = remote set-url origin
   rebasem = rebase main --rebase-merges
   mergem = merge main
   st = status
   dif = diff -- . ':(exclude)package-lock.json'
+  sdiff = diff --staged
   sdif = diff --staged -- . ':(exclude)package-lock.json'
-  sdiff = diff --staged -- . ':(exclude)package-lock.json'
   ci = commit
   ca = commit --all
   cim = commit -m
@@ -28,7 +29,6 @@
   br = branch
   ba = branch --all
   si = switch
-  sw = switch
   sb = switch -
   sm = switch main
   nb = switch -c
@@ -37,12 +37,16 @@
   ap = add --patch
   fe = fetch --all
   pr = fetch --prune
+  delete-local = branch -d
   delete-remote = push -d origin
+  gol = log --reverse
   low = log -5
   loo = log --oneline
+  ool = log --oneline --reverse
   lo = log --oneline -20
   gloo = log --oneline --graph
   glo = log --oneline --graph -20
   lop = log --patch
+  pol = log --patch --reverse
   op = log --patch -1
   
