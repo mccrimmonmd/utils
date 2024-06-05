@@ -1,5 +1,6 @@
-// Array.from({ length: n }, (v, i) => i)
-// [...Array(n).keys()]
+// Source: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#sequence_generator_range>
+// const range = (start, stop, step) =>
+//   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step)
 const range = function* (start=0, stop, step=1) {
   if (stop === undefined) {
     stop = start
@@ -12,9 +13,23 @@ const range = function* (start=0, stop, step=1) {
   }
 }
 
-const print = (obj, depth=null) => {
+const ifFunc = (condition, onTrue, onFalse=() => null) => {
+  let forceTrue = (thingy) => thingy || true
+  let result
+  ;( condition && forceTrue(result = onTrue()) ) || ( result = onFalse() )
+  return result
+}
+
+const print = (obj, depth=null, repl=false) => {
   console.dir(obj, { depth })
-  return obj
+  return repl ? undefined : obj
+}
+
+const roundDecimal = (value, places=2) => {
+  if (typeof value !== 'number') return value
+  if (Number.isInteger(value)) return value
+  let magnitude = 10 ** places
+  return Math.trunc(value * magnitude) / magnitude
 }
 
 const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
@@ -23,19 +38,26 @@ const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
   
   if (value == null) return true
   if (typeof value === 'boolean') return false
+  if (value.length != null) return value.length === 0
+  if (value.size != null) return value.size === 0
   if (typeof value === 'object' && Object.keys(value).length === 0) return true
-  if (value.length === 0) return true
-  if (value.size === 0) return true
+  // ^ Gives false positive on Sets, Maps, etc.
+  // (covered by length & size checks, but are there others?)
+  // (maybe test for iterability?)
   return !value
 }
 
-const makeGroups = (someList, idFunc = (item) => item, strong = false) => {
-  let identifier = strong
-    ? idFunc
-    : (item) => {
-      let id = idFunc(item)
-      return typeof id === 'symbol' ? id : String(id)
-    }
+const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
+
+const makeGroups = (someList, idFunc=(item) => item, strong=false) => {
+  let cache = new Map()
+  let identifier = (item) => {
+    if (cache.has(item)) return cache.get(item)
+    let id = idFunc(item)
+    id = (strong || typeof id === 'symbol') ? id : String(id)
+    cache.set(item, id)
+    return id
+  }
   let groups = new Map()
   someList.forEach(item => {
     let id = identifier(item)
@@ -52,13 +74,54 @@ const deDup = (
   return [...makeGroups(someList, identifier, true).values()]
   .map(group => group.reduce(decider))
 }
-const findDupes = (someList, identifier = (item) => item) => {
+const findDupes = (someList, identifier=(item) => item) => {
   return [...makeGroups(someList, identifier, true).values()]
   .filter(group => group.length > 1)
 }
 
-const arrayFrom = (length, item) => Array.from({ length }, () => item)
-const stringFrom = (length, substr) => arrayFrom(length, substr).join('')
+const textSorter = (sortOn, reversed=false) => (a, b) => {
+  const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
+  switch (typeof sortOn) {
+    case 'string':
+      a = a[sortOn]
+      b = b[sortOn]
+      break
+    case 'function':
+      a = sortOn(a)
+      b = sortOn(b)
+      break
+    case 'undefined':
+      break
+    case 'object':
+      if (sortOn === null) break
+    default:
+      throw new Error(`Unexpected type '${typeof sortOn}' for sortOn parameter`)
+  }
+  if (a.toLowerCase() !== b.toLowerCase()) {
+    a = a.toLowerCase()
+    b = b.toLowerCase()
+  }
+  if (a === b) return 0
+  return a < b ? ifLess : ifMore
+}
+
+const arrayOf = (length, item) => Array.from({ length }, (v, i) => {
+  if (typeof item === 'function') return item(v, i)
+  else if (typeof item === 'object') return structuredClone(item)
+  else return item
+})
+const stringOf = (n, snippet=' ', joinWith='') => {
+  return String(joinWith) === ''
+    ? String(snippet).repeat(n)
+    : arrayOf(n, String(snippet)).join(joinWith)
+}
+
+const swap(arr, i, j) => {
+  let swapping = arr[i]
+  arr[i] = arr[j]
+  arr[j] = swapping
+  return arr
+}
 
 // Source: <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
 const arrayEquals = (a, b) =>
@@ -71,13 +134,26 @@ const multilineRegex = (parts, flags='') =>
 
 module.exports = {
   range,
+  ifFunc,
   print,
+  roundDecimal,
   isEmpty,
   makeGroups,
   deDup,
   findDupes,
-  arrayFrom,
-  stringFrom,
+  textSorter,
+  arrayOf,
+  stringOf,
+  swap,
   arrayEquals,
   multilineRegex,
 }
+
+// for organization (future):
+// module.exports = {
+  // ...textStuff,
+  // ...arrayStuff,
+  // other,
+  // miscellaneous,
+  // functions,
+// }

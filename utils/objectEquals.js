@@ -12,23 +12,14 @@ module.exports = (
   let typeOfA = typeof objA
   if (typeOfA !== typeof objB) {
     if (!compareBigIntToNumber) return false
-    let typeOfB = typeof objB
-    if (typeOfA !== 'bigint' && typeOfB !== 'bigint') return false
-    try {
-      if (typeOfA === 'number') {
-        return BigInt(objA) === objB
-      }
-      else if (typeOfB === 'number') {
-        return objA === BigInt(objB)
-      }
-      return false
-    } catch (err) {
-      if (err instanceof RangeError) {
-        return false
-      } else {
-        throw err
-      }
+    if (typeOfA !== 'bigint' && typeof objB !== 'bigint') return false
+    if (Number.isInteger(objA)) {
+      return BigInt(objA) === objB
     }
+    else if (Number.isInteger(objB)) {
+      return objA === BigInt(objB)
+    }
+    return false
   }
   if (typeOfA === 'number' && isNaN(objA)) {
     return isNaN(objB)
@@ -54,6 +45,9 @@ module.exports = (
     if (Array.isArray(objA) !== Array.isArray(objB)) {
       return false
     }
+
+    // TODO: test for iterability (otherwise fails on Maps, Sets, etc.)
+
     let aKeys = Object.keys(objA)
     let bKeys = Object.keys(objB)
     if (aKeys.length !== bKeys.length) {
@@ -67,7 +61,7 @@ module.exports = (
     if (aComps && bComps && aComps.some(id => bComps.includes(id))) {
       // if these two objects have already been compared, then we know they
       // either contain a circular reference, or their parent object contains a
-      // duplicate reference -- either way, they are equal at least to here.
+      // duplicate reference -- either way, they are equal up to this point.
       return true
     }
     else {
