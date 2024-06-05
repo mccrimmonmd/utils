@@ -79,6 +79,32 @@ const findDupes = (someList, identifier=(item) => item) => {
   .filter(group => group.length > 1)
 }
 
+const textSorter = (sortOn, reversed=false) => (a, b) => {
+  const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
+  switch (typeof sortOn) {
+    case 'string':
+      a = a[sortOn]
+      b = b[sortOn]
+      break
+    case 'function':
+      a = sortOn(a)
+      b = sortOn(b)
+      break
+    case 'undefined':
+      break
+    case 'object':
+      if (sortOn === null) break
+    default:
+      throw new Error(`Unexpected type '${typeof sortOn}' for sortOn parameter`)
+  }
+  if (a.toLowerCase() !== b.toLowerCase()) {
+    a = a.toLowerCase()
+    b = b.toLowerCase()
+  }
+  if (a === b) return 0
+  return a < b ? ifLess : ifMore
+}
+
 const arrayOf = (length, item) => Array.from({ length }, (v, i) => {
   if (typeof item === 'function') return item(v, i)
   else if (typeof item === 'object') return structuredClone(item)
@@ -108,6 +134,7 @@ module.exports = {
   makeGroups,
   deDup,
   findDupes,
+  textSorter,
   arrayOf,
   stringOf,
   arrayEquals,
