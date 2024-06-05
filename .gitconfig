@@ -5,13 +5,13 @@
   ff = only
 [alias]
   cg = config --global
-  gconf = config --global
+  mig = remote set-url origin
   rebasem = rebase master --rebase-merges
   mergem = merge master
   st = status
   dif = diff -- . ':(exclude)package-lock.json'
+  sdiff = diff --staged
   sdif = diff --staged -- . ':(exclude)package-lock.json'
-  sdiff = diff --staged -- . ':(exclude)package-lock.json'
   ci = commit
   ca = commit --all
   cim = commit -m
@@ -29,7 +29,6 @@
   br = branch
   ba = branch --all
   si = switch
-  sw = switch
   sb = switch -
   sm = switch master
   nb = switch -c
@@ -38,13 +37,17 @@
   ap = add --patch
   fe = fetch --all
   pr = fetch --prune
+  delete-local = branch -d
   delete-remote = push -d origin
+  gol = log --reverse
   low = log -5
   loo = log --oneline
+  ool = log --oneline --reverse
   lo = log --oneline -20
   gloo = log --oneline --graph
   glo = log --oneline --graph -20
   lop = log --patch
+  pol = log --patch --reverse
   op = log --patch -1
 [core]
   editor = 'C:\\Program Files (x86)\\Notepad++\\notepad++.exe' -multiInst -notabbar -nosession -noPlugin
