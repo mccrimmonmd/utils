@@ -111,9 +111,9 @@ const arrayOf = (length, item) => Array.from({ length }, (v, i) => {
   else return item
 })
 const stringOf = (n, snippet=' ', joinWith='') => {
-  return String(joinWith)
-    ? arrayOf(n, String(snippet)).join(joinWith)
-    : String(snippet).repeat(n)
+  return String(joinWith) === ''
+    ? String(snippet).repeat(n)
+    : arrayOf(n, String(snippet)).join(joinWith)
 }
 
 const swap(arr, i, j) => {
@@ -148,3 +148,12 @@ module.exports = {
   arrayEquals,
   multilineRegex,
 }
+
+// for organization (future):
+// module.exports = {
+  // ...textStuff,
+  // ...arrayStuff,
+  // other,
+  // miscellaneous,
+  // functions,
+// }
