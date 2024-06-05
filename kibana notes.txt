@@ -19,7 +19,7 @@ POST /calls_dish_metrics/_forcemerge?only_expunge_deletes=true
 
 GET /sev_bridges/_search
 
-POST sev_bridges/_doc/1/_update
+POST /sev_bridges/_doc/1/_update
 {
   "doc": {
     "in_use" : false,
@@ -29,14 +29,28 @@ POST sev_bridges/_doc/1/_update
   }
 }
 
-POST sev_incidents/_doc/xxxxxxxx/_update
+POST /sev_incidents/_update_by_query
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": { "number": "INC1401598" }
+        }
+      ]
+    }
+  },
+  "script": "ctx._source.bridge_status = 'TEST'; ctx._source.originalBridge = 'TSET'"
+}
+
+POST /sev_incidents/_doc/xxxxxxxx/_update
 {
   "doc": {
     "number": "INC1396824"
   }
 }
 
-POST sev_incidents/_doc/xxxxxxxx/_update
+POST /sev_incidents/_doc/xxxxxxxx/_update
 {
   "script": "ctx._source.remove('unwanted_field')"
 }
