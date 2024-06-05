@@ -116,6 +116,13 @@ const stringOf = (n, snippet=' ', joinWith='') => {
     : String(snippet).repeat(n)
 }
 
+const swap(arr, i, j) => {
+  let swapping = arr[i]
+  arr[i] = arr[j]
+  arr[j] = swapping
+  return arr
+}
+
 // Source: <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
 const arrayEquals = (a, b) =>
   a.length === b.length &&
@@ -137,6 +144,7 @@ module.exports = {
   textSorter,
   arrayOf,
   stringOf,
+  swap,
   arrayEquals,
   multilineRegex,
 }
