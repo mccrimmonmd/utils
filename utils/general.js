@@ -1,6 +1,10 @@
+const myself = {} // documentation
+
 // Source: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#sequence_generator_range>
 // const range = (start, stop, step) =>
 //   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step)
+
+myself.range = "Python-style range function. Generator."
 const range = function* (start=0, stop, step=1) {
   if (stop === undefined) {
     stop = start
@@ -13,6 +17,7 @@ const range = function* (start=0, stop, step=1) {
   }
 }
 
+myself.ifFunc = "Pure-ish 'if' function with short-circuiting. Just because."
 const ifFunc = (condition, onTrue, onFalse=() => null) => {
   let forceTrue = (thingy) => thingy || true
   let result
@@ -20,11 +25,13 @@ const ifFunc = (condition, onTrue, onFalse=() => null) => {
   return result
 }
 
-const print = (obj, depth=null, repl=false) => {
+myself.print = "console.dir optimized for the Node.js REPL."
+const print = (obj, depth=null, repl=true) => {
   console.dir(obj, { depth })
   return repl ? undefined : obj
 }
 
+myself.roundDecimal = "Rounds (towards zero) to a given number of decimal places."
 const roundDecimal = (value, places=2) => {
   if (typeof value !== 'number') return value
   if (Number.isInteger(value)) return value
@@ -32,6 +39,7 @@ const roundDecimal = (value, places=2) => {
   return Math.trunc(value * magnitude) / magnitude
 }
 
+myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge."
 const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
   if (alwaysEmpty.includes(value)) return true
   if (neverEmpty.includes(value)) return false
@@ -47,8 +55,10 @@ const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
   return !value
 }
 
+"Not exported or used, just here as a reminder."
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
+myself.makeGroups = "Sorts a list into caller-determined 'buckets' (default: identity). Returns a Map."
 const makeGroups = (someList, idFunc=(item) => item, strong=false) => {
   let cache = new Map()
   let identifier = (item) => {
@@ -66,6 +76,7 @@ const makeGroups = (someList, idFunc=(item) => item, strong=false) => {
   })
   return groups
 }
+myself.deDup = "Removes duplicates. Caller determines what counts as a dupe (default: identity). Uses makeGroups but returns an Array."
 const deDup = (
   someList, 
   identifier = (item) => item, 
@@ -74,11 +85,13 @@ const deDup = (
   return [...makeGroups(someList, identifier, true).values()]
   .map(group => group.reduce(decider))
 }
+myself.findDupes = "The compliment of deDup."
 const findDupes = (someList, identifier=(item) => item) => {
   return [...makeGroups(someList, identifier, true).values()]
   .filter(group => group.length > 1)
 }
 
+myself.textSorter = "Returns function optimized for sorting lists of objects (e.g. by the value of a given key). Handles mixed-case text sensibly but otherwise no smarter than the default sort order. For use with Array.prototype.sort[ed]."
 const textSorter = (sortOn, reversed=false) => (a, b) => {
   const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
   switch (typeof sortOn) {
@@ -105,34 +118,43 @@ const textSorter = (sortOn, reversed=false) => (a, b) => {
   return a < b ? ifLess : ifMore
 }
 
+myself.arrayOf = "Returns 'length' copies of 'item' (which can be a generator function)."
 const arrayOf = (length, item) => Array.from({ length }, (v, i) => {
   if (typeof item === 'function') return item(v, i)
   else if (typeof item === 'object') return structuredClone(item)
   else return item
 })
+myself.stringOf = "arrayOf but for Strings."
 const stringOf = (n, snippet=' ', joinWith='') => {
   return String(joinWith) === ''
     ? String(snippet).repeat(n)
     : arrayOf(n, String(snippet)).join(joinWith)
 }
 
-const swap(arr, i, j) => {
+myself.swap = "Swaps two elements of an Array (in-place)."
+const swap = (arr, i, j) => {
+  // Source: <https://stackoverflow.com/questions/872310/swap-array-elements-in-javascript>
+  // [ arr[i], arr[j] ] = [ arr[j], arr[i] ]
+  // A[i] = A.splice(j, 1, A[i])[0]
   let swapping = arr[i]
   arr[i] = arr[j]
   arr[j] = swapping
   return arr
 }
 
+myself.arrayEquals = "Tests two Arrays to see if they are equal."
 // Source: <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
 const arrayEquals = (a, b) =>
   a.length === b.length &&
   a.every((element, index) => element === b[index])
 
+myself.multilineRegex = "Create a RegEx that spans multiple lines (for commenting)."
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
 const multilineRegex = (parts, flags='') =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
 
 module.exports = {
+  doc: (repl) => print(myself, null, repl), // TODO: document sub-modules as well
   range,
   ifFunc,
   print,
