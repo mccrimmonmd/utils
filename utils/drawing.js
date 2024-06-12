@@ -9,28 +9,27 @@ const draw = (picture) => {
 myself.drawRow = "Prints an array of ASCII images side-by-side."
 const drawRow = (pictures, padding=0) => draw(combinePics(pictures, padding))
 
-myself.animate = "Animates a sequence of ASCII images or image arrays with the given delay. Multiple sequences with different delays can be given as [{ frames, delay } ...]."
-const animate = (frames, interval=1000, moreAnimations=[]) => {
+myself.animate = "Animates a sequence of ASCII images or image arrays with the given delay. Multiple sequences with different delays can be given as [{ frames, delay }, ...]."
+const animate = (sequence, defaultDelay=1000) => {
+  console.log()
+  if (!sequence?.length) return process.stdout.write('> ')
+  if (sequence[0].length != null) {
+    sequence = [{ frames: sequence, delay: defaultDelay }]
+  }
+  let { frames, delay } = sequence.shift()
+  delay = delay ?? defaultDelay
+
   let currentFrame = 0
   let intervalId = setInterval(() => {
-    if (currentFrame === 0) console.log()
-    if (currentFrame >= frames.length) {
-      clearInterval(intervalId)
-      if (moreAnimations.length) {
-        return animateInSequence(moreAnimations)
-      }
-      else {
-        return process.stdout.write('> ')
-      }
+    if (currentFrame < frames.length) {
+      drawRow(frames[currentFrame])
+      currentFrame += 1
     }
-    drawRow(frames[currentFrame])
-    currentFrame += 1
-  }, interval)
-}
-const animateInSequence = (animations) => {
-  if (!animations?.length) return
-  let { frames, interval } = animations.shift()
-  animate(frames, interval, animations)
+    else {
+      clearInterval(intervalId)
+      return animate(sequence, defaultDelay)
+    }
+  }, delay)
 }
 
 myself.combinePics = "Combines multiple ASCII images, possibly of different sizes."
