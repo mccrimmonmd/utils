@@ -31,9 +31,7 @@ const shuffled = (arr) => {
   arr = [...arr]
   for (let end = arr.length - 1; end > 0; end--) {
     let swapFrom = randInt(end + 1) // elements can be 'swapped' with themselves
-    let swapping = arr[swapFrom]
-    arr[swapFrom] = arr[end]
-    arr[end] = swapping
+    [ arr[end], arr[swapFrom] ] = [ arr[swapFrom], arr[end] ]
   }
   return arr
 }
