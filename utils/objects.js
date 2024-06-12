@@ -1,8 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 
-const { isEmpty } = require('./general')
 const myself = {} // documentation
+const { isEmpty, textSorter } = require('./general')
 
 const merge = (
   a, b,
@@ -163,7 +163,7 @@ const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
   else {
     let allKeys = [].concat(...listOfObjects.map(Object.keys))
     let uniqueKeys = new Set(allKeys)
-    header = [...uniqueKeys]
+    header = [...uniqueKeys].sort(textSorter)
     for (const obj of listOfObjects) body.push(makeLine(header, obj))
   }
   let output = [makeLine(header), ...body]
