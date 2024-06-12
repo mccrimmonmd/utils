@@ -1,7 +1,19 @@
+const myself = {} // documentation
+const { swap } = require('./general')
+
+myself.coinFlip = "Returns a boolean with a 50-50 chance of being true."
 const coinFlip = () => Math.random() < 0.5
+
+myself.randNum = "Returns a random number in the range [0, lessThan)."
 const randNum = (lessThan) => Math.random() * lessThan
+
+myself.randInt = "Returns a random integer in the range [0, lessThan)."
 const randInt = (lessThan) => Math.trunc(randNum(lessThan))
+
+myself.randDigit = "Returns a random integer in the range [0, 9]."
 const randDigit = () => randInt(10)
+
+myslef.randDigitString = "Returns a string of random digits of the given length."
 const randDigitString = (length) => {
   let digits = []
   while (length > 0) {
@@ -10,7 +22,11 @@ const randDigitString = (length) => {
   }
   return digits.join('')
 }
+
+myself.randChoice = "Returns a random element from the given array."
 const randChoice = (arr) => arr[randInt(arr.length)]
+
+myself.shuffled = "Returns a shuffled copy of the given array."
 const shuffled = (arr) => {
   arr = [...arr]
   for (let end = arr.length - 1; end > 0; end--) {
@@ -35,6 +51,7 @@ const shuffled = (arr) => {
 // }
 
 module.exports = {
+  docs: myself,
   coinFlip,
   randNum,
   randInt,

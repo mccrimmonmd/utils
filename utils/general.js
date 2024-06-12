@@ -154,7 +154,7 @@ const multilineRegex = (parts, flags='') =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
 
 module.exports = {
-  doc: (repl) => print(myself, null, repl), // TODO: document sub-modules as well
+  docs: myself,
   range,
   ifFunc,
   print,

@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 
 const { isEmpty } = require('./general')
+const myself = {} // documentation
 
 const merge = (
   a, b,
@@ -24,6 +25,7 @@ const merge = (
   return merged
 }
 
+myself.recombine = "Tranforms [{ id: xxx, key: val1 }, { id: xxx, key: val2 }, { id: yyy, yKey: yVal }, ...] into [{ id: xxx, key: [val1, val2] }, { id: yyy, yKey: [yVal] }, ...]"
 const recombine = (listOfObjects, getId) => {
   let mapped = listOfObjects.reduce((combined, obj) => {
     let id = getId(obj)
@@ -187,6 +189,7 @@ const excludeOpts = { includeOnMatch: false }
 const excludeValOpts = { filterOn: 'values', includeOnMatch: false }
 
 module.exports = {
+  docs: myself,
   merge,
   recombine,
   allValues,
