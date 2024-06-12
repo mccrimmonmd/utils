@@ -17,11 +17,11 @@ const merge = (
   if (primary == null || secondary == null) return primary ?? secondary
   let merged = { ...primary }
   let options = [alwaysEmpty, neverEmpty]
-  Object.entries(secondary).forEach(([key, val]) => {
+  for (const [key, val] of Object.entries(secondary)) {
     if (isEmpty(merged[key], ...options) && !isEmpty(val, ...options)) {
       merged[key] = val
     }
-  })
+  }
   return merged
 }
 
@@ -57,9 +57,9 @@ const allKeys = (listOfObjects, regex=/(?:)/) => {
   // The empty regex /(?:)/ matches any string
   let keys = listOfObjects.reduce((results, obj) => {
     if (obj == null) return results
-    Object.keys(obj).forEach(key => {
+    for (const key of Object.keys(obj)) {
       if (regex.test(key)) results.add(key)
-    })
+    }
     return results
   }, new Set())
   return [...keys]
@@ -137,14 +137,13 @@ const extractNested = (obj) => {
   let flat = {}
   let nested = {}
   for (const [key, value] of Object.entries(obj)) {
-  // Object.entries(obj).forEach(([key, value]) => {
     if (value != null && typeof value === 'object') {
       nested[key] = value
     }
     else {
       flat[key] = value
     }
-  }//)
+  }
   return { flat, nested }
 }
 
@@ -165,7 +164,7 @@ const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
     let allKeys = [].concat(...listOfObjects.map(Object.keys))
     let uniqueKeys = new Set(allKeys)
     header = [...uniqueKeys]
-    listOfObjects.forEach(obj => body.push(makeLine(header, obj)))
+    for (const obj of listOfObjects) body.push(makeLine(header, obj))
   }
   let output = [makeLine(header), ...body]
   try {

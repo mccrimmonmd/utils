@@ -40,7 +40,7 @@ const combinePics = (pictures, padding=0) => {
   let height = Math.max(...pictures.map(pic => pic.length))
   
   let lines = arrayOf(height, [])
-  pictures.forEach(pic => {
+  for (const pic of pictures) {
     let i = 0
     for (; i < pic.length; i++) {
       lines[i].push(pic[i], ' '.repeat(padding))
@@ -48,7 +48,7 @@ const combinePics = (pictures, padding=0) => {
     for (; i < height; i++) {
       lines[i].push(' '.repeat(pic[0].length + padding))
     }
-  })
+  }
   return lines.map(line => line.join(''))
 }
 
