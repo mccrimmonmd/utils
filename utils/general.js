@@ -92,30 +92,55 @@ const findDupes = (someList, identifier=(item) => item) => {
 }
 
 myself.textSorter = "Returns function optimized for sorting lists of objects (e.g. by the value of a given key). Handles mixed-case text sensibly but otherwise no smarter than the default sort order. For use with Array.prototype.sort[ed]."
-const textSorter = (sortOn, reversed=false) => (a, b) => {
+const textSorter = (sortOn, reversed=false) => {
   const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
-  switch (typeof sortOn) {
-    case 'string':
-      a = a[sortOn]
-      b = b[sortOn]
-      break
-    case 'function':
-      a = sortOn(a)
-      b = sortOn(b)
-      break
-    case 'undefined':
-      break
-    case 'object':
-      if (sortOn === null) break
-    default:
-      throw new Error(`Unexpected type '${typeof sortOn}' for sortOn parameter`)
+  return (a, b) => {
+    switch (typeof sortOn) {
+      case 'string':
+        a = a[sortOn]
+        b = b[sortOn]
+        break
+      case 'function':
+        a = sortOn(a)
+        b = sortOn(b)
+        break
+      case 'undefined':
+        break
+      case 'object':
+        if (sortOn === null) break
+        if (Array.isArray(sortOn)) {
+          let aObj = a
+          let bObj = b
+          break
+        }
+      default:
+        throw new Error(`Unexpected type '${typeof sortOn}' for sortOn parameter`)
+    }
+    let tiebreak = 0
+    while (tiebreak != null) {
+      if (Array.isArray(sortOn)) {
+        if (tiebreak > sortOn.length) break
+        a = aObj[sortOn[tiebreak]]
+        b = bObj[sortOn[tiebreak]]
+      }
+      else {
+        tiebreak = null
+      }
+      if (a.toLowerCase() !== b.toLowerCase()) {
+        a = a.toLowerCase()
+        b = b.toLowerCase()
+      }
+      if (tiebreak != null && a === b) {
+        tiebreak += 1
+      }
+    }
+    if (a === b) {
+      return 0
+    }
+    else {
+      return a < b ? ifLess : ifMore
+    }
   }
-  if (a.toLowerCase() !== b.toLowerCase()) {
-    a = a.toLowerCase()
-    b = b.toLowerCase()
-  }
-  if (a === b) return 0
-  return a < b ? ifLess : ifMore
 }
 
 myself.arrayOf = "Returns 'length' copies of 'item' (which can be a generator function)."
