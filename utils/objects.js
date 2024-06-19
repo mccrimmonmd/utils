@@ -151,7 +151,14 @@ const escapeCsvEntry = (entry) => {
   entry = String(entry ?? '')
   return /,|\n|"/.test(entry) ? `"${entry.replaceAll('"', '""')}"` : entry
 }
-const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
+const toCsv = (
+  listOfObjects,
+  {
+    fileName = 'output.csv',
+    filePath = './',
+    sortHeader = false
+  } = {}
+) => {
   const makeLine = (header, obj=false) => {
     return header.map(key => escapeCsvEntry(obj ? obj[key] : key)).join(',')
   }
@@ -163,7 +170,8 @@ const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
   else {
     let allKeys = [].concat(...listOfObjects.map(Object.keys))
     let uniqueKeys = new Set(allKeys)
-    header = [...uniqueKeys].sort(textSorter)
+    header = [...uniqueKeys]
+    if (sortHeader) header.sort(textSorter())
     for (const obj of listOfObjects) body.push(makeLine(header, obj))
   }
   let output = [makeLine(header), ...body]
