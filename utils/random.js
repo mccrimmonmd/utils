@@ -13,7 +13,7 @@ const randInt = (lessThan) => Math.trunc(randNum(lessThan))
 myself.randDigit = "Returns a random integer in the range [0, 9]."
 const randDigit = () => randInt(10)
 
-myslef.randDigitString = "Returns a string of random digits of the given length."
+myself.randDigitString = "Returns a string of random digits of the given length."
 const randDigitString = (length) => {
   let digits = []
   while (length > 0) {
