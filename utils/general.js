@@ -109,8 +109,8 @@ const textSorter = (sortOn, reversed=false) => {
       case 'object':
         if (sortOn === null) break
         if (Array.isArray(sortOn)) {
-          let aObj = a
-          let bObj = b
+          var aObj = a
+          var bObj = b
           break
         }
       default:
