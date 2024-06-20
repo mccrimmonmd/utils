@@ -1,5 +1,5 @@
 const myself = {} // documentation
-const { arrayOf } = require('./general')
+const { print, arrayOf } = require('./general')
 
 myself.draw = "Prints the given string or string array to the console as ASCII art."
 const draw = (picture) => {
@@ -63,7 +63,7 @@ const makeRectangular = (picture) => {
 }
 
 module.exports = {
-  docs: myself,
+  docs: () => print(myself),
   draw,
   drawRow,
   animate,

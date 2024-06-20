@@ -179,7 +179,7 @@ const multilineRegex = (parts, flags='') =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
 
 module.exports = {
-  docs: myself,
+  docs: () => print(myself),
   range,
   ifFunc,
   print,
@@ -194,7 +194,7 @@ module.exports = {
   swap,
   arrayEquals,
   multilineRegex,
-}
+} // = require('./general')
 
 // for organization (future):
 // module.exports = {

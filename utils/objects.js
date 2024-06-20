@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 
 const myself = {} // documentation
-const { isEmpty, textSorter } = require('./general')
+const { print, isEmpty, textSorter } = require('./general')
 
 const merge = (
   a, b,
@@ -196,7 +196,7 @@ const excludeOpts = { includeOnMatch: false }
 const excludeValOpts = { filterOn: 'values', includeOnMatch: false }
 
 module.exports = {
-  docs: myself,
+  docs: () => print(myself),
   merge,
   recombine,
   allValues,

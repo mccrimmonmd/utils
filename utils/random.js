@@ -1,5 +1,5 @@
 const myself = {} // documentation
-const { swap } = require('./general')
+const { print, swap } = require('./general')
 
 myself.coinFlip = "Returns a boolean with a 50-50 chance of being true."
 const coinFlip = () => Math.random() < 0.5
@@ -49,7 +49,7 @@ const shuffled = (arr) => {
 // }
 
 module.exports = {
-  docs: myself,
+  docs: () => print(myself),
   coinFlip,
   randNum,
   randInt,
