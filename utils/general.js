@@ -93,53 +93,38 @@ const findDupes = (someList, identifier=(item) => item) => {
 
 myself.textSorter = "Returns function optimized for sorting lists of objects (e.g. by the value of a given key). Handles mixed-case text sensibly but otherwise no smarter than the default sort order. For use with Array.prototype.sort[ed]."
 const textSorter = (sortOn, reversed=false) => {
+  const sorters = Array.isArray(sortOn) ? sortOn : [sortOn]
   const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
-  return (a, b) => {
-    switch (typeof sortOn) {
-      case 'string':
-        a = a[sortOn]
-        b = b[sortOn]
-        break
+  const resolve = (a, b, sorter) => {
+    switch (typeof sorter) {
       case 'function':
-        a = sortOn(a)
-        b = sortOn(b)
+        [ a, b ] = [ sorter(a), sorter(b) ]
+        break
+      case 'string':
+      case 'symbol':
+        [ a, b ] = [ a[sorter], b[sorter] ]
         break
       case 'undefined':
         break
       case 'object':
-        if (sortOn === null) break
-        if (Array.isArray(sortOn)) {
-          var aObj = a
-          var bObj = b
-          break
-        }
+        if (sorter === null) break
       default:
-        throw new Error(`Unexpected type '${typeof sortOn}' for sortOn parameter`)
+        throw new Error(`Unexpected type '${typeof sorter}' for sorter parameter`)
     }
-    let tiebreak = 0
-    while (tiebreak != null) {
-      if (Array.isArray(sortOn)) {
-        if (tiebreak > sortOn.length) break
-        a = aObj[sortOn[tiebreak]]
-        b = bObj[sortOn[tiebreak]]
-      }
-      else {
-        tiebreak = null
-      }
+    return [ String(a), String(b) ]
+  }
+  return (aObj, bObj) => {
+    for (const tiebreak of sorters) {
+      let [a, b] = resolve(aObj, bObj, tiebreak)
       if (a.toLowerCase() !== b.toLowerCase()) {
         a = a.toLowerCase()
         b = b.toLowerCase()
       }
-      if (tiebreak != null && a === b) {
-        tiebreak += 1
+      if (a !== b) {
+        return a < b ? ifLess : ifMore
       }
     }
-    if (a === b) {
-      return 0
-    }
-    else {
-      return a < b ? ifLess : ifMore
-    }
+    return 0
   }
 }
 
@@ -160,7 +145,7 @@ myself.swap = "Swaps two elements of an Array (in-place)."
 const swap = (arr, i, j) => {
   // Source: <https://stackoverflow.com/questions/872310/swap-array-elements-in-javascript>
   // [ arr[i], arr[j] ] = [ arr[j], arr[i] ]
-  // A[i] = A.splice(j, 1, A[i])[0]
+  // arr[i] = arr.splice(j, 1, arr[i])[0]
   let swapping = arr[i]
   arr[i] = arr[j]
   arr[j] = swapping
