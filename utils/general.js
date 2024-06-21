@@ -91,7 +91,7 @@ const findDupes = (someList, identifier=(item) => item) => {
   .filter(group => group.length > 1)
 }
 
-myself.textSorter = "Returns function optimized for sorting lists of objects (e.g. by the value of a given key). Handles mixed-case text sensibly but otherwise no smarter than the default sort order. For use with Array.prototype.sort[ed]."
+myself.textSorter = "Returns a function optimized for sorting arrays of text. Accepts an additional parameter that can be: a string/symbol (for key access), a function (that returns the value to sort by), or an array of any mix of the three (for breaking ties). Handles mixed-case text sensibly but otherwise no smarter than the default sort order." 
 const textSorter = (sortOn, reversed=false) => {
   const sorters = Array.isArray(sortOn) ? sortOn : [sortOn]
   const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
