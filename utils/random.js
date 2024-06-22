@@ -26,6 +26,9 @@ const randDigitString = (length) => {
 myself.randChoice = "Returns a random element from the given array."
 const randChoice = (arr) => arr[randInt(arr.length)]
 
+myself.removeRandChoice = "Removes (in-place) a random element from the given array. Returns the removed element."
+const removeRandChoice = (arr) => arr.splice(randInt(arr.length), 1)
+
 myself.shuffled = "Returns a shuffled copy of the given array."
 const shuffled = (arr) => {
   arr = [...arr]
@@ -56,5 +59,6 @@ module.exports = {
   randDigit,
   randDigitString,
   randChoice,
+  removeRandChoice,
   shuffled,
 }
