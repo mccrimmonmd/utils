@@ -9,29 +9,6 @@ const draw = (picture) => {
 myself.drawRow = "Prints an array of ASCII images side-by-side."
 const drawRow = (pictures, padding=0) => draw(combinePics(pictures, padding))
 
-myself.animate = "Animates a sequence of ASCII images or image arrays with the given delay. Multiple sequences with different delays can be given as [{ frames, delay }, ...]."
-const animate = (sequence, defaultDelay=1000) => {
-  console.log()
-  if (!sequence?.length) return process.stdout.write('> ')
-  if (sequence[0].length != null) {
-    sequence = [{ frames: sequence, delay: defaultDelay }]
-  }
-  let { frames, delay } = sequence.shift()
-  delay = delay ?? defaultDelay
-
-  let currentFrame = 0
-  let intervalId = setInterval(() => {
-    if (currentFrame < frames.length) {
-      drawRow(frames[currentFrame])
-      currentFrame += 1
-    }
-    else {
-      clearInterval(intervalId)
-      return animate(sequence, defaultDelay)
-    }
-  }, delay)
-}
-
 myself.combinePics = "Combines multiple ASCII images, possibly of different sizes."
 const combinePics = (pictures, padding=0) => {
   if (typeof pictures === 'string') return pictures
@@ -60,6 +37,29 @@ const makeRectangular = (picture) => {
   picture = picture.map(line => line ?? '')
   let maxLength = Math.max(...picture.map(line => line.length))
   return picture.map(line => line + ' '.repeat(maxLength - line.length))
+}
+
+myself.animate = "Animates a sequence of ASCII images or image arrays with the given delay. Multiple sequences with different delays can be given as [{ frames, delay }, ...]."
+const animate = (sequence, defaultDelay=1000) => {
+  console.log()
+  if (!sequence?.length) return process.stdout.write('> ')
+  if (sequence[0].length != null) {
+    sequence = [{ frames: sequence, delay: defaultDelay }]
+  }
+  let { frames, delay } = sequence.shift()
+  delay = delay ?? defaultDelay
+
+  let currentFrame = 0
+  let intervalId = setInterval(() => {
+    if (currentFrame < frames.length) {
+      drawRow(frames[currentFrame])
+      currentFrame += 1
+    }
+    else {
+      clearInterval(intervalId)
+      return animate(sequence, defaultDelay)
+    }
+  }, delay)
 }
 
 module.exports = {
