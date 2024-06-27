@@ -69,11 +69,11 @@ const makeGroups = (someList, idFunc=(item) => item, strong=false) => {
     return id
   }
   let groups = new Map()
-  someList.forEach(item => {
+  for (const item of someList) {
     let id = identifier(item)
     let group = groups.has(id) ? groups.get(id) : []
     groups.set(id, group.concat([item]))
-  })
+  }
   return groups
 }
 myself.deDup = "Removes duplicates. Caller determines what counts as a dupe (default: identity). Uses makeGroups but returns an Array."
