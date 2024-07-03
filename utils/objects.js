@@ -26,7 +26,7 @@ const merge = (
 }
 
 myself.recombine = "Tranforms [{ id: xxx, key: val1 }, { id: xxx, key: val2 }, { id: yyy, yKey: yVal }, ...] into [{ id: xxx, key: [val1, val2] }, { id: yyy, yKey: [yVal] }, ...]"
-const recombine = (listOfObjects, getId) => {
+const recombine = (listOfObjects, getId, showDuplicates=true) => {
   let mapped = listOfObjects.reduce((combined, obj) => {
     let id = getId(obj)
     let referenceObject = combined[id] ?? {}
@@ -36,7 +36,7 @@ const recombine = (listOfObjects, getId) => {
         continue
       }
       let bucket = referenceObject[key] ?? []
-      if (!bucket.includes(val)) bucket.push(val)
+      if (showDuplicates || !bucket.includes(val)) bucket.push(val)
       referenceObject[key] = bucket
     }
     combined[id] = referenceObject
