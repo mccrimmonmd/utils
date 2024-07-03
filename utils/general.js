@@ -39,6 +39,12 @@ const roundDecimal = (value, places=2) => {
   return Math.trunc(value * magnitude) / magnitude
 }
 
+myself.arithmeticMean = "Calculates the arithmetic mean of a list of numbers"
+const arithmeticMean = (values) => {
+  if (values == null || !values.length) return null
+  values.reduce((sum, value) => sum + value, 0) / values.length
+}
+
 myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge."
 const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
   if (alwaysEmpty.includes(value)) return true
@@ -169,6 +175,7 @@ module.exports = {
   ifFunc,
   print,
   roundDecimal,
+  arithmeticMean,
   isEmpty,
   makeGroups,
   deDup,
