@@ -22,29 +22,30 @@ const playDice = (days, silent=false) => {
     totalDays += 1
     days -= 1
     
-    var score = 2
-    var results = rollDice(4)
-    var dupes = utils.findDupes(results)
-    var dupeType
+    let dupeType = 0
+    const results = rollDice(4)
+    const dupes = utils.findDupes(results)
     if (dupes.length === 0) dupeType = 0
     else {
       if (dupes.length === 2) {
         dupeType = 1
       }
       else {
-        dupeType = [dupes[0].length]
+        dupeType = dupes[0].length
       }
     }
-    if (dupeType === 1){
+    
+    let score = 1
+    if (dupeType === 1) {
       score += 5
       days += 2
     }
     else if (dupeType === 3) score += 1
     else if (dupeType === 4) {
       score += 15
-      days += 15
+      days += 7
     }
-    for (const die of results) score += die >= 4 ? 1 : 0
+    for (const die of results) score += die >= 5 ? 1 : 0
     totals[dupeType] += 1
     totalScore += score
     if (!silent) {
@@ -53,12 +54,14 @@ const playDice = (days, silent=false) => {
     }
   }
   return {
-    none: totals[0],
-    pairs: totals[1],
+    singles: totals[0],
     doubles: totals[2],
     triples: totals[3],
+    pairs: totals[1],
     perfects: totals[4],
     totalScore,
     totalDays,
   }
 }
+
+playDice(30)
