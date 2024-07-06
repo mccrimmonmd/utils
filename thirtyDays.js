@@ -18,27 +18,12 @@ const playDice = (days, silent=false) => {
   ]
   let totalScore = 0
   let totalDays = 0
-  // const dupes = []
   while (days > 0) {
     totalDays += 1
     days -= 1
     
     let dupeType = 0
     const results = rollDice(4)
-    // for (let i = 0; i < 6; i++) dupes[i] = 0
-    // for (const die of results) {
-      // dupes[die - 1]++
-    // }
-    // for (const dupe of dupes) {
-      // if (dupe > dupeType && dupe > 1) {
-        // if (dupeType === 2 && dupe === 2) dupeType = 1
-      // if (dupe !== 0 && dupe !== 1) {
-        // if (dupeType === 2) {
-          // if (dupe === 2) dupeType = 1
-        // }
-        // else dupeType = dupe
-      // }
-    // }
     const dupes = utils.findDupes(results)
     if (dupes.length === 0) dupeType = 0
     else {
