@@ -1,6 +1,50 @@
 const utils = require('./utils')
 const { rollDice } = utils.random
 
+const runAverage = (rounds, days=30) => {
+  const averagePerRound = {
+    singles: 0,
+    doubles: 0,
+    triples: 0,
+    pairs: 0,
+    perfects: 0,
+    combinedScore: 0,
+    totalDays: 0,
+  }
+  const variation = {
+    singles: [],
+    doubles: [],
+    triples: [],
+    pairs: [],
+    perfects: [],
+    combinedScore: [],
+    totalDays: [],
+  }
+  
+  const start = Date.now()
+  for (const round of utils.range(rounds)) {
+    const results = playDice(days, true)
+    for (let [key, value] of Object.entries(results)) {
+      if (key === 'totalScore') {
+        key = 'combinedScore'
+        value *= 2
+      }
+      variation[key][0] = Math.min(value, variation[key][0] ?? Infinity)
+      variation[key][1] = Math.max(value, variation[key][1] ?? -Infinity)
+      averagePerRound[key] += value
+    }
+  }
+  console.log(`time: ${Date.now() - start}ms`)
+  for (const [key, value] of Object.entries(averagePerRound)) {
+    averagePerRound[key] = utils.roundDecimal(value / rounds, 5)
+  }
+  
+  return {
+    averagePerRound,
+    variation,
+  }
+}
+
 const playDice = (days, silent=false) => {
   const totals = [
     0,
