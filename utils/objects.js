@@ -47,24 +47,14 @@ const recombine = (listOfObjects, getId, showDuplicates=true) => {
 
 myself.allValues = "Returns an array of every unique value set to the given key among the provided list of objects."
 const allValues = (listOfObjects, field) => {
-  let values = listOfObjects.reduce(
-    (results, obj) => results.add(obj[field]), 
-    new Set()
-  )
-  return [...values]
+  return [ ...new Set(listOfObjects.map(obj => obj[field])) ]
 }
 
 myself.allKeys = "Returns an array of every unique key among the objects provided. Takes an optional regular expression to filter the results."
 const allKeys = (listOfObjects, regex=/(?:)/) => {
   // The empty regex /(?:)/ matches any string
-  let keys = listOfObjects.reduce((results, obj) => {
-    if (obj == null) return results
-    for (const key of Object.keys(obj)) {
-      if (regex.test(key)) results.add(key)
-    }
-    return results
-  }, new Set())
-  return [...keys]
+  let uniqueKeys = new Set( [].concat(...listOfObjects.map(Object.keys)) )
+  return [...uniqueKeys].filter(key => regex.test(key))
 }
 
 const filterObject = (
@@ -173,9 +163,7 @@ const toCsv = (
     console.warn(`No data! '${fileName}' will be empty.`)
   }
   else {
-    let allKeys = [].concat(...listOfObjects.map(Object.keys))
-    let uniqueKeys = new Set(allKeys)
-    header = [...uniqueKeys]
+    header = allKeys(listOfObjects)
     if (sortHeader) header.sort(textSorter())
     for (const obj of listOfObjects) body.push(makeLine(header, obj))
   }
