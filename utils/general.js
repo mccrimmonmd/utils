@@ -91,7 +91,7 @@ const deDup = (
   return [...makeGroups(someList, identifier, true).values()]
   .map(group => group.reduce(decider))
 }
-myself.findDupes = "The compliment of deDup."
+myself.findDupes = "The complement of deDup."
 const findDupes = (someList, identifier=(item) => item) => {
   return [...makeGroups(someList, identifier, true).values()]
   .filter(group => group.length > 1)

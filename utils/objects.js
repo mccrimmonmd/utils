@@ -29,10 +29,10 @@ myself.recombine = "Tranforms [{ id: xxx, key: val1 }, { id: xxx, key: val2 }, {
 const recombine = (listOfObjects, getId, showDuplicates=true) => {
   let mapped = listOfObjects.reduce((combined, obj) => {
     let id = getId(obj)
-    let referenceObject = combined[id] ?? {}
+    let referenceObject = combined[id] ?? {} // masterObject?
     for (const [key, val] of Object.entries(obj)) {
       if (val === id) {
-        referenceObject[key] = id
+        referenceObject[key] = val
         continue
       }
       let bucket = referenceObject[key] ?? []
@@ -115,6 +115,9 @@ const intersection = (listOfObjects) => {
 }
 // TODO: ~~make results true union/intersection/symmetric difference~~ figure
 // out what the heck 'multiDiff' even means; why does anyone need this function?
+// Possible A: outliers! I think I wanted a way to find values that stood out
+// among a group of similar objects (i.e. reduce it to just its
+// "differences"). I should use general.makeGroups for that...
 const multiDiff = (listOfObjects) => {
   if (listOfObjects.length <= 1) return []
   let allDiffs = []
@@ -218,3 +221,4 @@ module.exports = {
   escapeCsvEntry,
   toCsv,
 }
+
