@@ -135,8 +135,8 @@ const textSorter = (sortOn, reversed=false) => {
 }
 
 myself.arrayOf = "Returns 'length' copies of 'item' (which can be a generator function)."
-const arrayOf = (length, item) => Array.from({ length }, (v, i) => {
-  if (typeof item === 'function') return item(v, i)
+const arrayOf = (length, item) => Array.from({ length }, (_, i) => {
+  if (typeof item === 'function') return item(i)
   else if (typeof item === 'object') return structuredClone(item)
   else return item
 })
