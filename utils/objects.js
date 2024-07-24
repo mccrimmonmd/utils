@@ -45,6 +45,7 @@ const recombine = (listOfObjects, getId, showDuplicates=true) => {
   return Object.values(mapped)
 }
 
+myself.allValues = "Returns an array of every unique value set to the given key among the provided list of objects."
 const allValues = (listOfObjects, field) => {
   let values = listOfObjects.reduce(
     (results, obj) => results.add(obj[field]), 
@@ -53,6 +54,7 @@ const allValues = (listOfObjects, field) => {
   return [...values]
 }
 
+myself.allKeys = "Returns an array of every unique key among the objects provided. Takes an optional regular expression to filter the results."
 const allKeys = (listOfObjects, regex=/(?:)/) => {
   // The empty regex /(?:)/ matches any string
   let keys = listOfObjects.reduce((results, obj) => {
