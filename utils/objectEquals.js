@@ -11,13 +11,13 @@ module.exports = (
   }
   let typeOfA = typeof objA
   if (typeOfA !== typeof objB) {
-    if (!compareBigIntToNumber) return false
-    if (typeOfA !== 'bigint' && typeof objB !== 'bigint') return false
-    if (Number.isInteger(objA)) {
-      return BigInt(objA) === objB
-    }
-    else if (Number.isInteger(objB)) {
-      return objA === BigInt(objB)
+    if (compareBigIntToNumber) {
+      if (typeOfA === 'bigint' && Number.isInteger(objB)) {
+        return objA === BigInt(objB)
+      }
+      if (typeof objB === 'bigint' && Number.isInteger(objA)) {
+        return BigInt(objA) === objB
+      }
     }
     return false
   }

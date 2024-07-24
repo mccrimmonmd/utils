@@ -1,7 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 
-const { isEmpty } = require('./general')
+const myself = {} // documentation
+const { print, isEmpty, textSorter } = require('./general')
 
 const merge = (
   a, b,
@@ -16,25 +17,26 @@ const merge = (
   if (primary == null || secondary == null) return primary ?? secondary
   let merged = { ...primary }
   let options = [alwaysEmpty, neverEmpty]
-  Object.entries(secondary).forEach(([key, val]) => {
+  for (const [key, val] of Object.entries(secondary)) {
     if (isEmpty(merged[key], ...options) && !isEmpty(val, ...options)) {
       merged[key] = val
     }
-  })
+  }
   return merged
 }
 
-const recombine = (listOfObjects, getId) => {
+myself.recombine = "Tranforms [{ id: xxx, key: val1 }, { id: xxx, key: val2 }, { id: yyy, yKey: yVal }, ...] into [{ id: xxx, key: [val1, val2] }, { id: yyy, yKey: [yVal] }, ...]"
+const recombine = (listOfObjects, getId, showDuplicates=true) => {
   let mapped = listOfObjects.reduce((combined, obj) => {
     let id = getId(obj)
-    let referenceObject = combined[id] ?? {}
+    let referenceObject = combined[id] ?? {} // masterObject?
     for (const [key, val] of Object.entries(obj)) {
       if (val === id) {
-        referenceObject[key] = id
+        referenceObject[key] = val
         continue
       }
       let bucket = referenceObject[key] ?? []
-      if (!bucket.includes(val)) bucket.push(val)
+      if (showDuplicates || !bucket.includes(val)) bucket.push(val)
       referenceObject[key] = bucket
     }
     combined[id] = referenceObject
@@ -43,24 +45,16 @@ const recombine = (listOfObjects, getId) => {
   return Object.values(mapped)
 }
 
+myself.allValues = "Returns an array of every unique value set to the given key among the provided list of objects."
 const allValues = (listOfObjects, field) => {
-  let values = listOfObjects.reduce(
-    (results, obj) => results.add(obj[field]), 
-    new Set()
-  )
-  return [...values]
+  return [ ...new Set(listOfObjects.map(obj => obj[field])) ]
 }
 
+myself.allKeys = "Returns an array of every unique key among the objects provided. Takes an optional regular expression to filter the results."
 const allKeys = (listOfObjects, regex=/(?:)/) => {
   // The empty regex /(?:)/ matches any string
-  let keys = listOfObjects.reduce((results, obj) => {
-    if (obj == null) return results
-    Object.keys(obj).forEach(key => {
-      if (regex.test(key)) results.add(key)
-    })
-    return results
-  }, new Set())
-  return [...keys]
+  let uniqueKeys = new Set( [].concat(...listOfObjects.map(Object.keys)) )
+  return [...uniqueKeys].filter(key => regex.test(key))
 }
 
 const filterObject = (
@@ -113,6 +107,9 @@ const intersection = (listOfObjects) => {
 }
 // TODO: ~~make results true union/intersection/symmetric difference~~ figure
 // out what the heck 'multiDiff' even means; why does anyone need this function?
+// Possible A: outliers! I think I wanted a way to find values that stood out
+// among a group of similar objects (i.e. reduce it to just its
+// "differences"). I should use general.makeGroups for that...
 const multiDiff = (listOfObjects) => {
   if (listOfObjects.length <= 1) return []
   let allDiffs = []
@@ -135,14 +132,13 @@ const extractNested = (obj) => {
   let flat = {}
   let nested = {}
   for (const [key, value] of Object.entries(obj)) {
-  // Object.entries(obj).forEach(([key, value]) => {
     if (value != null && typeof value === 'object') {
       nested[key] = value
     }
     else {
       flat[key] = value
     }
-  }//)
+  }
   return { flat, nested }
 }
 
@@ -150,7 +146,14 @@ const escapeCsvEntry = (entry) => {
   entry = String(entry ?? '')
   return /,|\n|"/.test(entry) ? `"${entry.replaceAll('"', '""')}"` : entry
 }
-const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
+const toCsv = (
+  listOfObjects,
+  {
+    fileName = 'output.csv',
+    filePath = './',
+    sortHeader = false
+  } = {}
+) => {
   const makeLine = (header, obj=false) => {
     return header.map(key => escapeCsvEntry(obj ? obj[key] : key)).join(',')
   }
@@ -160,10 +163,9 @@ const toCsv = (listOfObjects, fileName='output.csv', filePath='./') => {
     console.warn(`No data! '${fileName}' will be empty.`)
   }
   else {
-    let allKeys = [].concat(...listOfObjects.map(Object.keys))
-    let uniqueKeys = new Set(allKeys)
-    header = [...uniqueKeys]
-    listOfObjects.forEach(obj => body.push(makeLine(header, obj)))
+    header = allKeys(listOfObjects)
+    if (sortHeader) header.sort(textSorter())
+    for (const obj of listOfObjects) body.push(makeLine(header, obj))
   }
   let output = [makeLine(header), ...body]
   try {
@@ -187,6 +189,7 @@ const excludeOpts = { includeOnMatch: false }
 const excludeValOpts = { filterOn: 'values', includeOnMatch: false }
 
 module.exports = {
+  docs: () => print(myself),
   merge,
   recombine,
   allValues,
@@ -208,3 +211,4 @@ module.exports = {
   escapeCsvEntry,
   toCsv,
 }
+
