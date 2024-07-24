@@ -1,7 +1,7 @@
 const utils = require('./utils')
 const { rollDice } = utils.random
 
-const runAverage = (rounds, days=30) => {
+const runAverage = (rounds, days=30, options) => {
   const averagePerRound = {
     singles: 0,
     doubles: 0,
@@ -23,7 +23,7 @@ const runAverage = (rounds, days=30) => {
   
   const start = Date.now()
   for (const round of utils.range(rounds)) {
-    const results = playDice(days, true)
+    const results = playDice(days, true, options)
     for (let [key, value] of Object.entries(results)) {
       if (key === 'totalScore') {
         key = 'combinedScore'
@@ -45,7 +45,21 @@ const runAverage = (rounds, days=30) => {
   }
 }
 
-const playDice = (days, silent=false) => {
+const playDice = (
+  days,
+  silent = false,
+  options = {
+    baseScore = 2,
+    highDie = 5,
+    highDieScore = 1,
+    singlesScore = 0,
+    tripScore = 1,
+    pairScore = 4,
+    pairDays = 2,
+    perfectScore = 7,
+    perfectDays = 7,
+  } = {},
+) => {
   const totals = [
     0,
     0,
@@ -79,17 +93,20 @@ const playDice = (days, silent=false) => {
       }
     }
     
-    let score = 1
-    if (dupeType === 1) {
-      score += 5
-      days += 2
+    let score = options.baseScore
+    if (dupeType === 0) score += options.singlesScore
+    else if (dupeType === 1) {
+      score += options.pairScore
+      days += options.pairDays
     }
-    else if (dupeType === 3) score += 1
+    else if (dupeType === 3) score += options.tripScore
     else if (dupeType === 4) {
-      score += 15
-      days += 7
+      score += options.perfectScore
+      days += options.perfectDays
     }
-    for (const die of results) score += die >= 5 ? 1 : 0
+    for (const die of results) {
+      score += die >= options.highDie ? options.highDieScore : 0
+    }
     totals[dupeType] += 1
     totalScore += score
     if (!silent) {
