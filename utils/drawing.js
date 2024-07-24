@@ -3,7 +3,7 @@ const { print, arrayOf } = require('./general')
 
 myself.draw = "Prints the given string or string array to the console as ASCII art."
 const draw = (picture) => {
-  console.log(typeof picture === 'string' ? picture : picture.join('\n'))
+  console.log(Array.isArray(picture) ? picture.join('\n') : picture)
   return picture
 }
 myself.drawRow = "Prints an array of ASCII images side-by-side."
