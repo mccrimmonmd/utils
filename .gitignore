@@ -1,5 +1,6 @@
 node_modules/
 *.code-workspace
 *.nsfw
+*.swp
 .env
 
