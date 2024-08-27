@@ -2,6 +2,14 @@
 db.getCollection('slingmetrics.CMW')
   .find({date: '09/14/2021'})
 
+// find objects updated within a certain range
+db.getCollection('cyclone')
+  .find({updatedAt: {
+    $gte: new Date('2020-05-14'),
+    $lt: new Date('2020-05-15')
+  }})
+  .sort({validTo: 1})
+
 // find objects with requests > 0; sort by creation date (descending)
 db.getCollection('slingmetrics.CMW')
   .find({'endpoints.totalRequests': {$gt: 0}})
