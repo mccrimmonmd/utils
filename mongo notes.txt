@@ -15,9 +15,9 @@ db.getCollection('slingmetrics.CMW')
   .find({'endpoints.totalRequests': {$gt: 0}})
   .sort({createdAt: -1})
 
-// this doesn't work--not sure what I was trying
+// different way of doing above (not sorted)
 db.getCollection('slingmetrics.CMW')
-  .aggregate({$match: {'endpoints.totalRequests': {$gt: 0}}})
+  .aggregate([{$match: {'endpoints.totalRequests': {$gt: 0}}}])
 
 // search using regular expression literal
 db.getCollection('locations')
