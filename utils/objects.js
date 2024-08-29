@@ -4,6 +4,7 @@ const path = require('path')
 const myself = {} // documentation
 const { print, isEmpty, textSorter } = require('./general')
 
+myself.merge = "Merges a secondary or 'default' object into a primary or 'reference' object. Returns a new object that matches the primary, except where the secondary contains a non-empty value under a key that's empty in the primary. Uses general.isEmpty to determine what counts as empty."
 const merge = (
   a, b,
   {
@@ -12,9 +13,9 @@ const merge = (
     neverEmpty = [0],
   } = {}
 ) => {
+  if (a == null || b == null) return a ?? b
   let primary = decider(a, b)
   let secondary = primary === a ? b : a
-  if (primary == null || secondary == null) return primary ?? secondary
   let merged = { ...primary }
   let options = [alwaysEmpty, neverEmpty]
   for (const [key, val] of Object.entries(secondary)) {
@@ -25,7 +26,7 @@ const merge = (
   return merged
 }
 
-myself.recombine = "Tranforms [{ id: xxx, key: val1 }, { id: xxx, key: val2 }, { id: yyy, yKey: yVal }, ...] into [{ id: xxx, key: [val1, val2] }, { id: yyy, yKey: [yVal] }, ...]"
+myself.recombine = "Tranforms [{ id: xid, key: val1 }, { id: xid, key: val2 }, { id: yid, key: val3 }, ...] into [{ id: xid, key: [val1, val2] }, { id: yid, key: [val3] }, ...]"
 const recombine = (listOfObjects, getId, showDuplicates=true) => {
   let mapped = listOfObjects.reduce((combined, obj) => {
     let id = getId(obj)
@@ -57,6 +58,7 @@ const allKeys = (listOfObjects, regex=/(?:)/) => {
   return [...uniqueKeys].filter(key => regex.test(key))
 }
 
+myself.filterObject = "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a regular expression or an array."
 const filterObject = (
   obj,
   filter,
