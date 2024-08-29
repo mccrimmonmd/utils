@@ -12,4 +12,14 @@ module.exports = {
   random,
   drawing,
   objects,
-} // = require('./utils')
+}
+
+/*
+var {
+  random,
+  drawing,
+  objects,
+  ...general
+} = require('./utils')
+*/
+
