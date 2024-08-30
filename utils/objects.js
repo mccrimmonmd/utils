@@ -4,7 +4,7 @@ const path = require('path')
 const myself = {} // documentation
 const { print, isEmpty, textSorter } = require('./general')
 
-myself.merge = "Merges a secondary or 'default' object into a primary or 'reference' object. Returns a new object that matches the primary, except where the secondary contains a non-empty value under a key that's empty in the primary. Uses general.isEmpty to determine what counts as empty."
+myself.merge = "Merges a secondary or 'fallback' object into a primary or 'reference' object. Returns a new object that matches the primary, plus all non-empty values from the secondary that are empty in the primary. Uses general.isEmpty to determine what counts as empty."
 const merge = (
   a, b,
   {
@@ -130,6 +130,7 @@ const multiDiff = (listOfObjects) => {
   return allDiffs
 }
 
+myself.extractNested = "Flattens (by one) the given object, returning the flattened values and, separately, any remaining nested values."
 const extractNested = (obj) => {
   let flat = {}
   let nested = {}
@@ -144,10 +145,12 @@ const extractNested = (obj) => {
   return { flat, nested }
 }
 
+myself.escapeCsvEntry = "Helper function for 'toCsv'. Converts an object to a string and escapes any quotes, commas, or newlines."
 const escapeCsvEntry = (entry) => {
   entry = String(entry ?? '')
   return /,|\n|"/.test(entry) ? `"${entry.replaceAll('"', '""')}"` : entry
 }
+myself.toCsv = "Converts a list of objects into a CSV file, writing the output to the given destination ('./output.csv' by default). Also returns the output as a string."
 const toCsv = (
   listOfObjects,
   {
