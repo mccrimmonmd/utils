@@ -4,6 +4,7 @@ module.exports = (
   {
     compareFuncsWith = false,
     compareBigIntToNumber = false
+    maxDepth = null,
   } = {}
 ) => {
   if (objA === objB) {
@@ -45,39 +46,46 @@ module.exports = (
     if (Array.isArray(objA) !== Array.isArray(objB)) {
       return false
     }
+    if (maxDepth !== null && maxDepth <= 0) {
+      return false
+    }
 
     // TODO: test for iterability (otherwise fails on Maps, Sets, etc.)
-
     let aKeys = Object.keys(objA)
     let bKeys = Object.keys(objB)
     if (aKeys.length !== bKeys.length) {
       return false
     }
 
-    // circular reference tracking
-    let wasComparedTo = Symbol.for('circularRefKey')
-    let aComps = objA[wasComparedTo]
-    let bComps = objB[wasComparedTo]
-    if (aComps && bComps && aComps.some(id => bComps.includes(id))) {
-      // if these two objects have already been compared, then we know they
-      // either contain a circular reference, or their parent object contains a
-      // duplicate reference -- either way, they are equal up to this point.
-      return true
+    if (maxDepth === null) {
+      // circular reference tracking
+      let wasComparedTo = Symbol.for('circularRefKey')
+      let aComps = objA[wasComparedTo]
+      let bComps = objB[wasComparedTo]
+      if (aComps && bComps && aComps.some(id => bComps.includes(id))) {
+        // if these two objects have already been compared, then we know they
+        // either contain a circular reference, or their parent object contains a
+        // duplicate reference -- either way, they are equal up to this point.
+        return true
+      }
+      else {
+        // otherwise, we have to follow the references
+        let comparisonId = Symbol()
+        objA[wasComparedTo] = aComps ? aComps.concat(comparisonId) : [comparisonId]
+        objB[wasComparedTo] = bComps ? bComps.concat(comparisonId) : [comparisonId]
+      }
     }
     else {
-      // otherwise, we have to follow the references
-      let comparisonId = Symbol()
-      objA[wasComparedTo] = aComps ? aComps.concat(comparisonId) : [comparisonId]
-      objB[wasComparedTo] = bComps ? bComps.concat(comparisonId) : [comparisonId]
+      maxDepth -= 1
     }
-    
+
     aKeys.sort()
     bKeys.sort()
     return Object.entries(aKeys).every(([i, aKey]) => {
       if (aKey !== bKeys[i]) {
         return false
       }
-      return objEquals(objA[aKey], objB[aKey], {compareFuncsWith, compareBigIntToNumber})
+      return objEquals(objA[aKey], objB[aKey], {compareFuncsWith, compareBigIntToNumber, maxDepth})
       // TODO: test on circularly-nested objects
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol
