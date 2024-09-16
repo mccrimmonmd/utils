@@ -13,7 +13,7 @@ const randInt = (lessThan) => Math.trunc(randNum(lessThan))
 myself.rollDie = "Same as randInt, but with 1 added to the result."
 const rollDie = (sides=6) => randInt(sides) + 1
 
-myself.rollDice = "Returns an array of random integers between 1 and 'sides', inclusive"
+myself.rollDice = "Returns an array of random integers between 1 and 'sides', inclusive."
 const rollDice = (number, sides=6) => {
   let roller = () => rollDie(sides)
   return arrayOf(number, roller)
@@ -43,6 +43,7 @@ const shuffled = (arr) => {
   arr = [...arr]
   for (let end = arr.length - 1; end > 0; end--) {
     let swapFrom = randInt(end + 1) // elements can be 'swapped' with themselves
+    // swap(arr, swapFrom, end)
     [ arr[end], arr[swapFrom] ] = [ arr[swapFrom], arr[end] ]
   }
   return arr

@@ -58,7 +58,7 @@ const allKeys = (listOfObjects, regex=/(?:)/) => {
   return [...uniqueKeys].filter(key => regex.test(key))
 }
 
-myself.filterObject = "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a regular expression or an array."
+myself.filter.object = "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a regular expression or an array."
 const filterObject = (
   obj,
   filter,
@@ -188,6 +188,9 @@ const toCsv = (
   }
   return output
 }
+
+myself.filter.many = "Convenience function for mapping filter.object to a list of multiple objects."
+myself.filter.xxx = "Convenience functions for using filter.object with preset options: byKeys (default), byValues, excludeKeys, excludeValues" 
 
 const valOpts = { filterOn: 'values' }
 const excludeOpts = { includeOnMatch: false }

@@ -3,7 +3,7 @@ module.exports = (
   objB, 
   {
     compareFuncsWith = false,
-    compareBigIntToNumber = false
+    compareBigIntToNumber = false,
     maxDepth = null,
   } = {}
 ) => {

@@ -41,8 +41,8 @@ const roundDecimal = (value, places=2) => {
 
 myself.arithmeticMean = "Calculates the arithmetic mean of a list of numbers"
 const arithmeticMean = (values) => {
-  if (values == null || !values.length) return null
-  values.reduce((sum, value) => sum + value, 0) / values.length
+  if (values == null || !values.length) return NaN
+  return values.reduce((sum, value) => sum + value, 0) / values.length
 }
 
 myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge."
