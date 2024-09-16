@@ -75,9 +75,6 @@ module.exports = (
         objB[wasComparedTo] = bComps ? bComps.concat(comparisonId) : [comparisonId]
       }
     }
-    else {
-      maxDepth -= 1
-    }
 
     aKeys.sort()
     bKeys.sort()
@@ -85,7 +82,15 @@ module.exports = (
       if (aKey !== bKeys[i]) {
         return false
       }
-      return objEquals(objA[aKey], objB[aKey], {compareFuncsWith, compareBigIntToNumber, maxDepth})
+      return objEquals(
+        objA[aKey],
+        objB[aKey],
+        {
+          compareFuncsWith,
+          compareBigIntToNumber,
+          maxDepth: maxDepth && maxDepth - 1,
+        }
+      )
       // TODO: test on circularly-nested objects
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol
