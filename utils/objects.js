@@ -150,7 +150,7 @@ const escapeCsvEntry = (entry) => {
   entry = String(entry ?? '')
   return /,|\n|"/.test(entry) ? `"${entry.replaceAll('"', '""')}"` : entry
 }
-myself.toCsv = "Converts a list of objects into a CSV file, writing the output to the given destination ('./output.csv' by default). Also returns the output as a string."
+myself.toCsv = "Converts a list of objects into a CSV file and returns the result as a string. Also writes the output to the given destination ('./output.csv' by default), unless fileName or filePath are set to null."
 const toCsv = (
   listOfObjects,
   {
@@ -165,7 +165,7 @@ const toCsv = (
   let header = []
   let body = []
   if (listOfObjects.length === 0) {
-    console.warn(`No data! '${fileName}' will be empty.`)
+    console.warn('No data! Output will be empty.')
   }
   else {
     header = allKeys(listOfObjects)
@@ -173,18 +173,20 @@ const toCsv = (
     for (const obj of listOfObjects) body.push(makeLine(header, obj))
   }
   let output = [makeLine(header), ...body]
-  try {
-    fs.writeFileSync(path.join(filePath, fileName), output.join('\n'))
-  }
-  catch (err) {
-    console.log(`Error writing data to '${fileName}': ${err}`)
-    let extra = output.length - 100
-    let elided = ''
-    if (extra > 0) {
-      output = output.slice(0, 100)
-      elided = `... ${extra} more items`
+  if (fileName != null && filePath != null) {
+    try {
+      fs.writeFileSync(path.join(filePath, fileName), output.join('\n'))
     }
-    console.debug('Attempted output:\n', output, elided)
+    catch (err) {
+      console.log(`Error writing data to '${fileName}': ${err}`)
+      let extra = output.length - 100
+      let elided = ''
+      if (extra > 0) {
+        output = output.slice(0, 100)
+        elided = `... ${extra} more items`
+      }
+      console.debug('Attempted output:\n', output, elided)
+    }
   }
   return output
 }
