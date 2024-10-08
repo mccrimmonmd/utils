@@ -1,14 +1,16 @@
-const utils = require('./utils')
-const { rollDice } = utils.random
+const { range, findDupes } = require('./general')
+const { sum, roundDecimal } = require('./numbers')
+const { rollDice } = require('./random')
 
 const runAverage = (rounds, days=30, options) => {
+  if (rounds < 1) rounds = 1
   const averagePerRound = {
     singles: 0,
     doubles: 0,
     triples: 0,
     pairs: 0,
     perfects: 0,
-    combinedScore: 0,
+    totalScore: 0,
     totalDays: 0,
   }
   const variation = {
@@ -17,18 +19,14 @@ const runAverage = (rounds, days=30, options) => {
     triples: [],
     pairs: [],
     perfects: [],
-    combinedScore: [],
+    totalScore: [],
     totalDays: [],
   }
   
   const start = Date.now()
-  for (const round of utils.range(rounds)) {
-    const results = playDice(days, true, options)
+  for (const _ of range(rounds)) {
+    const results = playDice(days, false, options)
     for (let [key, value] of Object.entries(results)) {
-      if (key === 'totalScore') {
-        key = 'combinedScore'
-        value *= 2
-      }
       variation[key][0] = Math.min(value, variation[key][0] ?? Infinity)
       variation[key][1] = Math.max(value, variation[key][1] ?? -Infinity)
       averagePerRound[key] += value
@@ -36,7 +34,7 @@ const runAverage = (rounds, days=30, options) => {
   }
   console.log(`time: ${Date.now() - start}ms`)
   for (const [key, value] of Object.entries(averagePerRound)) {
-    averagePerRound[key] = utils.roundDecimal(value / rounds, 5)
+    averagePerRound[key] = roundDecimal(value / rounds, 5)
   }
   
   return {
@@ -47,8 +45,10 @@ const runAverage = (rounds, days=30, options) => {
 
 const playDice = (
   days,
-  silent = false,
+  verbose = true,
   options = {
+    players = 2,
+    dice = 4,
     baseScore = 2,
     highDie = 5,
     highDieScore = 1,
@@ -74,44 +74,62 @@ const playDice = (
     'Triple',
     'Perfect Roll'
   ]
+  const findDupeTypes = (dupeSets) => {
+    const dupeTypes = []
+    for (const [i, dupes] of dupeSets.entries()) {
+      dupeTypes[i] = 0
+      if (dupes.length > 0) {
+        if (dupes.length === 2) {
+          dupeTypes[i] = 1
+        }
+        else {
+          dupeTypes[i] = dupes[0].length
+        }
+      }
+    }
+    return dupeTypes
+  }
   let totalScore = 0
   let totalDays = 0
   while (days > 0) {
     totalDays += 1
     days -= 1
     
-    let dupeType = 0
-    const results = rollDice(4)
-    const dupes = utils.findDupes(results)
-    if (dupes.length === 0) dupeType = 0
-    else {
-      if (dupes.length === 2) {
-        dupeType = 1
-      }
-      else {
-        dupeType = dupes[0].length
-      }
+    const resultSets = []
+    const dupeSets = []
+    for (const player of range(options.players)) {
+      resultSets[player] = rollDice(options.dice)
+      dupeSets[player] = findDupes(resultSets[player])
     }
+    const dupeTypes = findDupeTypes(dupeSets)
     
-    let score = options.baseScore
-    if (dupeType === 0) score += options.singlesScore
-    else if (dupeType === 1) {
-      score += options.pairScore
-      days += options.pairDays
+    const scores = []
+    for (const [i, dupeType] of dupeTypes.entries()) {
+      let score = options.baseScore
+      if (dupeType === 0) score += options.singlesScore
+      else if (dupeType === 1) {
+        score += options.pairScore
+        days += options.pairDays
+      }
+      else if (dupeType === 3) score += options.tripScore
+      else if (dupeType === 4) {
+        score += options.perfectScore
+        days += options.perfectDays
+      }
+      totals[dupeType] += 1
+      score += resultSets[i].filter(die => die >= options.highDie)
+        .length * options.highDieScore
+      scores[i] = score
     }
-    else if (dupeType === 3) score += options.tripScore
-    else if (dupeType === 4) {
-      score += options.perfectScore
-      days += options.perfectDays
-    }
-    for (const die of results) {
-      score += die >= options.highDie ? options.highDieScore : 0
-    }
-    totals[dupeType] += 1
-    totalScore += score
-    if (!silent) {
-      var name = names[dupeType]
-      console.log(results, `(${score} points)`, name && ` - ${name}!`)
+    const combinedScore = scores.reduce(sum)
+    totalScore += combinedScore
+    if (verbose) {
+      console.log(`**Day ${totalDays}**`)
+      for (const i of range(options.players)) {
+        var name = names[dupeTypes[i]]
+        console.log(`- ${resultSets[i]} (${scores[i]} points)`, name && ` - ${name}!`)
+      }
+      console.log(`Combined score: ${combinedScore}`)
     }
   }
   return {
