@@ -28,7 +28,7 @@ const merge = (
 }
 
 myself.recombine = "Tranforms [{ id: xid, key: val1 }, { id: xid, key: val2 }, { id: yid, key: val3 }, ...] into [{ id: xid, key: [val1, val2] }, { id: yid, key: [val3] }, ...]"
-const recombine = (listOfObjects, getId, showDuplicates=true) => {
+const recombine = (listOfObjects, getId, showDuplicates = true) => {
   let mapped = listOfObjects.reduce((combined, obj) => {
     let id = getId(obj)
     let referenceObject = combined[id] ?? {} // masterObject?
@@ -53,7 +53,7 @@ const allValues = (listOfObjects, field) => {
 }
 
 myself.allKeys = "Returns an array of every unique key among the objects provided. Takes an optional regular expression to filter the results."
-const allKeys = (listOfObjects, regex=/(?:)/) => {
+const allKeys = (listOfObjects, regex = /(?:)/) => {
   // The empty regex /(?:)/ matches any string
   let uniqueKeys = new Set( [].concat(...listOfObjects.map(Object.keys)) )
   return [...uniqueKeys].filter(key => regex.test(key))
@@ -161,7 +161,7 @@ const toCsv = (
     sortHeader = false
   } = {}
 ) => {
-  const makeLine = (header, obj=false) => {
+  const makeLine = (header, obj = false) => {
     return header.map(key => escapeCsvEntry(obj ? obj[key] : key)).join(',')
   }
   let header = []

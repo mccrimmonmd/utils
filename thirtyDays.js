@@ -2,7 +2,7 @@ const { range, findDupes } = require('./general')
 const { sum, roundDecimal } = require('./numbers')
 const { rollDice } = require('./random')
 
-const runAverage = (rounds, days=30, options) => {
+const runAverage = (rounds, days = 30, options) => {
   if (rounds < 1) rounds = 1
   const averagePerRound = {
     singles: 0,

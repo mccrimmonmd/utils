@@ -4,7 +4,7 @@ myself.range = "Python-style range function. Generator."
 // Source: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#sequence_generator_range>
 // const range = (start, stop, step) =>
 //   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step)
-const range = function* (start=0, stop, step=1) {
+const range = function* (start = 0, stop, step = 1) {
   if (stop === undefined) {
     stop = start
     start = 0
@@ -17,7 +17,7 @@ const range = function* (start=0, stop, step=1) {
 }
 
 myself.ifFunc = "Pure-ish 'if' function with short-circuiting. Just because."
-const ifFunc = (condition, onTrue, onFalse=() => null) => {
+const ifFunc = (condition, onTrue, onFalse = () => null) => {
   let forceTrue = (thingy) => thingy || true
   let result
   ;( condition && forceTrue(result = onTrue()) ) || ( result = onFalse() )
@@ -25,13 +25,13 @@ const ifFunc = (condition, onTrue, onFalse=() => null) => {
 }
 
 myself.print = "console.dir optimized for the Node.js REPL."
-const print = (obj, depth=null, repl=true) => {
+const print = (obj, depth = null, repl = true) => {
   console.dir(obj, { depth })
   return repl ? undefined : obj
 }
 
 myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge."
-const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
+const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   if (alwaysEmpty.includes(value)) return true
   if (neverEmpty.includes(value)) return false
   
@@ -50,7 +50,7 @@ const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
 myself.makeGroups = "Sorts a list into caller-determined 'buckets' (default: identity). Returns a Map."
-const makeGroups = (someList, idFunc=(item) => item, strong=false) => {
+const makeGroups = (someList, idFunc = (item) => item, strong = false) => {
   let cache = new Map()
   let identifier = (item) => {
     if (cache.has(item)) return cache.get(item)
@@ -77,13 +77,13 @@ const deDup = (
   .map(group => group.reduce(decider))
 }
 myself.findDupes = "The complement of deDup."
-const findDupes = (someList, identifier=(item) => item) => {
+const findDupes = (someList, identifier = (item) => item) => {
   return [...makeGroups(someList, identifier, true).values()]
   .filter(group => group.length > 1)
 }
 
 myself.textSorter = "Returns a function optimized for sorting arrays of text. Accepts an additional parameter that can be: a string/symbol (for key access), a function (that returns the value to sort by), or an array of any mix of the three (for breaking ties). Handles mixed-case text sensibly but otherwise no smarter than the default sort order." 
-const textSorter = (sortOn, reversed=false) => {
+const textSorter = (sortOn, reversed = false) => {
   const sorters = Array.isArray(sortOn) ? sortOn : [sortOn]
   const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
   const resolve = (a, b, sorter) => {
@@ -126,7 +126,7 @@ const arrayOf = (length, item) => Array.from({ length }, (_, i) => {
   else return item
 })
 myself.stringOf = "arrayOf but for Strings."
-const stringOf = (n, snippet=' ', joinWith='') => {
+const stringOf = (n, snippet = ' ', joinWith = '') => {
   return String(joinWith) === ''
     ? String(snippet).repeat(n)
     : arrayOf(n, String(snippet)).join(joinWith)
@@ -151,7 +151,7 @@ const arrayEquals = (a, b) =>
 
 myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be commented)."
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
-const multilineRegex = (parts, flags='') =>
+const multilineRegex = (parts, flags = '') =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
 
 module.exports = {
