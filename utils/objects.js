@@ -3,6 +3,7 @@ const path = require('path')
 
 const myself = {} // documentation
 const { print, isEmpty, textSorter } = require('./general')
+const { sum, product } = require('./numbers')
 
 myself.merge = "Merges a secondary or 'fallback' object into a primary or 'reference' object. Returns a new object that matches the primary, plus all non-empty values from the secondary that are empty in the primary. Uses general.isEmpty to determine what counts as empty."
 const merge = (
@@ -192,6 +193,14 @@ const toCsv = (
   return output
 }
 
+myself.count = "Calculates the total of a list of objects. The number each object represents is determined by the given function (default Number())."
+const count = (listOfObjects, getValue = (obj) => Number(obj)) =>
+  listOfObjects.map(getValue).reduce(sum, 0)
+
+myself.multiply = "Same as count, but with multiplication instead of addition."
+const multiply = (listOfObjects, getValue = (obj) => Number(obj)) =>
+  listOfObjects.map(getValue).reduce(product, 1)
+
 myself.filter.many = "Convenience function for mapping filter.object to a list of multiple objects."
 myself.filter.xxxx = "Convenience functions for using filter.object with preset options: byKeys (default), byValues, excludeKeys, excludeValues" 
 
@@ -221,5 +230,7 @@ module.exports = {
   extractNested,
   escapeCsvEntry,
   toCsv,
+  count,
+  multiply,
 }
 
