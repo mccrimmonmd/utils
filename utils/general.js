@@ -1,10 +1,9 @@
 const myself = {} // documentation
 
+myself.range = "Python-style range function. Generator."
 // Source: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#sequence_generator_range>
 // const range = (start, stop, step) =>
 //   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step)
-
-myself.range = "Python-style range function. Generator."
 const range = function* (start=0, stop, step=1) {
   if (stop === undefined) {
     stop = start
@@ -111,9 +110,9 @@ const textSorter = (sortOn, reversed=false) => {
         [ a, b ] = [ a[sorter], b[sorter] ]
         break
       case 'undefined':
-        break
       case 'object':
-        if (sorter === null) break
+        // identity
+        if (sorter == null) break
       default:
         throw new Error(`Unexpected type '${typeof sorter}' for sorter parameter`)
     }
@@ -150,11 +149,11 @@ const stringOf = (n, snippet=' ', joinWith='') => {
 myself.swap = "Swaps two elements of an Array (in-place)."
 const swap = (arr, i, j) => {
   // Source: <https://stackoverflow.com/questions/872310/swap-array-elements-in-javascript>
-  // [ arr[i], arr[j] ] = [ arr[j], arr[i] ]
+  [ arr[i], arr[j] ] = [ arr[j], arr[i] ]
   // arr[i] = arr.splice(j, 1, arr[i])[0]
-  let swapping = arr[i]
-  arr[i] = arr[j]
-  arr[j] = swapping
+  // let swapping = arr[i]
+  // arr[i] = arr[j]
+  // arr[j] = swapping
   return arr
 }
 
@@ -164,7 +163,7 @@ const arrayEquals = (a, b) =>
   a.length === b.length &&
   a.every((element, index) => element === b[index])
 
-myself.multilineRegex = "Create a RegEx that spans multiple lines (for commenting)."
+myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be commented)."
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
 const multilineRegex = (parts, flags='') =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)

@@ -16,7 +16,7 @@ module.exports = (
       if (typeOfA === 'bigint' && Number.isInteger(objB)) {
         return objA === BigInt(objB)
       }
-      if (typeof objB === 'bigint' && Number.isInteger(objA)) {
+      if (Number.isInteger(objA) && typeof objB === 'bigint') {
         return BigInt(objA) === objB
       }
     }
