@@ -48,6 +48,7 @@ const shuffled = (arr) => {
   return arr
 }
 // Alternate implementation - slower, but more intuitive
+// (also works on sparse arrays)
   // let oldDeck = arr
   // let pickACard = Object.keys(oldDeck)
   // let newDeck = []
