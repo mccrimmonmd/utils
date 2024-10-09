@@ -161,7 +161,7 @@ const toCsv = (
     sortHeader = false
   } = {}
 ) => {
-  const makeLine = (header, obj = false) => {
+  const makeLine = (header, obj = null) => {
     return header.map(key => escapeCsvEntry(obj ? obj[key] : key)).join(',')
   }
   let header = []

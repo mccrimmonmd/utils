@@ -101,13 +101,21 @@ const fullNameStats = (results, normalize = false) => {
   return fullNames
 }
 
-const generateMultiples = (amount = 100, dice = 4, sides = 6) => 
+const generateMultiples = (amount = 1000, dice = 4, sides = 6) => 
   arrayOf(amount, () => findMultiples(dice, sides))
 
 const printMultiples = (multiples) =>
   console.log(multiples.sort(), '-', getShortNames(multiples))
 
-const runStatsTest = (iters = 100, verbose = false, dice = 4, sides = 6) => {
+const runStatsTest = (
+  {
+    iters = 1000,
+    verbose = false,
+    normalize = true,
+    dice = 4,
+    sides = 6
+  } = {}
+) => {
   const start = Date.now()
   let results = generateMultiples(iters, dice, sides)
   if (verbose) {
@@ -116,12 +124,12 @@ const runStatsTest = (iters = 100, verbose = false, dice = 4, sides = 6) => {
     }
   }
   console.log(`split: ${Date.now() - start}ms`)
-  const stats = fullNameStats(results, !verbose)
+  const stats = fullNameStats(results, normalize)
   console.log(`time: ${Date.now() - start}ms`)
   return stats
 }
 
-// runStatsTest()
+// runStatsTest({ verbose: true })
 
 module.exports = {
   docs: () => print(myself),

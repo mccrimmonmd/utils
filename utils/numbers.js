@@ -28,7 +28,7 @@ myself.stats = "Collects min, max, total, and count in a persistent object. For 
 const stats = (totalStats, value) => {
   if (typeof totalStats === 'number') {
     // convert initial value into stats object
-    totalStats = {
+    return {
       min: totalStats,
       max: totalStats,
       total: totalStats,
@@ -53,4 +53,3 @@ module.exports = {
   average,
   stats,
 }
-
