@@ -27,6 +27,10 @@ db.getCollection('locations')
 db.getCollection('interfaces')
   .find({circuitId: {$ne: null}})
 
+// search for records with null *or* missing values
+db.getCollection('cyclone.certs')
+  .find({requestor: null})
+
 // search with logic conditions; count number of results
 db.getCollection('logViewer.log')
   .find({level: {$ne: 'error'}, appName: {$ne: 'slingmetrics'}})
