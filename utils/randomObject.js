@@ -1,5 +1,8 @@
 const { randInt, randDigit, randChoice, coinFlip } = require('./random')
 
+const LETTERS = 'abcdefghijklmnopqrstuvwxyz'.split('')
+const GETTERS = [getNum, getString, getBool]
+
 const getNum = () => randDigit() * coinFlip() ? -1 : 1
 const getString = () => {
   let str = ''
@@ -26,9 +29,6 @@ const getObj = (maxLength, isArray = coinFlip()) => {
   return obj
 }
 const getFunc = () => ()=>{}
-
-const LETTERS = 'abcdefghijklmnopqrstuvwxyz'.split('')
-const GETTERS = [getNum, getString, getBool]
 
 module.exports = (
   {

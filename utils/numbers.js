@@ -43,7 +43,6 @@ const statsInit = (value) => {
     count: 1,
   }
 }
-
 myself.stats = "Calculates min, max, total, and count. For use as an argument to Array.prototype.reduce. Can be used with a loop to combine statistics for multiple different arrays."
 const stats = (totalStats, value) => {
   // initial value when collecting stats from multiple arrays

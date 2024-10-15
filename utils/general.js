@@ -156,9 +156,6 @@ const swap = (arr, i, j) => {
   // Source: <https://stackoverflow.com/questions/872310/swap-array-elements-in-javascript>
   [ arr[i], arr[j] ] = [ arr[j], arr[i] ]
   // arr[i] = arr.splice(j, 1, arr[i])[0]
-  // let swapping = arr[i]
-  // arr[i] = arr[j]
-  // arr[j] = swapping
   return arr
 }
 
