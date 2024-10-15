@@ -6,8 +6,16 @@ const { rollDie, rollDice } = require('./random')
 myself.rollDie = "Simulates a single roll of a die. Defaults to d6"
 myself.rollDice = "Generates a list of random dice rolls. Defaults to 4d6"
 
-const findMultiples = (dice = 4, sides = 6) => {
-  if (!Array.isArray(dice)) dice = rollDice(dice, sides)
+const countSides = (dice = 4, sides) => {
+  // 'sides' is optional, but it can't be a default parameter because the
+  // default changes depending on whether 'dice' is a number or an array
+  if (Array.isArray(dice)) {
+    sides = sides ?? Math.max(...dice)
+  }
+  else {
+    sides = sides ?? 6
+    dice = rollDice(dice, sides)
+  }
   let multiples = arrayOf(sides, 0)
   for (const result of dice) multiples[result - 1] += 1
   return multiples
@@ -102,7 +110,7 @@ const fullNameStats = (results, normalize = false) => {
 }
 
 const generateMultiples = (amount = 1000, dice = 4, sides = 6) => 
-  arrayOf(amount, () => findMultiples(dice, sides))
+  arrayOf(amount, () => countSides(dice, sides))
 
 const printMultiples = (multiples) =>
   console.log(multiples.sort(), '-', getShortNames(multiples))
@@ -135,7 +143,7 @@ module.exports = {
   docs: () => print(myself),
   rollDie,
   rollDice,
-  findMultiples,
+  countSides,
   getShortNames,
   getFullNames,
   fullNameStats,
