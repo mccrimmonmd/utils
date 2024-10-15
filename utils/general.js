@@ -16,7 +16,24 @@ const range = function* (start = 0, stop, step = 1) {
   }
 }
 
-myself.ifFunc = "Pure-ish 'if' function with short-circuiting. Just because."
+myself.zip = "Python-style zip function: combines a list of arrays into a list of pairs/triplets/etc. Takes optional parameters for padding the results when the input arrays are different lengths; if padding is disabled, the output will be the length of the shortest input array. (Note: normally I would use a single parameter with a default of 'false' or similar, but because padWith can potentially be anything, including false and undefined, two separate parameters are necessary.)"
+const zip = (arrays, { padResults = false, padWith } = {}) => {
+  const len = arrays
+    .map(array => array.length)
+    .reduce(padResults ? Math.max : Math.min)
+  const zipped = []
+  for (const i of range(len)) {
+    let group = []
+    for (const array of arrays) {
+      let val = (padResults && i >= array.length) ? padWith : array[i]
+      group.push(val)
+    }
+    zipped.push(group)
+  }
+  return zipped
+}
+
+myself.ifFunc = "Pure-ish 'if' function with short-circuiting. Just because. (Only 'ish' because, without the side effect of assignment, the return value of the executed branch would be lost, making the construct useless unless the branches themselves had side effects.)"
 const ifFunc = (condition, onTrue, onFalse = () => null) => {
   let forceTrue = (thingy) => thingy || true
   let result
@@ -159,6 +176,7 @@ const multilineRegex = (parts, flags = '') =>
 module.exports = {
   docs: () => print(myself),
   range,
+  zip,
   ifFunc,
   print,
   isEmpty,
