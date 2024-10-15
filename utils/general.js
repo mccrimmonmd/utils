@@ -162,6 +162,9 @@ const swap = (arr, i, j) => {
   return arr
 }
 
+myself.last = "Writing 'someArray[someArray.length - 1]' is juuuuust tedious enough that I think this is worth it."
+const last = (array) => array[array.length - 1]
+
 myself.arrayEquals = "Tests two Arrays to see if they are equal."
 // Source: <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
 const arrayEquals = (a, b) =>
@@ -187,6 +190,7 @@ module.exports = {
   arrayOf,
   stringOf,
   swap,
+  last,
   arrayEquals,
   multilineRegex,
 } // = require('./general')
