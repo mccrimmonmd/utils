@@ -165,6 +165,32 @@ const swap = (arr, i, j) => {
 myself.last = "Writing 'someArray[someArray.length - 1]' is juuuuust tedious enough that I think this is worth it."
 const last = (array) => array[array.length - 1]
 
+myself.flattener = "Flattens the given array to the specified depth. Depth must be finite, as there are no checks for circular references." // <- TODO?
+const flattener = (array, depth = 1) => {
+  if (!Array.isArray(array) || array.length === 0) return array
+  for (const _ of range(depth)) {
+    if (!array.some(element => Array.isArray(element))) {
+      return array
+    }
+    array = array.reduce(flatten)
+  }
+  return array
+}
+
+myself.flatten = "Concatenates two items that may or may not be arrays, using push instead of concat for speed. For use as an argument to Array.prototype.reduce"
+const flatten = (flattened, bump, i) => {
+  if (!Array.isArray(flattened)) flattened = [flattened]
+  else if (i === 1) {
+    // on the first call to reduce, i is 0 if an initial value was provided,
+    // otherwise it is 1. If we don't have an initial value, we want to avoid
+    // mutating the reduce'd array, but copying every time would be too slow.
+    flattened = [...flattened]
+  }
+  if (Array.isArray(bump)) flattened.push(...bump)
+  else flattened.push(bump)
+  return flattened
+}
+
 myself.arrayEquals = "Tests two Arrays to see if they are equal."
 // Source: <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
 const arrayEquals = (a, b) =>
@@ -191,6 +217,8 @@ module.exports = {
   stringOf,
   swap,
   last,
+  flattener,
+  flatten,
   arrayEquals,
   multilineRegex,
 } // = require('./general')
