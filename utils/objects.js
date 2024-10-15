@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 
 const myself = {} // documentation
-const { print, isEmpty, textSorter } = require('./general')
+const { print, isEmpty, textSorter, flatten } = require('./general')
 const { sum, product } = require('./numbers')
 
 myself.merge = "Merges a secondary or 'fallback' object into a primary or 'reference' object. Returns a new object that matches the primary, plus all non-empty values from the secondary that are empty in the primary. Uses general.isEmpty to determine what counts as empty."
@@ -55,7 +55,7 @@ const allValues = (listOfObjects, field) => {
 myself.allKeys = "Returns an array of every unique key among the objects provided. Takes an optional regular expression to filter the results."
 const allKeys = (listOfObjects, regex = /(?:)/) => {
   // The empty regex /(?:)/ matches any string
-  let uniqueKeys = new Set( [].concat(...listOfObjects.map(Object.keys)) )
+  let uniqueKeys = new Set(listOfObjects.map(Object.keys).reduce(flatten))
   return [...uniqueKeys].filter(key => regex.test(key))
 }
 
