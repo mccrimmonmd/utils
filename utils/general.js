@@ -39,10 +39,12 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   if (typeof value === 'boolean') return false
   if (value.length != null) return value.length === 0
   if (value.size != null) return value.size === 0
+  if (typeof value[Symbol.iterator] === 'function') {
+    for (const _ of value) return false
+    return true
+  }
   if (typeof value === 'object' && Object.keys(value).length === 0) return true
-  // ^ Gives false positive on Sets, Maps, etc.
-  // (covered by length & size checks, but are there others?)
-  // (maybe test for iterability?)
+  // TODO: anything else to test?
   return !value
 }
 
