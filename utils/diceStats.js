@@ -2,6 +2,7 @@ const myself = {} // documentation
 const { print, arrayOf } = require('./general')
 const { sum, roundDecimal } = require('./numbers')
 const { rollDie, rollDice } = require('./random')
+const { allKeys } = require('./objects')
 
 myself.rollDie = "Simulates a single roll of a die. Defaults to d6"
 myself.rollDice = "Generates a list of random dice rolls. Defaults to 4d6"
@@ -31,29 +32,53 @@ const getShortNames = (multiples) => {
   return names
 }
 
-const getFullNames = (
-  shortNames,
-  fullNames = {
+const getFullName = (shortNames) => {
+  const shortNamesArray = Object.keys(shortNames).sort().reverse()
+  if (shortNamesArray.length === 0) {
+    return 'singles'
+  }
+  const shortName = shortNamesArray[0]
+  const count = shortNames[shortName]
+  switch (shortName) {
+    case '6s':
+      return 'sexts'
+    case '5s':
+      return 'quints'
+    case '4s':
+      if (shortNamesArray.includes('2s')) return 'twoAndFour'
+      return 'quads'
+    case '3s':
+      if (count === 2) return 'twoTrips'
+      else if (shortNamesArray.includes('2s')) return 'fullHouse'
+      return 'trips'
+    case '2s':
+      if (count === 3) return 'threePair'
+      else if (count === 2) return 'twoPair'
+      return 'dubs'
+    default:
+      console.warn(`unsupported short name ${shortName}; analysis functions may fail`)
+      return shortName
+  }
+}
+
+"Private helper function (for generating an initial value for the reduce in fullNameStats)"
+const initializeNames = (results) => {
+  const shortNames = allKeys(results)
+  let fullNames = {
     singles: 0,
     dubs: 0,
     trips: 0,
     twoPair: 0,
     quads: 0,
   }
-) => {
-  const shortNamesArray = Object.keys(shortNames)
-  if (shortNamesArray.length === 0) {
-    fullNames.singles += 1
-    return fullNames
-  }
-  if (shortNamesArray.includes('5s')) {
+  if (shortNames.includes('5s')) {
     fullNames = {
       fullHouse: 0,
       quints: 0,
       ...fullNames,
     }
   }
-  if (shortNamesArray.includes('6s')) {
+  if (shortNames.includes('6s')) {
     fullNames = {
       twoTrips: 0,
       threePair: 0,
@@ -62,40 +87,13 @@ const getFullNames = (
       ...fullNames
     }
   }
-  for (const [shortName, count] of Object.entries(shortNames)) {
-    switch (shortName) {
-      case '6s':
-        fullNames.sexts += 1
-        break
-      case '5s':
-        fullNames.quints += 1
-        break
-      case '4s':
-        if (shortNamesArray.includes('2s')) fullNames.twoAndFour += 1
-        else fullNames.quads += 1
-        break
-      case '3s':
-        if (count === 2) fullNames.twoTrips += 1
-        else if (shortNamesArray.includes('2s')) fullNames.fullHouse += 1
-        else fullNames.trips += 1
-        break
-      case '2s':
-        if (count === 3) fullNames.threePair += 1
-        else if (count === 2) fullNames.twoPair += 1
-        else fullNames.dubs += 1
-        break
-      default:
-        console.warn(`unsupported short name ${shortName}; results may not be accurate`)
-        fullNames[shortName] = (fullNames[shortName] ?? 0) + 1
-    }
-  }
   return fullNames
 }
 
 const fullNameStats = (results, normalize = false) => {
   let fullNames
   for (const multiples of results) {
-    fullNames = getFullNames(getShortNames(multiples), fullNames)
+    fullNames = getFullName(getShortNames(multiples), fullNames)
   }
   if (normalize) {
     let total = Object.values(fullNames).reduce(sum)
@@ -145,7 +143,7 @@ module.exports = {
   rollDice,
   countSides,
   getShortNames,
-  getFullNames,
+  getFullName,
   fullNameStats,
   generateMultiples,
   printMultiples,
