@@ -94,15 +94,16 @@ const initializeNames = (results) => {
 }
 
 myself.fullNameStats = "Takes a list of multiples (from countSides) and counts the number of times each type of multiple or combination appears in it. Takes an optional parameter to display the results as percentages instead of raw counts: when provided as a number, it is interpreted as the desired decimal precision."
-const fullNameStats = (results, normalize = false) => {
-  let fullNames
-  for (const multiples of results) {
-    fullNames = getFullName(getShortNames(multiples), fullNames)
-  }
-  if (normalize) {
-    let total = Object.values(fullNames).reduce(sum)
+const fullNameStats = (results, asPercentages = false) => {
+  results = results.map(multiples => getFullName(getShortNames(multiples)))
+  let fullNames = results.reduce((counts, name) => {
+    counts[name] += 1
+    return counts
+  }, initializeNames(results))
+  if (asPercentages) {
+    let total = results.length
     if (total === 0) return fullNames
-    let places = typeof normalize === 'number' ? normalize : 2
+    let places = typeof asPercentages === 'number' ? asPercentages : 0
     for (const [key, val] of Object.entries(fullNames)) {
       let percentage = (val * 100) / total
       fullNames[key] = roundDecimal(percentage, places) + '%'
@@ -124,9 +125,9 @@ const runStatsTest = (
   {
     iters = 1000,
     verbose = false,
-    normalize = true,
+    precision = 2,
     dice = 4,
-    sides = 6
+    sides = 6,
   } = {}
 ) => {
   const start = Date.now()
@@ -137,7 +138,7 @@ const runStatsTest = (
     }
   }
   console.log(`split: ${Date.now() - start}ms`)
-  const stats = fullNameStats(results, normalize)
+  const stats = fullNameStats(results, precision)
   console.log(`time: ${Date.now() - start}ms`)
   return stats
 }
