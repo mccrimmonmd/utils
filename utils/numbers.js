@@ -24,16 +24,35 @@ const product = (total, value) => total * value
 myself.average = "Calculates the arithmetic mean of two numbers. For use as an argument to Array.prototype.reduce, but may be less accurate than arithmeticMean due to rounding errors."
 const average = (total, value) => (total + value) / 2
 
-myself.stats = "Collects min, max, total, and count in a persistent object. For use as an argument to Array.prototype.reduce"
+`Helper function for 'stats' that allows it to be used like:
+
+  var collectedStats
+  for (const array of arrays) {
+    collectedStats = array.reduce(stats, collectedStats)
+  }
+
+as well as:
+
+  var collectedStats = array.reduce(stats)
+`
+const statsInit = (value) => {
+  return {
+    min: value,
+    max: value,
+    total: value,
+    count: 1,
+  }
+}
+
+myself.stats = "Calculates min, max, total, and count. For use as an argument to Array.prototype.reduce. Can be used with a loop to combine statistics for multiple different arrays."
 const stats = (totalStats, value) => {
+  // initial value when collecting stats from multiple arrays
+  if (totalStats == null) {
+    return statsInit(value)
+  }
+  // initial value when one is not passed explicitly
   if (typeof totalStats === 'number') {
-    // convert initial value into stats object
-    return {
-      min: totalStats,
-      max: totalStats,
-      total: totalStats,
-      count: 1,
-    }
+    totalStats = statsInit(totalStats)
   }
   let { min, max, total, count } = totalStats
   return {
