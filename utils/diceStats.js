@@ -7,6 +7,7 @@ const { allKeys } = require('./objects')
 myself.rollDie = "Simulates a single roll of a die. Defaults to d6"
 myself.rollDice = "Generates a list of random dice rolls. Defaults to 4d6"
 
+myself.countSides = "Generates (or takes as a parameter) a list of dice rolls and returns an array counting the number of times each face came up (index 0 = number of 1s, etc.)"
 const countSides = (dice = 4, sides) => {
   // 'sides' is optional, but it can't be a default parameter because the
   // default changes depending on whether 'dice' is a number or an array
@@ -22,6 +23,7 @@ const countSides = (dice = 4, sides) => {
   return multiples
 }
 
+myself.getShortNames = "Takes the dice rolls returned by countSides and determines the number of times *any* side came up twice, three times, etc. Returns an object with keys in the form '2s', '3s', '4s', ..."
 const getShortNames = (multiples) => {
   let names = {}
   for (const count of multiples) {
@@ -32,6 +34,7 @@ const getShortNames = (multiples) => {
   return names
 }
 
+myself.getFullName = "Takes the object returned by getShortNames and translates the corresponding multiple into its english nickname (dubs, trips, etc.) Combinations of multiples (e.g. a double and a triple at the same time) are given their own special names."
 const getFullName = (shortNames) => {
   const shortNamesArray = Object.keys(shortNames).sort().reverse()
   if (shortNamesArray.length === 0) {
@@ -90,6 +93,7 @@ const initializeNames = (results) => {
   return fullNames
 }
 
+myself.fullNameStats = "Takes a list of multiples (from countSides) and counts the number of times each type of multiple or combination appears in it. Takes an optional parameter to display the results as percentages instead of raw counts: when provided as a number, it is interpreted as the desired decimal precision."
 const fullNameStats = (results, normalize = false) => {
   let fullNames
   for (const multiples of results) {
@@ -107,12 +111,15 @@ const fullNameStats = (results, normalize = false) => {
   return fullNames
 }
 
+myself.generateMultiples = "Calls countSides the given number of times and aggregates the results in an array (for use by e.g. fullNameStats)"
 const generateMultiples = (amount = 1000, dice = 4, sides = 6) => 
   arrayOf(amount, () => countSides(dice, sides))
 
+myself.printMultiples = "Takes a result from countSides and prints it to the console"
 const printMultiples = (multiples) =>
   console.log(multiples.sort(), '-', getShortNames(multiples))
 
+myself.runStatsTest = "Takes a number and sides of dice to roll and the number of iterations to simulate, generates the results, and counts the total number and type of all multiples rolled."
 const runStatsTest = (
   {
     iters = 1000,
