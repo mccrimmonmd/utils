@@ -33,7 +33,7 @@ myself.randChoice = "Returns a random element from the given array."
 const randChoice = (arr) => arr[randInt(arr.length)]
 
 myself.randRemove = "Removes (in-place) a random element from the given array. Returns the removed element."
-const randRemove = (arr) => arr.splice(randInt(arr.length), 1)
+const randRemove = (arr) => arr.splice(randInt(arr.length), 1)[0]
 
 myself.shuffled = "Returns a shuffled copy of the given array."
 const shuffled = (arr) => {
