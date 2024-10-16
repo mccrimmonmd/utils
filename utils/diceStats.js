@@ -95,11 +95,11 @@ const initializeNames = (results) => {
 
 myself.fullNameStats = "Takes a list of multiples (from countSides) and counts the number of times each type of multiple or combination appears in it. Takes an optional parameter to display the results as percentages instead of raw counts: when provided as a number, it is interpreted as the desired decimal precision."
 const fullNameStats = (results, asPercentages = false) => {
-  results = results.map(multiples => getFullName(getShortNames(multiples)))
-  let fullNames = results.reduce((counts, name) => {
+  const shortNames = results.map(getShortNames)
+  const fullNames = shortNames.map(getFullName).reduce((counts, name) => {
     counts[name] += 1
     return counts
-  }, initializeNames(results))
+  }, initializeNames(shortNames))
   if (asPercentages) {
     let total = results.length
     if (total === 0) return fullNames
