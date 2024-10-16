@@ -2,14 +2,22 @@
 db.getCollection('slingmetrics.CMW')
   .find({date: '09/14/2021'})
 
+// find objects updated within a certain range
+db.getCollection('cyclone')
+  .find({updatedAt: {
+    $gte: new Date('2020-05-14'),
+    $lt: new Date('2020-05-15')
+  }})
+  .sort({validTo: 1})
+
 // find objects with requests > 0; sort by creation date (descending)
 db.getCollection('slingmetrics.CMW')
   .find({'endpoints.totalRequests': {$gt: 0}})
   .sort({createdAt: -1})
 
-// this doesn't work--not sure what I was trying
+// different way of doing above (not sorted)
 db.getCollection('slingmetrics.CMW')
-  .aggregate({$match: {'endpoints.totalRequests': {$gt: 0}}})
+  .aggregate([{$match: {'endpoints.totalRequests': {$gt: 0}}}])
 
 // search using regular expression literal
 db.getCollection('locations')
@@ -18,6 +26,10 @@ db.getCollection('locations')
 // search for records with non-null values
 db.getCollection('interfaces')
   .find({circuitId: {$ne: null}})
+
+// search for records with null *or* missing values
+db.getCollection('cyclone.certs')
+  .find({requestor: null})
 
 // search with logic conditions; count number of results
 db.getCollection('logViewer.log')

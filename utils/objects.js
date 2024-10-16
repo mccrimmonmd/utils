@@ -2,8 +2,10 @@ const fs = require('fs')
 const path = require('path')
 
 const myself = {} // documentation
-const { print, isEmpty, textSorter } = require('./general')
+const { print, isEmpty, textSorter, flatten } = require('./general')
+const { sum, product } = require('./numbers')
 
+myself.merge = "Merges a secondary or 'fallback' object into a primary or 'reference' object. Returns a new object that matches the primary, plus all non-empty values from the secondary that are empty in the primary. Uses general.isEmpty to determine what counts as empty."
 const merge = (
   a, b,
   {
@@ -12,9 +14,9 @@ const merge = (
     neverEmpty = [0],
   } = {}
 ) => {
+  if (a == null || b == null) return a ?? b
   let primary = decider(a, b)
   let secondary = primary === a ? b : a
-  if (primary == null || secondary == null) return primary ?? secondary
   let merged = { ...primary }
   let options = [alwaysEmpty, neverEmpty]
   for (const [key, val] of Object.entries(secondary)) {
@@ -25,8 +27,8 @@ const merge = (
   return merged
 }
 
-myself.recombine = "Tranforms [{ id: xxx, key: val1 }, { id: xxx, key: val2 }, { id: yyy, yKey: yVal }, ...] into [{ id: xxx, key: [val1, val2] }, { id: yyy, yKey: [yVal] }, ...]"
-const recombine = (listOfObjects, getId, showDuplicates=true) => {
+myself.recombine = "Tranforms [{ id: xid, key: val1 }, { id: xid, key: val2 }, { id: yid, key: val3 }, ...] into [{ id: xid, key: [val1, val2] }, { id: yid, key: [val3] }, ...]"
+const recombine = (listOfObjects, getId, showDuplicates = true) => {
   let mapped = listOfObjects.reduce((combined, obj) => {
     let id = getId(obj)
     let referenceObject = combined[id] ?? {} // masterObject?
@@ -51,12 +53,14 @@ const allValues = (listOfObjects, field) => {
 }
 
 myself.allKeys = "Returns an array of every unique key among the objects provided. Takes an optional regular expression to filter the results."
-const allKeys = (listOfObjects, regex=/(?:)/) => {
+const allKeys = (listOfObjects, regex = /(?:)/) => {
   // The empty regex /(?:)/ matches any string
-  let uniqueKeys = new Set( [].concat(...listOfObjects.map(Object.keys)) )
+  let uniqueKeys = new Set(listOfObjects.map(Object.keys).reduce(flatten))
   return [...uniqueKeys].filter(key => regex.test(key))
 }
 
+myself.filter = {}
+myself.filter.object = "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a regular expression or an array."
 const filterObject = (
   obj,
   filter,
@@ -128,6 +132,7 @@ const multiDiff = (listOfObjects) => {
   return allDiffs
 }
 
+myself.extractNested = "Flattens (by one) the given object, returning the flattened values and, separately, any remaining nested values."
 const extractNested = (obj) => {
   let flat = {}
   let nested = {}
@@ -142,10 +147,12 @@ const extractNested = (obj) => {
   return { flat, nested }
 }
 
+myself.escapeCsvEntry = "Helper function for 'toCsv'. Converts an object to a string and escapes any quotes, commas, or newlines."
 const escapeCsvEntry = (entry) => {
   entry = String(entry ?? '')
   return /,|\n|"/.test(entry) ? `"${entry.replaceAll('"', '""')}"` : entry
 }
+myself.toCsv = "Converts a list of objects into a CSV file and returns the result as a string. Also writes the output to the given destination ('./output.csv' by default), unless fileName or filePath are set to null."
 const toCsv = (
   listOfObjects,
   {
@@ -154,13 +161,13 @@ const toCsv = (
     sortHeader = false
   } = {}
 ) => {
-  const makeLine = (header, obj=false) => {
+  const makeLine = (header, obj = null) => {
     return header.map(key => escapeCsvEntry(obj ? obj[key] : key)).join(',')
   }
   let header = []
   let body = []
   if (listOfObjects.length === 0) {
-    console.warn(`No data! '${fileName}' will be empty.`)
+    console.warn('No data! Output will be empty.')
   }
   else {
     header = allKeys(listOfObjects)
@@ -168,21 +175,34 @@ const toCsv = (
     for (const obj of listOfObjects) body.push(makeLine(header, obj))
   }
   let output = [makeLine(header), ...body]
-  try {
-    fs.writeFileSync(path.join(filePath, fileName), output.join('\n'))
-  }
-  catch (err) {
-    console.log(`Error writing data to '${fileName}': ${err}`)
-    let extra = output.length - 100
-    let elided = ''
-    if (extra > 0) {
-      output = output.slice(0, 100)
-      elided = `... ${extra} more items`
+  if (fileName != null && filePath != null) {
+    try {
+      fs.writeFileSync(path.join(filePath, fileName), output.join('\n'))
     }
-    console.debug('Attempted output:\n', output, elided)
+    catch (err) {
+      console.log(`Error writing data to '${fileName}': ${err}`)
+      let extra = output.length - 100
+      let elided = ''
+      if (extra > 0) {
+        output = output.slice(0, 100)
+        elided = `... ${extra} more items`
+      }
+      console.debug('Attempted output:\n', output, elided)
+    }
   }
   return output
 }
+
+myself.count = "Calculates the total of a list of objects. The number each object represents is determined by the given function (default Number())."
+const count = (listOfObjects, getValue = (obj) => Number(obj)) =>
+  listOfObjects.map(getValue).reduce(sum, 0)
+
+myself.multiply = "Same as count, but with multiplication instead of addition."
+const multiply = (listOfObjects, getValue = (obj) => Number(obj)) =>
+  listOfObjects.map(getValue).reduce(product, 1)
+
+myself.filter.many = "Convenience function for mapping filter.object to a list of multiple objects."
+myself.filter.xxxx = "Convenience functions for using filter.object with preset options: byKeys (default), byValues, excludeKeys, excludeValues" 
 
 const valOpts = { filterOn: 'values' }
 const excludeOpts = { includeOnMatch: false }
@@ -196,7 +216,7 @@ module.exports = {
   allKeys,
   filter: {
     object: filterObject,
-    many: (listOfObjects, filter, options={}) => {
+    many: (listOfObjects, filter, options) => {
       return listOfObjects.map(obj => filterObject(obj, filter, options))
     },
     byKeys: (obj, filter) => filterObject(obj, filter),
@@ -210,5 +230,7 @@ module.exports = {
   extractNested,
   escapeCsvEntry,
   toCsv,
+  count,
+  multiply,
 }
 

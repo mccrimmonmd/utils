@@ -1,11 +1,10 @@
 const myself = {} // documentation
 
-// Source: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#sequence_generator_range>
+myself.range = "Python-style range function. Generator."
+// Alternate version (source: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#sequence_generator_range>)
 // const range = (start, stop, step) =>
 //   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step)
-
-myself.range = "Python-style range function. Generator."
-const range = function* (start=0, stop, step=1) {
+const range = function* (start = 0, stop, step = 1) {
   if (stop === undefined) {
     stop = start
     start = 0
@@ -17,8 +16,25 @@ const range = function* (start=0, stop, step=1) {
   }
 }
 
-myself.ifFunc = "Pure-ish 'if' function with short-circuiting. Just because."
-const ifFunc = (condition, onTrue, onFalse=() => null) => {
+myself.zip = "Python-style zip function: combines a list of arrays into a list of pairs/triplets/etc. Takes optional parameters for padding the results when the input arrays are different lengths; if padding is disabled, the output will be the length of the shortest input array. (Note: normally I would use a single parameter with a default of 'false' or similar, but because padWith can potentially be anything, including false and undefined, two separate parameters are necessary.)"
+const zip = (arrays, { padResults = false, padWith } = {}) => {
+  const len = arrays
+    .map(array => array.length)
+    .reduce(padResults ? Math.max : Math.min)
+  const zipped = []
+  for (const i of range(len)) {
+    let group = []
+    for (const array of arrays) {
+      let val = (padResults && i >= array.length) ? padWith : array[i]
+      group.push(val)
+    }
+    zipped.push(group)
+  }
+  return zipped
+}
+
+myself.ifFunc = "Pure-ish 'if' function with short-circuiting. Just because. (Only 'ish' because, without the side effect of assignment, the return value of the executed branch would be lost, making the construct useless unless the branches themselves had side effects.)"
+const ifFunc = (condition, onTrue, onFalse = () => null) => {
   let forceTrue = (thingy) => thingy || true
   let result
   ;( condition && forceTrue(result = onTrue()) ) || ( result = onFalse() )
@@ -26,27 +42,13 @@ const ifFunc = (condition, onTrue, onFalse=() => null) => {
 }
 
 myself.print = "console.dir optimized for the Node.js REPL."
-const print = (obj, depth=null, repl=true) => {
+const print = (obj, depth = null, repl = true) => {
   console.dir(obj, { depth })
   return repl ? undefined : obj
 }
 
-myself.roundDecimal = "Rounds (towards zero) to a given number of decimal places."
-const roundDecimal = (value, places=2) => {
-  if (typeof value !== 'number') return value
-  if (Number.isInteger(value)) return value
-  let magnitude = 10 ** places
-  return Math.trunc(value * magnitude) / magnitude
-}
-
-myself.arithmeticMean = "Calculates the arithmetic mean of a list of numbers"
-const arithmeticMean = (values) => {
-  if (values == null || !values.length) return null
-  values.reduce((sum, value) => sum + value, 0) / values.length
-}
-
 myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge."
-const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
+const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   if (alwaysEmpty.includes(value)) return true
   if (neverEmpty.includes(value)) return false
   
@@ -54,10 +56,12 @@ const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
   if (typeof value === 'boolean') return false
   if (value.length != null) return value.length === 0
   if (value.size != null) return value.size === 0
+  if (typeof value[Symbol.iterator] === 'function') {
+    for (const _ of value) return false
+    return true
+  }
   if (typeof value === 'object' && Object.keys(value).length === 0) return true
-  // ^ Gives false positive on Sets, Maps, etc.
-  // (covered by length & size checks, but are there others?)
-  // (maybe test for iterability?)
+  // TODO: anything else to test?
   return !value
 }
 
@@ -65,7 +69,7 @@ const isEmpty = (value, alwaysEmpty=[], neverEmpty=[]) => {
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
 myself.makeGroups = "Sorts a list into caller-determined 'buckets' (default: identity). Returns a Map."
-const makeGroups = (someList, idFunc=(item) => item, strong=false) => {
+const makeGroups = (someList, idFunc = (item) => item, strong = false) => {
   let cache = new Map()
   let identifier = (item) => {
     if (cache.has(item)) return cache.get(item)
@@ -92,13 +96,13 @@ const deDup = (
   .map(group => group.reduce(decider))
 }
 myself.findDupes = "The complement of deDup."
-const findDupes = (someList, identifier=(item) => item) => {
+const findDupes = (someList, identifier = (item) => item) => {
   return [...makeGroups(someList, identifier, true).values()]
   .filter(group => group.length > 1)
 }
 
 myself.textSorter = "Returns a function optimized for sorting arrays of text. Accepts an additional parameter that can be: a string/symbol (for key access), a function (that returns the value to sort by), or an array of any mix of the three (for breaking ties). Handles mixed-case text sensibly but otherwise no smarter than the default sort order." 
-const textSorter = (sortOn, reversed=false) => {
+const textSorter = (sortOn, reversed = false) => {
   const sorters = Array.isArray(sortOn) ? sortOn : [sortOn]
   const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
   const resolve = (a, b, sorter) => {
@@ -111,9 +115,9 @@ const textSorter = (sortOn, reversed=false) => {
         [ a, b ] = [ a[sorter], b[sorter] ]
         break
       case 'undefined':
-        break
       case 'object':
-        if (sorter === null) break
+        // identity
+        if (sorter == null) break
       default:
         throw new Error(`Unexpected type '${typeof sorter}' for sorter parameter`)
     }
@@ -141,7 +145,7 @@ const arrayOf = (length, item) => Array.from({ length }, (_, i) => {
   else return item
 })
 myself.stringOf = "arrayOf but for Strings."
-const stringOf = (n, snippet=' ', joinWith='') => {
+const stringOf = (n, snippet = ' ', joinWith = '') => {
   return String(joinWith) === ''
     ? String(snippet).repeat(n)
     : arrayOf(n, String(snippet)).join(joinWith)
@@ -150,12 +154,38 @@ const stringOf = (n, snippet=' ', joinWith='') => {
 myself.swap = "Swaps two elements of an Array (in-place)."
 const swap = (arr, i, j) => {
   // Source: <https://stackoverflow.com/questions/872310/swap-array-elements-in-javascript>
-  // [ arr[i], arr[j] ] = [ arr[j], arr[i] ]
+  [ arr[i], arr[j] ] = [ arr[j], arr[i] ]
   // arr[i] = arr.splice(j, 1, arr[i])[0]
-  let swapping = arr[i]
-  arr[i] = arr[j]
-  arr[j] = swapping
   return arr
+}
+
+myself.last = "Writing 'someArray[someArray.length - 1]' is juuuuust tedious enough that I think this is worth it."
+const last = (array) => array[array.length - 1]
+
+myself.flattener = "Flattens the given array to the specified depth. Depth must be finite, as there are no checks for circular references." // <- TODO?
+const flattener = (array, depth = 1) => {
+  if (!Array.isArray(array) || array.length === 0) return array
+  for (const _ of range(depth)) {
+    if (!array.some(element => Array.isArray(element))) {
+      return array
+    }
+    array = array.reduce(flatten)
+  }
+  return array
+}
+
+myself.flatten = "Concatenates two items that may or may not be arrays, using push instead of concat for speed. For use as an argument to Array.prototype.reduce"
+const flatten = (flattened, bump, i) => {
+  if (!Array.isArray(flattened)) flattened = [flattened]
+  else if (i === 1) {
+    // on the first call to reduce, i is 0 if an initial value was provided,
+    // otherwise it is 1. If we don't have an initial value, we want to avoid
+    // mutating the reduce'd array, but copying every time would be too slow.
+    flattened = [...flattened]
+  }
+  if (Array.isArray(bump)) flattened.push(...bump)
+  else flattened.push(bump)
+  return flattened
 }
 
 myself.arrayEquals = "Tests two Arrays to see if they are equal."
@@ -164,18 +194,17 @@ const arrayEquals = (a, b) =>
   a.length === b.length &&
   a.every((element, index) => element === b[index])
 
-myself.multilineRegex = "Create a RegEx that spans multiple lines (for commenting)."
+myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be commented)."
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
-const multilineRegex = (parts, flags='') =>
+const multilineRegex = (parts, flags = '') =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
 
 module.exports = {
   docs: () => print(myself),
   range,
+  zip,
   ifFunc,
   print,
-  roundDecimal,
-  arithmeticMean,
   isEmpty,
   makeGroups,
   deDup,
@@ -184,6 +213,9 @@ module.exports = {
   arrayOf,
   stringOf,
   swap,
+  last,
+  flattener,
+  flatten,
   arrayEquals,
   multilineRegex,
 } // = require('./general')

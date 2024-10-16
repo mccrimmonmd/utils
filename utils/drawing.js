@@ -7,10 +7,10 @@ const draw = (picture) => {
   return picture
 }
 myself.drawRow = "Prints an array of ASCII images side-by-side."
-const drawRow = (pictures, padding=0) => draw(combinePics(pictures, padding))
+const drawRow = (pictures, padding = 0) => draw(combinePics(pictures, padding))
 
 myself.combinePics = "Combines multiple ASCII images, possibly of different sizes."
-const combinePics = (pictures, padding=0) => {
+const combinePics = (pictures, padding = 0) => {
   if (typeof pictures === 'string') return pictures
   pictures = pictures.map(makeRectangular)
   let height = Math.max(...pictures.map(pic => pic.length))
@@ -40,7 +40,7 @@ const makeRectangular = (picture) => {
 }
 
 myself.animate = "Animates a sequence of ASCII images or image arrays with the given delay. Multiple sequences with different delays can be given as [{ frames, delay }, ...]."
-const animate = (sequence, defaultDelay=1000) => {
+const animate = (sequence, defaultDelay = 1000) => {
   console.log()
   if (!sequence?.length) return process.stdout.write('> ')
   if (sequence[0].length != null) {

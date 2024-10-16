@@ -11,13 +11,10 @@ myself.randInt = "Returns a random integer in the range [0, lessThan)."
 const randInt = (lessThan) => Math.trunc(randNum(lessThan))
 
 myself.rollDie = "Same as randInt, but with 1 added to the result."
-const rollDie = (sides=6) => randInt(sides) + 1
+const rollDie = (sides = 6) => randInt(sides) + 1
 
-myself.rollDice = "Returns an array of random integers between 1 and 'sides', inclusive"
-const rollDice = (number, sides=6) => {
-  let roller = () => rollDie(sides)
-  return arrayOf(number, roller)
-}
+myself.rollDice = "Returns an array of random integers between 1 and 'sides', inclusive."
+const rollDice = (number, sides = 6) => arrayOf(number, () => rollDie(sides))
 
 myself.randDigit = "Returns a random integer in the range [0, 9]."
 const randDigit = () => randInt(10)
@@ -35,19 +32,20 @@ const randDigitString = (length) => {
 myself.randChoice = "Returns a random element from the given array."
 const randChoice = (arr) => arr[randInt(arr.length)]
 
-myself.removeRandChoice = "Removes (in-place) a random element from the given array. Returns the removed element."
-const removeRandChoice = (arr) => arr.splice(randInt(arr.length), 1)
+myself.randRemove = "Removes (in-place) a random element from the given array. Returns the removed element."
+const randRemove = (arr) => arr.splice(randInt(arr.length), 1)[0]
 
 myself.shuffled = "Returns a shuffled copy of the given array."
 const shuffled = (arr) => {
   arr = [...arr]
   for (let end = arr.length - 1; end > 0; end--) {
     let swapFrom = randInt(end + 1) // elements can be 'swapped' with themselves
-    [ arr[end], arr[swapFrom] ] = [ arr[swapFrom], arr[end] ]
+    swap(arr, swapFrom, end)
   }
   return arr
 }
 // Alternate implementation - slower, but more intuitive
+// (also works on sparse arrays)
   // let oldDeck = arr
   // let pickACard = Object.keys(oldDeck)
   // let newDeck = []
@@ -70,6 +68,6 @@ module.exports = {
   randDigit,
   randDigitString,
   randChoice,
-  removeRandChoice,
+  randRemove,
   shuffled,
 }

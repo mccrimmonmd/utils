@@ -31,6 +31,7 @@ POST /sev_bridges/_doc/1/_update
 
 POST /sev_incidents/_update_by_query
 {
+  "script": "ctx._source.bridge_status = 'TEST'; ctx._source.originalBridge = 'TSET'",
   "query": {
     "bool": {
       "must": [
@@ -39,8 +40,21 @@ POST /sev_incidents/_update_by_query
         }
       ]
     }
-  },
-  "script": "ctx._source.bridge_status = 'TEST'; ctx._source.originalBridge = 'TSET'"
+  }
+}
+
+POST /sev_incidents/_update_by_query
+{
+  "script": "ctx._source.update[0].level = 'Triage'",
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": { "number": "INC1404645" }
+        }
+      ]
+    }
+  }
 }
 
 POST /sev_incidents/_doc/xxxxxxxx/_update
@@ -97,7 +111,7 @@ GET /logs/_search
   }
 }
 
-GET /sev_companies/_delete_by_query
+POST /sev_companies/_delete_by_query
 {
   "query": {
     "match": {

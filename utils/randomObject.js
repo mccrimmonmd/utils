@@ -1,5 +1,8 @@
 const { randInt, randDigit, randChoice, coinFlip } = require('./random')
 
+const LETTERS = 'abcdefghijklmnopqrstuvwxyz'.split('')
+const GETTERS = [getNum, getString, getBool]
+
 const getNum = () => randDigit() * coinFlip() ? -1 : 1
 const getString = () => {
   let str = ''
@@ -16,7 +19,7 @@ const getArr = (maxLength) => {
   }
   return arr
 }
-const getObj = (maxLength, isArray=coinFlip()) => {
+const getObj = (maxLength, isArray = coinFlip()) => {
   let obj = isArray ? [] : {}
   for (let i = 0; i < randInt(maxLength) + 1; i++) {
     let index = isArray ? i : LETTERS[i]
@@ -27,14 +30,13 @@ const getObj = (maxLength, isArray=coinFlip()) => {
 }
 const getFunc = () => ()=>{}
 
-const LETTERS = 'abcdefghijklmnopqrstuvwxyz'.split('')
-const GETTERS = [getNum, getString, getBool]
-
-module.exports = ({
-  baseLength=5, 
-  nestedLength=baseLength, 
-  funcsAllowed=false
-} = {}) => {
+module.exports = (
+  {
+    baseLength = 5, 
+    nestedLength = baseLength, 
+    funcsAllowed = false
+  } = {}
+) => {
   if (funcsAllowed) GETTERS.push(getFunc)
   // TODO: set maximum nesting depth to avoid busting the stack
   // (or flatten the recursion)
