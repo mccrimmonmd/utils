@@ -145,4 +145,7 @@ const playDice = (
   }
 }
 
-console.dir(playDice(30))
+module.exports = {
+  playDice,
+  runAverage,
+} // = require('./thirtyDays')
