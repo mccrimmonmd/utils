@@ -145,4 +145,4 @@ const playDice = (
   }
 }
 
-playDice(30)
+console.dir(playDice(30))

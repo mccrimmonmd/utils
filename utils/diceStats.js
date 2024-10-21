@@ -1,6 +1,6 @@
 const myself = {} // documentation
 const { print, arrayOf } = require('./general')
-const { sum, roundDecimal } = require('./numbers')
+const { roundDecimal } = require('./numbers')
 const { rollDie, rollDice } = require('./random')
 const { allKeys } = require('./objects')
 
