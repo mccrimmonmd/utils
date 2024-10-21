@@ -101,7 +101,7 @@ const findDupes = (someList, identifier = (item) => item) => {
   .filter(group => group.length > 1)
 }
 
-myself.textSorter = "Returns a function optimized for sorting arrays of text. Accepts an additional parameter that can be: a string/symbol (for key access), a function (that returns the value to sort by), or an array of any mix of the three (for breaking ties). Handles mixed-case text sensibly but otherwise no smarter than the default sort order." 
+myself.textSorter = "Returns a function optimized for sorting arrays of text. Accepts a parameter for what to sort on that can be: undefined/null (sort by identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties). Handles mixed-case text sensibly but otherwise no smarter than the default sort order." 
 const textSorter = (sortOn, reversed = false) => {
   const sorters = Array.isArray(sortOn) ? sortOn : [sortOn]
   const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
@@ -178,9 +178,10 @@ myself.flatten = "Concatenates two items that may or may not be arrays, using pu
 const flatten = (flattened, bump, i) => {
   if (!Array.isArray(flattened)) flattened = [flattened]
   else if (i === 1) {
-    // on the first call to reduce, i is 0 if an initial value was provided,
-    // otherwise it is 1. If we don't have an initial value, we want to avoid
-    // mutating the reduce'd array, but copying every time would be too slow.
+    // If we're not given an initial value, we want to avoid mutating the
+    // reduce'd array, but copying on every iteration would be too slow.
+    // We do the copy when i === 1, not 0, because i only equals 0 when an
+    // initial value *is* provided.
     flattened = [...flattened]
   }
   if (Array.isArray(bump)) flattened.push(...bump)
