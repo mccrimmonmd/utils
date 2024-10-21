@@ -4,8 +4,8 @@ const { sum, roundDecimal } = require('./numbers')
 const { rollDie, rollDice } = require('./random')
 const { allKeys } = require('./objects')
 
-myself.rollDie = "Simulates a single roll of a die. Defaults to d6"
-myself.rollDice = "Generates a list of random dice rolls. Defaults to 4d6"
+myself.rollDie = "Simulates a single roll of a die. Defaults to d6."
+myself.rollDice = "Generates a list of random dice rolls. Defaults to 4d6."
 
 myself.countSides = "Generates (or takes as a parameter) a list of dice rolls and returns an array counting the number of times each face came up (index 0 = number of 1s, etc.)"
 const countSides = (dice = 4, sides) => {
@@ -64,7 +64,7 @@ const getFullName = (shortNames) => {
   }
 }
 
-"Private helper function (for generating an initial value for the reduce in fullNameStats)"
+"Private helper function (for generating an initial value for the reduce in fullNameStats)."
 const initializeNames = (results) => {
   const shortNames = allKeys(results)
   let fullNames = {
@@ -112,11 +112,12 @@ const fullNameStats = (results, asPercentages = false) => {
   return fullNames
 }
 
-myself.generateMultiples = "Calls countSides the given number of times and aggregates the results in an array (for use by e.g. fullNameStats)"
+myself.generateMultiples = "Calls countSides the given number of times and aggregates the results in an array (for use by e.g. fullNameStats)."
 const generateMultiples = (amount = 1000, dice = 4, sides = 6) => 
   arrayOf(amount, () => countSides(dice, sides))
 
-myself.printMultiples = "Takes a result from countSides and prints it to the console"
+myself.printMultiples = "Takes a result from countSides and prints it to the console."
+
 const printMultiples = (multiples) =>
   console.log(multiples.sort(), '-', getShortNames(multiples))
 
