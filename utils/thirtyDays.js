@@ -46,20 +46,22 @@ const runAverage = (rounds, days = 30, options) => {
 const playDice = (
   days,
   verbose = true,
-  options = {
-    players = 2,
-    dice = 4,
-    baseScore = 2,
-    highDie = 5,
-    highDieScore = 1,
-    singlesScore = 0,
-    tripScore = 1,
-    pairScore = 4,
-    pairDays = 2,
-    perfectScore = 7,
-    perfectDays = 7,
-  } = {},
+  options = {},
 ) => {
+  options = {
+    players: 2,
+    dice: 4,
+    baseScore: 2,
+    highDie: 5,
+    highDieScore: 1,
+    singlesScore: 0,
+    tripScore: 1,
+    pairScore: 4,
+    pairDays: 2,
+    perfectScore: 7,
+    perfectDays: 7,
+    ...options
+  }
   const totals = [
     0,
     0,
