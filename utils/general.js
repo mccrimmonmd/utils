@@ -160,7 +160,7 @@ const swap = (arr, i, j) => {
 }
 
 myself.last = "Writing 'someArray[someArray.length - 1]' is juuuuust tedious enough that I think this is worth it."
-const last = (array) => array[array.length - 1]
+const last = (array, nth = 1) => array[array.length - nth]
 
 myself.flattener = "Flattens the given array to the specified depth. Depth must be finite, as there are no checks for circular references." // <- TODO?
 const flattener = (array, depth = 1) => {
