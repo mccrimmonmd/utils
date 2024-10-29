@@ -15,6 +15,18 @@ const arithmeticMean = (values) => {
   return values.reduce(sum) / values.length
 }
 
+myself.diffsCalculator = "Helper function for stdDeviation, but can also be used by itself. Returns a function for use as an argument to Array.prototype.reduce"
+const diffsCalculator = (mean) => 
+  (diffs, value) => diffs.concat((value - mean) ** 2)
+
+myself.stdDeviation = "Calculates the standard deviation of a list of numbers. Assumes the list is a population, not sample."
+const stdDeviation = (values) => {
+  const mean = arithmeticMean(values)
+  const diffs = values.reduce(diffsCalculator(mean), [])
+  const variance = arithmeticMean(diffs)
+  return Math.sqrt(variance)
+}
+
 myself.sum = "Adds two numbers. For use as an argument to Array.prototype.reduce"
 const sum = (total, value) => total + value
 
@@ -66,6 +78,8 @@ module.exports = {
   docs: () => print(myself),
   roundDecimal,
   arithmeticMean,
+  diffsCalculator,
+  stdDeviation,
   sum,
   product,
   average,
