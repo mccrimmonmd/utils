@@ -4,6 +4,8 @@ myself.range = "Python-style range function. Generator."
 // Alternate version (source: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#sequence_generator_range>)
 // const range = (start, stop, step) =>
 //   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step)
+// The above version is simpler, but a generator uses no heap space, so
+// it can accomodate very large (or even infinite!) ranges.
 const range = function* (start = 0, stop, step = 1) {
   if (stop === undefined) {
     stop = start
@@ -178,10 +180,11 @@ myself.flatten = "Concatenates two items that may or may not be arrays, using pu
 const flatten = (flattened, bump, i) => {
   if (!Array.isArray(flattened)) flattened = [flattened]
   else if (i === 1) {
-    // If we're not given an initial value, we want to avoid mutating the
-    // reduce'd array, but copying on every iteration would be too slow.
-    // We do the copy when i === 1, not 0, because i only equals 0 when an
-    // initial value *is* provided.
+    // If we're not given an initial value, 'flattened' will be an element of
+    // the array being reduced, which we want to avoid mutating, but if we copy
+    // on every iteration we lose the speedup gained from using push. We take
+    // the first iteration to be i === 1, not 0, because i only equals 0 when
+    // an initial value *is* provided.
     flattened = [...flattened]
   }
   if (Array.isArray(bump)) flattened.push(...bump)
