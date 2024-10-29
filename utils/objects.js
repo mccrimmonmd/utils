@@ -80,7 +80,7 @@ const filterObject = (
   return Object.fromEntries(filtered)
 }
 
-const oneWayDiff = (a, b) => {
+const oneWayDiffObj = (a, b) => {
   let diffs
   let sames
   if (a === b) [diffs, sames] = [{}, { ...a }]
@@ -99,14 +99,14 @@ const oneWayDiff = (a, b) => {
   }
 }
 const biDiff = (a, b) => {
-  let left = oneWayDiff(a, b).diffs
-  let right = oneWayDiff(b, a).diffs
+  let left = oneWayDiffObj(a, b).diffs
+  let right = oneWayDiffObj(b, a).diffs
   return { left, right }
 }
 const intersection = (listOfObjects) => {
   if (listOfObjects == null || !listOfObjects.length) return {}
   return listOfObjects.reduce((shared, obj) =>
-    oneWayDiff(shared, obj).sames
+    oneWayDiffObj(shared, obj).sames
   )
 }
 // TODO: ~~make results true union/intersection/symmetric difference~~ figure
@@ -130,6 +130,30 @@ const multiDiff = (listOfObjects) => {
     return b
   })
   return allDiffs
+}
+// actually, I think this is what I wanted...
+// (the first two should move to general.js)
+const oneWayDiff = (a, b) => {
+  if (a === b) return []
+  else if (a == null) return [ ...b ]
+  else if (b == null) return [ ...a ]
+  return a.reduce((diffs, value) => {
+    if (!b.includes(value)) diffs.push(value)
+    return diffs
+  }, [])
+}
+
+const xor = (a, b) => oneWayDiff(a, b).concat(oneWayDiff(b, a))
+
+const objectsDotXor = (a, b, filterOn = 'keys') => {
+  const diffOn = filterOn === 'keys' ? Object.keys : Object.values
+  const diffs = xor(diffOn(a), diffOn(b))
+  a = filterObject(a, diffs, { filterOn })
+  b = filterObject(b, diffs, { filterOn })
+  return {
+    ...a,
+    ...b
+  }
 }
 
 myself.extractNested = "Flattens (by one) the given object, returning the flattened values and, separately, any remaining nested values."
@@ -224,13 +248,19 @@ module.exports = {
     excludeKeys: (obj, filter) => filterObject(obj, filter, excludeOpts),
     excludeValues: (obj, filter) => filterObject(obj, filter, excludeValOpts),
   },
-  oneWayDiff,
-  diff: biDiff,
-  multiDiff,
+  diff: {
+    oneWayDiff,
+    outerDiff,
+    oneWayDiffObj,
+    biDiff,
+    multiDiff,
+    oneWayDiff,
+    xor,
+    objectsDotXor,
+  },
   extractNested,
   escapeCsvEntry,
   toCsv,
   count,
   multiply,
 }
-
