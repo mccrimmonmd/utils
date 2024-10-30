@@ -2,7 +2,11 @@ const { range, findDupes } = require('./general')
 const { sum, roundDecimal } = require('./numbers')
 const { rollDice } = require('./random')
 
-const runAverage = (rounds, days = 30, options) => {
+const playGame = (rounds = 6, days = 30, options = {}) => {
+  options = {
+    verbose: false,
+    ...options
+  }
   if (rounds < 1) rounds = 1
   const averagePerRound = {
     singles: 0,
@@ -25,8 +29,8 @@ const runAverage = (rounds, days = 30, options) => {
   
   const start = Date.now()
   for (const _ of range(rounds)) {
-    const results = playDice(days, false, options)
-    for (let [key, value] of Object.entries(results)) {
+    const results = playRound(days, options)
+    for (const [key, value] of Object.entries(results)) {
       variation[key][0] = Math.min(value, variation[key][0] ?? Infinity)
       variation[key][1] = Math.max(value, variation[key][1] ?? -Infinity)
       averagePerRound[key] += value
@@ -43,12 +47,12 @@ const runAverage = (rounds, days = 30, options) => {
   }
 }
 
-const playDice = (
-  days,
-  verbose = true,
+const playRound = (
+  days = 30,
   options = {},
 ) => {
   options = {
+    verbose: true,
     players: 2,
     dice: 4,
     baseScore: 2,
@@ -125,7 +129,7 @@ const playDice = (
     }
     const combinedScore = scores.reduce(sum)
     totalScore += combinedScore
-    if (verbose) {
+    if (options.verbose) {
       console.log(`**Day ${totalDays}**`)
       for (const i of range(options.players)) {
         var name = names[dupeTypes[i]]
@@ -146,6 +150,6 @@ const playDice = (
 }
 
 module.exports = {
-  playDice,
-  runAverage,
-} // = require('./thirtyDays')
+  round: playRound,
+  game: playGame,
+}
