@@ -250,7 +250,6 @@ module.exports = {
   },
   diff: {
     oneWayDiff,
-    outerDiff,
     oneWayDiffObj,
     biDiff,
     multiDiff,
