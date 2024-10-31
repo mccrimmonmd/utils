@@ -2,7 +2,13 @@ const fs = require('fs')
 const path = require('path')
 
 const myself = {} // documentation
-const { print, isEmpty, textSorter, flatten } = require('./general')
+const {
+  print,
+  isEmpty,
+  textSorter,
+  flatten,
+  iterEquals,
+} = require('./general')
 const { sum, product } = require('./numbers')
 
 myself.merge = "Merges a secondary or 'fallback' object into a primary or 'reference' object. Returns a new object that matches the primary, plus all non-empty values from the secondary that are empty in the primary. Uses general.isEmpty to determine what counts as empty."
@@ -135,15 +141,17 @@ const multiDiff = (listOfObjects) => {
 // actually, I think this is what I wanted...
 // (the first two should move to general.js)
 const oneWayDiff = (a, b) => {
-  if (a === b) return []
-  else if (a == null) return [ ...b ]
-  else if (b == null) return [ ...a ]
-  return a.reduce((diffs, value) => {
-    if (!b.includes(value)) diffs.push(value)
-    return diffs
-  }, [])
-}
+  if (iterEquals(a, b)) return []
+  if (a == null) return [ ...b ]
+  if (b == null) return [ ...a ]
 
+  b = new Set(b)
+  const diffs = new Set()
+  for (const value of a) {
+    if (!b.has(value)) diffs.add(value)
+  }
+  return [...diffs]
+}
 const xor = (a, b) => oneWayDiff(a, b).concat(oneWayDiff(b, a))
 
 const objectsDotXor = (a, b, filterOn = 'keys') => {
