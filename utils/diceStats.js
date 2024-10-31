@@ -23,7 +23,7 @@ const countSides = (dice = 4, sides) => {
   return multiples
 }
 
-myself.getShortNames = "Takes the dice rolls returned by countSides and determines the number of times *any* side came up twice, three times, etc. Returns an object with keys in the form '2s', '3s', '4s', ..."
+myself.getShortNames = "Takes the dice rolls returned by countSides and determines the number of times any side came up twice, three times, etc. Returns an object with keys in the form '2s', '3s', '4s', ..."
 const getShortNames = (multiples) => {
   let names = {}
   for (const count of multiples) {
@@ -78,7 +78,7 @@ const initializeNames = (results) => {
     fullNames = {
       fullHouse: 0,
       quints: 0,
-      ...fullNames,
+      ...fullNames
     }
   }
   if (shortNames.includes('6s')) {
@@ -93,7 +93,7 @@ const initializeNames = (results) => {
   return fullNames
 }
 
-myself.fullNameStats = "Takes a list of multiples (from countSides) and counts the number of times each type of multiple or combination appears in it. Takes an optional parameter to display the results as percentages instead of raw counts: when provided as a number, it is interpreted as the desired decimal precision."
+myself.fullNameStats = "Takes a list of multiples (from countSides) and counts the number of times each type of multiple or combination appears in it. Takes an optional parameter to display the results as percentages instead of raw counts: when provided as a number, it is interpreted as the desired decimal precision (default 0)."
 const fullNameStats = (results, asPercentages = false) => {
   const shortNames = results.map(getShortNames)
   const fullNames = shortNames.map(getFullName).reduce((counts, name) => {
@@ -101,9 +101,9 @@ const fullNameStats = (results, asPercentages = false) => {
     return counts
   }, initializeNames(shortNames))
   if (asPercentages) {
-    let total = results.length
+    const total = results.length
     if (total === 0) return fullNames
-    let places = typeof asPercentages === 'number' ? asPercentages : 0
+    const places = typeof asPercentages === 'number' ? asPercentages : 0
     for (const [key, val] of Object.entries(fullNames)) {
       let percentage = (val * 100) / total
       fullNames[key] = roundDecimal(percentage, places) + '%'
@@ -117,7 +117,6 @@ const generateMultiples = (amount = 1000, dice = 4, sides = 6) =>
   arrayOf(amount, () => countSides(dice, sides))
 
 myself.printMultiples = "Takes a result from countSides and prints it to the console."
-
 const printMultiples = (multiples) =>
   console.log(multiples.sort(), '-', getShortNames(multiples))
 
@@ -132,7 +131,7 @@ const runStatsTest = (
   } = {}
 ) => {
   const start = Date.now()
-  let results = generateMultiples(iters, dice, sides)
+  const results = generateMultiples(iters, dice, sides)
   if (verbose) {
     for (const multiples of results) {
       printMultiples(multiples)

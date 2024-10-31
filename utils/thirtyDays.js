@@ -132,8 +132,8 @@ const playRound = (
     if (options.verbose) {
       console.log(`**Day ${totalDays}**`)
       for (const i of range(options.players)) {
-        var name = names[dupeTypes[i]]
-        console.log(`- ${resultSets[i]} (${scores[i]} points)`, name && ` - ${name}!`)
+        const name = names[dupeTypes[i]]
+        console.log(`- ${resultSets[i]} (${scores[i]} points)`, name && `- ${name}!`)
       }
       console.log(`Combined score: ${combinedScore}`)
     }

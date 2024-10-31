@@ -55,7 +55,7 @@ const allValues = (listOfObjects, field) => {
 myself.allKeys = "Returns an array of every unique key among the objects provided. Takes an optional regular expression to filter the results."
 const allKeys = (listOfObjects, regex = /(?:)/) => {
   // The empty regex /(?:)/ matches any string
-  let uniqueKeys = new Set(listOfObjects.map(Object.keys).reduce(flatten))
+  const uniqueKeys = new Set(listOfObjects.map(Object.keys).reduce(flatten))
   return [...uniqueKeys].filter(key => regex.test(key))
 }
 
@@ -73,8 +73,8 @@ const filterObject = (
   const passesFilter = Array.isArray(filter)
     ? (value) => filter.includes(value) === includeOnMatch
     : (value) => filter.test(value) === includeOnMatch
-  let filtered = Object.entries(obj).filter(([key, value]) => {
-    let candidate = filterOn === 'keys' ? key : value
+  const filtered = Object.entries(obj).filter(([key, value]) => {
+    const candidate = filterOn === 'keys' ? key : value
     return passesFilter(candidate)
   })
   return Object.fromEntries(filtered)

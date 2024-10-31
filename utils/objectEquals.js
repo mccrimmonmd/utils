@@ -71,7 +71,7 @@ module.exports = (
       }
     }
     
-    // TODO: test for iterability (otherwise fails on Maps, Sets, etc.)
+    // TODO: test for iterability (otherwise gives false positive on Maps, Sets, etc.)
     aKeys.sort()
     bKeys.sort()
     return Object.entries(aKeys).every(([i, aKey]) => {
