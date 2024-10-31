@@ -43,6 +43,9 @@ const ifFunc = (condition, onTrue, onFalse = () => null) => {
   return result
 }
 
+myself.isTruthy = "Javascript's truthiness rules are obnoxious and I always second-guess myself when trying to remember them."
+const isTruthy = (thing) => thing ? 'yes' : 'no'
+
 myself.print = "console.dir optimized for the Node.js REPL."
 const print = (obj, depth = null, repl = true) => {
   console.dir(obj, { depth })
@@ -208,6 +211,7 @@ module.exports = {
   range,
   zip,
   ifFunc,
+  isTruthy,
   print,
   isEmpty,
   makeGroups,
