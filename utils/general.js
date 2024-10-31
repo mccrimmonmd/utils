@@ -151,8 +151,8 @@ const arrayOf = (length, item) => Array.from({ length }, (_, i) => {
 })
 myself.stringOf = "arrayOf but for Strings."
 const stringOf = (n, snippet = ' ', joinWith = '') => {
-  return String(joinWith) === ''
-    ? String(snippet).repeat(n)
+  return String(joinWith) === '' ?
+      String(snippet).repeat(n)
     : arrayOf(n, String(snippet)).join(joinWith)
 }
 

@@ -70,8 +70,9 @@ const filterObject = (
   } = {}
 ) => {
   if (obj == null) return obj
-  const passesFilter = Array.isArray(filter)
-    ? (value) => filter.includes(value) === includeOnMatch
+  const passesFilter =
+    Array.isArray(filter) ?
+      (value) => filter.includes(value) === includeOnMatch
     : (value) => filter.test(value) === includeOnMatch
   const filtered = Object.entries(obj).filter(([key, value]) => {
     const candidate = filterOn === 'keys' ? key : value
