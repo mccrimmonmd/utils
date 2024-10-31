@@ -43,7 +43,7 @@ const playGame = (rounds = 6, days = 30, options = {}) => {
   
   return {
     averagePerRound,
-    variation,
+    variation: rounds > 1 ? variation : 'N/A',
   }
 }
 
@@ -61,7 +61,7 @@ const playRound = (
     singlesScore: 0,
     tripScore: 1,
     pairScore: 4,
-    pairDays: 2,
+    pairDays: 1,
     perfectScore: 7,
     perfectDays: 7,
     ...options
