@@ -55,8 +55,8 @@ module.exports = (
     if (maxDepth === null) {
       // circular reference tracking
       let wasComparedTo = Symbol.for('circularRefKey')
-      let aComps = objA[wasComparedTo]
-      let bComps = objB[wasComparedTo]
+      let aComps = objA[wasComparedTo] ?? []
+      let bComps = objB[wasComparedTo] ?? []
       if (aComps && bComps && aComps.some(id => bComps.includes(id))) {
         // if these two objects have already been compared, then we know they
         // either contain a circular reference, or their parent object contains
@@ -66,8 +66,8 @@ module.exports = (
       else {
         // otherwise, we have to follow the references
         let comparisonId = Symbol()
-        objA[wasComparedTo] = aComps ? aComps.concat(comparisonId) : [comparisonId]
-        objB[wasComparedTo] = bComps ? bComps.concat(comparisonId) : [comparisonId]
+        objA[wasComparedTo] = aComps.concat(comparisonId)
+        objB[wasComparedTo] = bComps.concat(comparisonId)
       }
     }
     

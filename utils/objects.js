@@ -9,7 +9,7 @@ myself.merge = "Merges a secondary or 'fallback' object into a primary or 'refer
 const merge = (
   a, b,
   {
-    decider = (one, two) => one, 
+    decider = (first, second) => first, 
     alwaysEmpty = ['undefined', 'null'],
     neverEmpty = [0],
   } = {}

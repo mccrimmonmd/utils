@@ -108,16 +108,16 @@ const findDupes = (someList, identifier = (item) => item) => {
 
 myself.textSorter = "Returns a function specialized for sorting arrays of text. Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties). Handles mixed-case text sensibly but otherwise no smarter than the default sort order (i.e. numbers are still sorted in cuckoo-town)." 
 const textSorter = (sortOn, reversed = false) => {
-  const sorters = Array.isArray(sortOn) ? sortOn : [sortOn]
+  const sorters = [].concat(sortOn)
   const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
   const resolve = (a, b, sorter) => {
     switch (typeof sorter) {
       case 'function':
-        [ a, b ] = [ sorter(a), sorter(b) ]
+        ;[ a, b ] = [ sorter(a), sorter(b) ]
         break
       case 'string':
       case 'symbol':
-        [ a, b ] = [ a[sorter], b[sorter] ]
+        ;[ a, b ] = [ a[sorter], b[sorter] ]
         break
       case 'undefined':
       case 'object':
@@ -159,7 +159,7 @@ const stringOf = (n, snippet = ' ', joinWith = '') => {
 myself.swap = "Swaps two elements of an Array (in-place)."
 const swap = (arr, i, j) => {
   // Source: <https://stackoverflow.com/questions/872310/swap-array-elements-in-javascript>
-  [ arr[i], arr[j] ] = [ arr[j], arr[i] ]
+  ;[ arr[i], arr[j] ] = [ arr[j], arr[i] ]
   // arr[i] = arr.splice(j, 1, arr[i])[0]
   return arr
 }
