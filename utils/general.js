@@ -195,11 +195,18 @@ const flatten = (flattened, bump, i) => {
   return flattened
 }
 
-myself.arrayEquals = "Tests two Arrays to see if they are equal."
-// Source: <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
-const arrayEquals = (a, b) =>
-  a.length === b.length &&
-  a.every((element, index) => element === b[index])
+myself.iterEquals = "Tests two iterables to see if they are equal. Takes an optional parameter to ignore ordering."
+// Modified from <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
+const iterEquals = (a, b, ordered = true) => {
+  if (a == null || b == null) return a == b
+  ;[ a, b ] = [ [...a], [...b] ]
+  if (a.length !== b.length) return false
+  if (!ordered) {
+    a.sort()
+    b.sort()
+  }
+  return a.every((element, index) => element === b[index])
+}
 
 myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be commented)."
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
@@ -224,7 +231,7 @@ module.exports = {
   last,
   flattener,
   flatten,
-  arrayEquals,
+  iterEquals,
   multilineRegex,
 } // = require('./general')
 
