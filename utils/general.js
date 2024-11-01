@@ -1,5 +1,7 @@
 const myself = {} // documentation
 
+const backToWork = require('./BACK TO WORK')
+
 myself.range = "Python-style range function. Generator."
 // Alternate version (source: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#sequence_generator_range>)
 // const range = (start, stop, step) =>
@@ -126,6 +128,7 @@ const textSorter = (sortOn, reversed = false) => {
       default:
         throw new Error(`Unexpected type '${typeof sorter}' for sorter parameter`)
     }
+    // TODO: modify so passing Number as the sorter makes numbers sort correctly
     return [ String(a), String(b) ]
   }
   return (aObj, bObj) => {
@@ -213,6 +216,8 @@ myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be 
 const multilineRegex = (parts, flags = '') =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
 
+myself.backToWork = backToWork
+
 module.exports = {
   docs: () => print(myself),
   range,
@@ -233,6 +238,7 @@ module.exports = {
   flatten,
   iterEquals,
   multilineRegex,
+  backToWork,
 } // = require('./general')
 
 // for organization (future):
