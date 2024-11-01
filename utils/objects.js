@@ -141,8 +141,7 @@ const multiDiff = (listOfObjects) => {
 // actually, I think this is what I wanted...
 // (the first two should move to general.js)
 const oneWayDiff = (a, b) => {
-  if (iterEquals(a, b)) return []
-  if (a == null) return [ ...b ]
+  if (a == null || iterEquals(a, b, false)) return []
   if (b == null) return [ ...a ]
 
   b = new Set(b)
