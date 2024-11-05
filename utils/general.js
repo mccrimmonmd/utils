@@ -182,9 +182,9 @@ const last = (array, nth = 1) => array[array.length - nth]
 
 myself.flattener = "Flattens the given array to the specified depth. Depth must be finite, as there are no checks for circular references." // <- TODO?
 const flattener = (array, depth = 1) => {
-  if (!Array.isArray(array) || array.length === 0) return array
+  if (!array.length) return array
   for (const _ of range(depth)) {
-    if (!array.some(element => Array.isArray(element))) {
+    if (!array.some(value => Array.isArray(value))) {
       return array
     }
     array = array.reduce(flatten)
