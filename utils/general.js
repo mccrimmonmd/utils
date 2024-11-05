@@ -212,7 +212,8 @@ myself.iterEquals = "Tests two iterables to see if they are equal. Takes an opti
 // Modified from <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
 const iterEquals = (a, b, ordered = true) => {
   if (a == null || b == null) return a == b
-  ;[ a, b ] = [ [...a], [...b] ]
+  a = [...a]
+  b = [...b]
   if (a.length !== b.length) return false
   if (!ordered) {
     a.sort()
