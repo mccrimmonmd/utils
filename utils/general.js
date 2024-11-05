@@ -111,6 +111,12 @@ const findDupes = (someList, identifier = (item) => item) => {
   return [...makeGroups(someList, identifier, true).values()]
   .filter(group => group.length > 1)
 }
+myself.findUniques = "The complement of deDup's complement."
+const findUniques = (someList, identifier = (item) => item) => {
+  return [...makeGroups(someList, identifier, true).values()]
+  .filter(group => group.length === 1)
+  .map(group => group[0])
+}
 
 myself.textSorter = "Returns a function specialized for sorting arrays of text. Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties). Handles mixed-case text sensibly but otherwise no smarter than the default sort order (i.e. numbers are still sorted in cuckoo-town)." 
 const textSorter = (sortOn, reversed = false) => {
@@ -233,6 +239,7 @@ module.exports = {
   makeGroups,
   deDup,
   findDupes,
+  findUniques,
   textSorter,
   arrayOf,
   stringOf,
