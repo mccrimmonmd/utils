@@ -220,6 +220,19 @@ const iterEquals = (a, b, ordered = true) => {
   }
   return a.every((element, index) => element === b[index])
 }
+// TODO: document, export
+const iterOr = (a, b) => {
+  if (a == null || iterEquals(a, b, false)) return []
+  if (b == null) return [ ...a ]
+
+  b = new Set(b)
+  const diffs = new Set()
+  for (const value of a) {
+    if (!b.has(value)) diffs.add(value)
+  }
+  return [...diffs]
+}
+const iterXor = (a, b) => findUniques([...a].concat(...b))
 
 myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be commented)."
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>

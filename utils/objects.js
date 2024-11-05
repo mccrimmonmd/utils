@@ -7,7 +7,7 @@ const {
   isEmpty,
   textSorter,
   flatten,
-  iterEquals,
+  iterXor,
 } = require('./general')
 const { sum, product } = require('./numbers')
 
@@ -87,7 +87,7 @@ const filterObject = (
   return Object.fromEntries(filtered)
 }
 
-const oneWayDiffObj = (a, b) => {
+const oneWayDiff = (a, b) => {
   let diffs
   let sames
   if (a === b) [diffs, sames] = [{}, { ...a }]
@@ -106,14 +106,14 @@ const oneWayDiffObj = (a, b) => {
   }
 }
 const biDiff = (a, b) => {
-  let left = oneWayDiffObj(a, b).diffs
-  let right = oneWayDiffObj(b, a).diffs
+  let left = oneWayDiff(a, b).diffs
+  let right = oneWayDiff(b, a).diffs
   return { left, right }
 }
 const intersection = (listOfObjects) => {
   if (listOfObjects == null || !listOfObjects.length) return {}
   return listOfObjects.reduce((shared, obj) =>
-    oneWayDiffObj(shared, obj).sames
+    oneWayDiff(shared, obj).sames
   )
 }
 // TODO: ~~make results true union/intersection/symmetric difference~~ figure
@@ -138,24 +138,11 @@ const multiDiff = (listOfObjects) => {
   })
   return allDiffs
 }
-// actually, I think this is what I wanted...
-// (the first two should move to general.js)
-const oneWayDiff = (a, b) => {
-  if (a == null || iterEquals(a, b, false)) return []
-  if (b == null) return [ ...a ]
 
-  b = new Set(b)
-  const diffs = new Set()
-  for (const value of a) {
-    if (!b.has(value)) diffs.add(value)
-  }
-  return [...diffs]
-}
-const xor = (a, b) => oneWayDiff(a, b).concat(oneWayDiff(b, a))
-
-const objectsDotXor = (a, b, filterOn = 'keys') => {
+// TODO: document
+const xor = (a, b, filterOn = 'keys') => {
   const diffOn = filterOn === 'keys' ? Object.keys : Object.values
-  const diffs = xor(diffOn(a), diffOn(b))
+  const diffs = iterXor(diffOn(a), diffOn(b))
   a = filterObject(a, diffs, { filterOn })
   b = filterObject(b, diffs, { filterOn })
   return {
@@ -258,12 +245,9 @@ module.exports = {
   },
   diff: {
     oneWayDiff,
-    oneWayDiffObj,
     biDiff,
     multiDiff,
-    oneWayDiff,
     xor,
-    objectsDotXor,
   },
   extractNested,
   escapeCsvEntry,
