@@ -218,7 +218,7 @@ const iterEquals = (a, b, ordered = true) => {
     a.sort()
     b.sort()
   }
-  return a.every((element, index) => element === b[index])
+  return a.every((value, index) => value === b[index])
 }
 // TODO: document, export
 const iterOr = (a, b) => {
