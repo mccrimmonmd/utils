@@ -69,7 +69,10 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
     return true
   }
   if (typeof value === 'object' && Object.keys(value).length === 0) return true
-  // TODO: anything else to test?
+  // TODO: anything else to test? Empty function?
+  // if (typeof value === 'function') {
+  //   return /\(\)=>{(return)?}/.test(value.toString().replaceAll(/\s/g, '')
+  // }
   return !value
 }
 
