@@ -82,8 +82,8 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
 "Not exported or used, just here as a reminder."
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
-myself.makeGroups = "Sorts a list into caller-determined 'buckets' (default: identity). Returns a Map."
-const makeGroups = (someList, idFunc = (item) => item, strong = false) => {
+myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default: identity). Returns a Map."
+const makeGroups = (iterable, idFunc = (item) => item, strong = true) => {
   let cache = new Map()
   let identifier = (item) => {
     if (cache.has(item)) return cache.get(item)
@@ -93,7 +93,7 @@ const makeGroups = (someList, idFunc = (item) => item, strong = false) => {
     return id
   }
   let groups = new Map()
-  for (const item of someList) {
+  for (const item of iterable) {
     let id = identifier(item)
     let group = groups.has(id) ? groups.get(id) : []
     groups.set(id, group.concat([item]))
@@ -102,21 +102,21 @@ const makeGroups = (someList, idFunc = (item) => item, strong = false) => {
 }
 myself.deDup = "Removes duplicates. Caller determines what counts as a dupe (default: identity). Uses makeGroups but returns an Array."
 const deDup = (
-  someList, 
+  iterable, 
   identifier = (item) => item, 
   decider = (bestSoFar, candidate) => bestSoFar
 ) => {
-  return [...makeGroups(someList, identifier, true).values()]
+  return [...makeGroups(iterable, identifier).values()]
   .map(group => group.reduce(decider))
 }
 myself.findDupes = "The complement of deDup."
-const findDupes = (someList, identifier = (item) => item) => {
-  return [...makeGroups(someList, identifier, true).values()]
+const findDupes = (iterable, identifier = (item) => item) => {
+  return [...makeGroups(iterable, identifier).values()]
   .filter(group => group.length > 1)
 }
 myself.findUniques = "The complement of deDup's complement."
-const findUniques = (someList, identifier = (item) => item) => {
-  return [...makeGroups(someList, identifier, true).values()]
+const findUniques = (iterable, identifier = (item) => item) => {
+  return [...makeGroups(iterable, identifier).values()]
   .filter(group => group.length === 1)
   .map(group => group[0])
 }
