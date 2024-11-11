@@ -6,15 +6,18 @@ myself.range = "Python-style range function. Generator."
 // Alternate version (source: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#sequence_generator_range>)
 // const range = (start, stop, step) =>
 //   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step)
-// The above version is simpler, but a generator uses no heap space, so
+// Using Array.from is simpler, but a generator uses no heap space, so
 // it can accomodate very large (or even infinite!) ranges.
 const range = function* (start = 0, stop, step = 1) {
+  const big = typeof start === 'bigint'
+  const zero = big ? 0n : 0
+  if (big && step === 1) step = 1n
   if (stop === undefined) {
     stop = start
-    start = 0
+    start = zero
   }
-  if (start < stop && step <= 0) return
-  if (start > stop && step >= 0) return
+  if (start < stop && step <= zero) return
+  if (start > stop && step >= zero) return
   for (let i = start; (start < stop ? i < stop : i > stop); i += step) {
     yield i
   }
