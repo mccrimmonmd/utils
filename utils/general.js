@@ -251,9 +251,11 @@ const iterEquals = (a, b, ordered = true) => {
 }
 
 // TODO: document, export
+// Alternative: just use Set composition methods?
+// <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#set_composition>
 const iterOr = (a, b) => {
   if (a == null || iterEquals(a, b, false)) return []
-  if (b == null) return [ ...a ]
+  if (b == null) return [...a]
 
   b = new Set(b)
   const diffs = new Set()
