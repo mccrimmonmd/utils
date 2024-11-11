@@ -227,18 +227,29 @@ const flatten = (flattened, bump, i) => {
 }
 
 myself.iterEquals = "Tests two iterables to see if they are equal. Takes an optional parameter to ignore ordering."
-// Modified from <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
+// Generalized from <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
 const iterEquals = (a, b, ordered = true) => {
   if (a == null || b == null) return a == b
-  a = [...a]
-  b = [...b]
-  if (a.length !== b.length) return false
-  if (!ordered) {
-    a.sort()
-    b.sort()
+  if (ordered) {
+    a = [...a]
+    b = [...b]
+    if (a.length === b.length) {
+      return a.every((value, index) => value === b[index])
+    }
+    return false
   }
-  return a.every((value, index) => value === b[index])
+  else {
+    a = makeGroups(a)
+    b = makeGroups(b)
+    if (a.size === b.size) {
+      return [...a.entries()].every(
+        ([key, aGroup]) => b.has(key) && b.get(key).length === aGroup.length
+      )
+    }
+    return false
+  }
 }
+
 // TODO: document, export
 const iterOr = (a, b) => {
   if (a == null || iterEquals(a, b, false)) return []
