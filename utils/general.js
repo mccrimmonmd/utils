@@ -121,36 +121,51 @@ const findUniques = (iterable, identifier = (item) => item) => {
   .map(group => group[0])
 }
 
-myself.textSorter = "Returns a function specialized for sorting arrays of text. Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties). Handles mixed-case text sensibly but otherwise no smarter than the default sort order (i.e. numbers are still sorted in cuckoo-town)." 
-const textSorter = (sortOn, reversed = false) => {
+myself.getSorter = "Returns a sorting function that behaves more sanely than the default (in particular, mixed-case text and numbers sort the way you would expect, and Objects are sorted based on their representation in the REPL). Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties). For mixed-type arrays, sorts by type first, then value."
+const getSorter = (sortOn, reversed = false) => {
   const sorters = [].concat(sortOn)
   const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
+  
   const resolve = (a, b, sorter) => {
     switch (typeof sorter) {
       case 'function':
-        ;[ a, b ] = [ sorter(a), sorter(b) ]
-        break
+        return [ sorter(a), sorter(b) ]
       case 'string':
       case 'symbol':
-        ;[ a, b ] = [ a[sorter], b[sorter] ]
-        break
+        return [ a[sorter], b[sorter] ]
       case 'undefined':
       case 'object':
         // identity
-        if (sorter == null) break
+        if (sorter == null) return [ a, b ]
       default:
         throw new Error(`Unexpected type '${typeof sorter}' for sorter parameter`)
     }
-    // TODO: modify so passing Number as the sorter makes numbers sort correctly
-    return [ String(a), String(b) ]
   }
-  return (aObj, bObj) => {
-    for (const tiebreak of sorters) {
-      let [a, b] = resolve(aObj, bObj, tiebreak)
+  
+  const makeSortable = ([a, b]) => {
+    const aType = typeof a
+    const bType = typeof b
+    if (aType !== bType) return [aType, bType]
+    if (['number', 'bigint'].includes(aType)) return [a, b]
+    
+    if (aType === 'object' && a !== null) {
+      a = util.inspect(a)
+      b = util.inspect(b)
+    }
+    else {
+      a = String(a)
+      b = String(b)
       if (a.toLowerCase() !== b.toLowerCase()) {
-        a = a.toLowerCase()
-        b = b.toLowerCase()
+        return [ a.toLowerCase(), b.toLowerCase() ]
       }
+    }
+    return [ a, b ]
+  }
+  
+  return (aObj, bObj) => {
+    // TODO: cache?
+    for (const tiebreak of sorters) {
+      let [a, b] = makeSortable(resolve(aObj, bObj, tiebreak))
       if (a !== b) {
         return a < b ? ifLess : ifMore
       }
@@ -257,7 +272,7 @@ module.exports = {
   deDup,
   findDupes,
   findUniques,
-  textSorter,
+  getSorter,
   arrayOf,
   stringOf,
   swap,

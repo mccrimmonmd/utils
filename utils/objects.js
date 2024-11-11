@@ -5,7 +5,7 @@ const myself = {} // documentation
 const {
   print,
   isEmpty,
-  textSorter,
+  getSorter,
   flatten,
   iterXor,
 } = require('./general')
@@ -190,7 +190,7 @@ const toCsv = (
   }
   else {
     header = allKeys(listOfObjects)
-    if (sortHeader) header.sort(textSorter())
+    if (sortHeader) header.sort(getSorter())
     for (const obj of listOfObjects) body.push(makeLine(header, obj))
   }
   let output = [makeLine(header), ...body]
