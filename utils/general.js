@@ -10,14 +10,13 @@ myself.range = "Python-style range function. Generator."
 // it can accomodate very large (or even infinite!) ranges.
 const range = function* (start = 0, stop, step = 1) {
   const big = typeof start === 'bigint'
-  const zero = big ? 0n : 0
   if (big && step === 1) step = 1n
   if (stop === undefined) {
     stop = start
-    start = zero
+    start = big ? 0n : 0
   }
-  if (start < stop && step <= zero) return
-  if (start > stop && step >= zero) return
+  if (start < stop && step <= 0) return
+  if (start > stop && step >= 0) return
   for (let i = start; (start < stop ? i < stop : i > stop); i += step) {
     yield i
   }
