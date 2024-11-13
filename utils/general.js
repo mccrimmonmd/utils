@@ -286,6 +286,8 @@ const multilineRegex = (parts, flags = '') =>
 
 myself.backToWork = backToWork
 
+// TODO: new array/iterable submodule
+// array object { swap, last, etc. } *and* iterable submodule?
 module.exports = {
   docs: () => print(myself),
   range,
@@ -312,7 +314,7 @@ module.exports = {
   backToWork,
 } // = require('./general')
 
-// for organization (future):
+// for organization? (future):
 // module.exports = {
   // ...textStuff,
   // ...arrayStuff,
