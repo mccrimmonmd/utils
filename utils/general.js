@@ -259,8 +259,6 @@ const iterEquals = (a, b, ordered = true) => {
 }
 
 // TODO: document, export
-// Alternative: just use Set composition methods?
-// <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#set_composition>
 const iterOr = (a, b) => {
   if (a == null || iterEquals(a, b, false)) return []
   if (b == null) return [...a]
@@ -273,6 +271,13 @@ const iterOr = (a, b) => {
   return [...diffs]
 }
 const iterXor = (a, b) => findUniques([...a].concat(...b))
+
+// Alternative: just use Set composition methods?
+// <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#set_composition>
+const iterDiff = (a, b) => [...new Set(a).difference(new Set(b))]
+const iterOr = (a, b) => [...new Set(a).union(new Set(b))]
+const iterXor = (a, b) => [...new Set(a).symmetricDifference(new Set(b))]
+const iterAnd = (a, b) => [...new Set(a).intersection(new Set(b))]
 
 myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be commented)."
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>

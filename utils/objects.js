@@ -92,6 +92,25 @@ const filterObject = (
   return Object.fromEntries(filtered)
 }
 
+// TODO: export, document, move getComposition to general (instead of iterOr & friends)
+const getComposition(type) => (a, b, options) => {
+  const filterOn = options.filterOn ?? 'keys'
+  const diffOn = filterOn === 'keys' ? Object.keys : Object.values
+  const diffs = new Set(diffOn(a))[type](new Set(diffOn(b)))
+  a = filterObject(a, diffs, options)
+  b = filterObject(b, diffs, options)
+  return {
+    ...a,
+    ...b
+  }
+}
+// <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#set_composition>
+const objDiff = getComposition('difference')
+const objAnd  = getComposition('intersection')
+const objXor  = getComposition('symmetricDifference')
+const objOr   = getComposition('union')
+
+/*
 const oneWayDiff = (a, b) => {
   let diffs
   let sames
@@ -143,18 +162,7 @@ const multiDiff = (listOfObjects) => {
   })
   return allDiffs
 }
-
-// TODO: document
-const xor = (a, b, filterOn = 'keys') => {
-  const diffOn = filterOn === 'keys' ? Object.keys : Object.values
-  const diffs = iterXor(diffOn(a), diffOn(b))
-  a = filterObject(a, diffs, { filterOn })
-  b = filterObject(b, diffs, { filterOn })
-  return {
-    ...a,
-    ...b
-  }
-}
+*/
 
 myself.extractNested = "Flattens (by one) the given object, returning the flattened values and, separately, any remaining nested values."
 const extractNested = (obj) => {
@@ -247,12 +255,6 @@ module.exports = {
     byValues: (obj, filter) => filterObject(obj, filter, valOpts),
     excludeKeys: (obj, filter) => filterObject(obj, filter, excludeOpts),
     excludeValues: (obj, filter) => filterObject(obj, filter, excludeValOpts),
-  },
-  diff: {
-    oneWayDiff,
-    biDiff,
-    multiDiff,
-    xor,
   },
   extractNested,
   escapeCsvEntry,
