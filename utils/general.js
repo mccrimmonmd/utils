@@ -78,23 +78,30 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   return !value
 }
 
+myself.memoize = "Wraps a (possibly expensive) lookup function in a closure that memoizes the results."
+const memoize = (lookup) => {
+  const cache = new Map()
+  return (obj) => {
+    if (!cache.has(obj)) {
+      cache.set(obj, lookup(obj))
+    }
+    return cache.get(obj)
+  }
+}
+
 "Not exported or used, just here as a reminder."
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
 myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default: identity). Returns a Map."
 const makeGroups = (iterable, idFunc = (item) => item, strong = true) => {
-  let cache = new Map()
-  let identifier = (item) => {
-    if (cache.has(item)) return cache.get(item)
-    let id = idFunc(item)
-    id = (strong || typeof id === 'symbol') ? id : String(id)
-    cache.set(item, id)
-    return id
-  }
-  let groups = new Map()
+  const identifier = memoize((item) => {
+    const id = idFunc(item)
+    return (strong || typeof id === 'symbol') ? id : String(id)
+  })
+  const groups = new Map()
   for (const item of iterable) {
-    let id = identifier(item)
-    let group = groups.has(id) ? groups.get(id) : []
+    const id = identifier(item)
+    const group = groups.has(id) ? groups.get(id) : []
     groups.set(id, group.concat([item]))
   }
   return groups
@@ -280,6 +287,7 @@ module.exports = {
   isTruthy,
   print,
   isEmpty,
+  memoize,
   makeGroups,
   deDup,
   findDupes,
