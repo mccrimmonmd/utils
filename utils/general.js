@@ -135,27 +135,27 @@ const getSorter = (sortOn, reversed = false) => {
   const sorters = [].concat(sortOn)
   const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
   
-  const resolve = (a, b, sorter) => {
+  const resolve = (aObj, bObj, sorter) => {
     switch (typeof sorter) {
       case 'function':
-        return [ sorter(a), sorter(b) ]
+        return [ sorter(aObj), sorter(bObj) ]
       case 'string':
       case 'symbol':
-        return [ a[sorter], b[sorter] ]
+        return [ aObj[sorter], bObj[sorter] ]
       case 'undefined':
       case 'object':
         // identity
-        if (sorter == null) return [ a, b ]
+        if (sorter == null) return [ aObj, bObj ]
       default:
         throw new Error(`Unexpected type '${typeof sorter}' for sorter parameter`)
     }
   }
   
-  const makeSortable = ([a, b]) => {
-    const aType = typeof a
-    const bType = typeof b
-    if (aType !== bType) return [aType, bType]
-    if (['number', 'bigint'].includes(aType)) return [a, b]
+  const makeComparable = (aObj, bObj, sortBy) => {
+    let [ a, b ] = resolve(aObj, bObj, sortBy)
+    const [ aType, bType ] = [ typeof a, typeof b ]
+    if (aType !== bType) return [ aType, bType ]
+    if (['number', 'bigint'].includes(aType)) return [ a, b ]
     
     if (aType === 'object' && a !== null) {
       a = util.inspect(a)
@@ -170,11 +170,10 @@ const getSorter = (sortOn, reversed = false) => {
     }
     return [ a, b ]
   }
-  
+
   return (aObj, bObj) => {
-    // TODO: cache?
     for (const tiebreak of sorters) {
-      let [a, b] = makeSortable(resolve(aObj, bObj, tiebreak))
+      const [a, b] = makeComparable(aObj, bObj, tiebreak)
       if (a !== b) {
         return a < b ? ifLess : ifMore
       }
