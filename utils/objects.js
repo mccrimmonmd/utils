@@ -93,7 +93,7 @@ const filterObject = (
 }
 
 // TODO: export, document, move getComposition to general (instead of iterOr & friends)
-const getComposition(type) => (a, b, options) => {
+const getComposition = (type) => (a, b, options) => {
   const filterOn = options.filterOn ?? 'keys'
   const diffOn = filterOn === 'keys' ? Object.keys : Object.values
   const diffs = new Set(diffOn(a))[type](new Set(diffOn(b)))
