@@ -23,7 +23,7 @@ const countSides = (dice = 4, sides) => {
   return multiples
 }
 
-myself.getShortNames = "Takes the dice rolls returned by countSides and determines the number of times any side came up twice, three times, etc. Returns an object with keys in the form '2s', '3s', '4s', ..."
+myself.getShortNames = "Takes the counts returned by countSides and determines the number of times any side came up twice, three times, etc. Returns an object with keys in the form '2s', '3s', '4s', ..."
 const getShortNames = (multiples) => {
   let names = {}
   for (const count of multiples) {
