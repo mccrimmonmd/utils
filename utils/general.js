@@ -55,6 +55,9 @@ myself.print = "console.dir optimized for the Node.js REPL."
 const print = (obj, depth = null, repl = true) => {
   console.dir(obj, { depth })
   return repl ? undefined : obj
+
+myself.isIterable = "A more concise test for iterability."
+const isIterable = (obj) => typeof obj[Symbol.iterator] === 'function'
 }
 
 myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge."
@@ -286,6 +289,7 @@ module.exports = {
   ifFunc,
   isTruthy,
   print,
+  isIterable,
   isEmpty,
   memoize,
   makeGroups,

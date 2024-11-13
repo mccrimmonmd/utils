@@ -5,6 +5,7 @@ const myself = {} // documentation
 const {
   print,
   isEmpty,
+  isIterable,
   getSorter,
   flatten,
   iterXor,
@@ -76,12 +77,14 @@ const filterObject = (
   } = {}
 ) => {
   if (obj == null) return obj
-  const isRegex = filter instanceof RegExp
-  filter = isRegex ? filter : new Set(filter)
-  const passesFilter =
-    isRegex ?
-      (value) => filter.test(value) === includeOnMatch
-    : (value) => filter.has(value) === includeOnMatch
+  let passesFilter
+  if (isIterable(filter)) {
+    filter = new Set(filter)
+    passesFilter = (value) => filter.has(value) === includeOnMatch
+  }
+  else {
+    passesFilter = (value) => filter.test(value) === includeOnMatch
+  }
   const filtered = Object.entries(obj).filter(([key, value]) => {
     const candidate = filterOn === 'keys' ? key : value
     return passesFilter(candidate)
