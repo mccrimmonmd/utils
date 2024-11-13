@@ -66,7 +66,7 @@ const allKeys = (listOfObjects, regex = /(?:)/) => {
 }
 
 myself.filter = {}
-myself.filter.object = "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a regular expression or an array."
+myself.filter.object = "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a regular expression or an iterable."
 const filterObject = (
   obj,
   filter,
@@ -76,10 +76,12 @@ const filterObject = (
   } = {}
 ) => {
   if (obj == null) return obj
+  const isRegex = filter instanceof RegExp
+  filter = isRegex ? filter : new Set(filter)
   const passesFilter =
-    Array.isArray(filter) ?
-      (value) => filter.includes(value) === includeOnMatch
-    : (value) => filter.test(value) === includeOnMatch
+    isRegex ?
+      (value) => filter.test(value) === includeOnMatch
+    : (value) => filter.has(value) === includeOnMatch
   const filtered = Object.entries(obj).filter(([key, value]) => {
     const candidate = filterOn === 'keys' ? key : value
     return passesFilter(candidate)
