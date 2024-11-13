@@ -40,6 +40,11 @@ const zip = (arrays, { padResults = false, padWith } = {}) => {
   return zipped
 }
 
+myself.print = "console.dir optimized for the Node.js REPL."
+const print = (obj, depth = null, repl = true) => {
+  console.dir(obj, { depth })
+  return repl ? undefined : obj
+
 myself.ifFunc = "Pure-ish 'if' function with short-circuiting. Just because. (Only 'ish' because, without the side effect of assignment, the return value of the executed branch would be lost, making the construct useless unless the branches themselves had side effects.)"
 const ifFunc = (condition, onTrue, onFalse = () => null) => {
   let forceTrue = (thingy) => thingy || true
@@ -50,11 +55,6 @@ const ifFunc = (condition, onTrue, onFalse = () => null) => {
 
 myself.isTruthy = "Javascript's truthiness rules are obnoxious and I always second-guess myself when trying to remember them."
 const isTruthy = (thing) => thing ? 'yes' : 'no'
-
-myself.print = "console.dir optimized for the Node.js REPL."
-const print = (obj, depth = null, repl = true) => {
-  console.dir(obj, { depth })
-  return repl ? undefined : obj
 
 myself.isIterable = "A more concise test for iterability."
 const isIterable = (obj) => typeof obj[Symbol.iterator] === 'function'
@@ -286,9 +286,9 @@ module.exports = {
   docs: () => print(myself),
   range,
   zip,
+  print,
   ifFunc,
   isTruthy,
-  print,
   isIterable,
   isEmpty,
   memoize,
