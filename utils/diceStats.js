@@ -64,6 +64,14 @@ const getFullName = (shortNames) => {
   }
 }
 
+myself.generateMultiples = "Calls countSides the given number of times and aggregates the results in an array (for use by e.g. fullNameStats)."
+const generateMultiples = (amount = 1000, dice = 4, sides = 6) => 
+  arrayOf(amount, () => countSides(dice, sides))
+
+myself.printMultiples = "Takes a result from countSides and prints it to the console."
+const printMultiples = (multiples) =>
+  console.log(multiples.sort(), '-', getShortNames(multiples))
+
 "Private helper function (for generating an initial value for the reduce in fullNameStats)."
 const initializeNames = (results) => {
   const shortNames = allKeys(results)
@@ -112,14 +120,6 @@ const fullNameStats = (results, asPercentages = false) => {
   return fullNames
 }
 
-myself.generateMultiples = "Calls countSides the given number of times and aggregates the results in an array (for use by e.g. fullNameStats)."
-const generateMultiples = (amount = 1000, dice = 4, sides = 6) => 
-  arrayOf(amount, () => countSides(dice, sides))
-
-myself.printMultiples = "Takes a result from countSides and prints it to the console."
-const printMultiples = (multiples) =>
-  console.log(multiples.sort(), '-', getShortNames(multiples))
-
 myself.runStatsTest = "Takes a number and sides of dice to roll and the number of iterations to simulate, generates the results, and counts the total number and type of all multiples rolled."
 const runStatsTest = (
   {
@@ -152,9 +152,8 @@ module.exports = {
   countSides,
   getShortNames,
   getFullName,
-  fullNameStats,
   generateMultiples,
   printMultiples,
-  printMultiples,
+  fullNameStats,
   runStatsTest,
 }
