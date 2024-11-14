@@ -110,60 +110,6 @@ const objAnd  = getComposition('intersection')
 const objXor  = getComposition('symmetricDifference')
 const objOr   = getComposition('union')
 
-/*
-const oneWayDiff = (a, b) => {
-  let diffs
-  let sames
-  if (a === b) [diffs, sames] = [{}, { ...a }]
-  else if (a == null) [diffs, sames] = [{ ...b }, {}]
-  else if (b == null) [diffs, sames] = [{ ...a }, {}]
-  else {
-    [diffs, sames] = Object.entries(a).reduce(([diff, same], [key, val]) => {
-      if (b[key] === val) same[key] = val
-      else diff[key] = val
-      return [diff, same]
-    }, [{}, {}])
-  }
-  return {
-    diffs,
-    sames,
-  }
-}
-const biDiff = (a, b) => {
-  let left = oneWayDiff(a, b).diffs
-  let right = oneWayDiff(b, a).diffs
-  return { left, right }
-}
-const intersection = (listOfObjects) => {
-  if (listOfObjects == null || !listOfObjects.length) return {}
-  return listOfObjects.reduce((shared, obj) =>
-    oneWayDiff(shared, obj).sames
-  )
-}
-// TODO: ~~make results true union/intersection/symmetric difference~~ figure
-// out what the heck 'multiDiff' even means; why does anyone need this function?
-// Possible A: outliers! I think I wanted a way to find values that stood out
-// among a group of similar objects (i.e. reduce it to just its
-// "differences"). I should use general.makeGroups for that...
-const multiDiff = (listOfObjects) => {
-  if (listOfObjects.length <= 1) return []
-  let allDiffs = []
-  listOfObjects.reduce((a, b, i) => {
-    let { left, right } = biDiff(a, b)
-    if (Object.keys(left).length || Object.keys(right).length) {
-      allDiffs.push({
-        left,
-        leftIndex: i - 1,
-        right,
-        rightIndex: i,
-      })
-    }
-    return b
-  })
-  return allDiffs
-}
-*/
-
 myself.extractNested = "Flattens (by one) the given object, returning the flattened values and, separately, any remaining nested values."
 const extractNested = (obj) => {
   let flat = {}
