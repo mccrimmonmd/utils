@@ -7,7 +7,6 @@ const {
   isEmpty,
   isIterable,
   getSorter,
-  flatten,
   iterXor,
 } = require('./general')
 const { sum, product } = require('./numbers')
@@ -62,7 +61,7 @@ const allValues = (listOfObjects, field) => {
 myself.allKeys = "Returns an array of every unique key among the objects provided. Takes an optional regular expression to filter the results."
 const allKeys = (listOfObjects, regex = /(?:)/) => {
   // The empty regex /(?:)/ matches any string
-  const uniqueKeys = new Set(listOfObjects.map(Object.keys).reduce(flatten))
+  const uniqueKeys = new Set(listOfObjects.flatMap(Object.keys))
   return [...uniqueKeys].filter(key => regex.test(key))
 }
 

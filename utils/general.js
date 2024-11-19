@@ -207,6 +207,8 @@ myself.last = "Writing 'someArray[someArray.length - 1]' is juuuuust tedious eno
 const last = (array, nth = 1) => array[array.length - nth]
 
 myself.flattener = "Flattens the given array to the specified depth. Depth must be finite, as there are no checks for circular references." // <- TODO?
+// Whoops, this is already in the JS standard: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat>
+// and <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap>
 const flattener = (array, depth = 1) => {
   if (!array.length) return array
   for (const _ of range(depth)) {
@@ -217,7 +219,6 @@ const flattener = (array, depth = 1) => {
   }
   return array
 }
-
 myself.flatten = "Concatenates two items that may or may not be arrays, using push instead of concat for speed. For use as an argument to Array.prototype.reduce"
 const flatten = (flattened, bump, i) => {
   if (!Array.isArray(flattened)) flattened = [flattened]
