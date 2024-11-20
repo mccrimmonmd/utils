@@ -44,6 +44,7 @@ myself.print = "console.dir optimized for the Node.js REPL."
 const print = (obj, depth = null, repl = true) => {
   console.dir(obj, { depth })
   return repl ? undefined : obj
+}
 
 myself.ifFunc = "Pure-ish 'if' function with short-circuiting. Just because. (Only 'ish' because, without the side effect of assignment, the return value of the executed branch would be lost, making the construct useless unless the branches themselves had side effects.)"
 const ifFunc = (condition, onTrue, onFalse = () => null) => {
@@ -58,7 +59,6 @@ const isTruthy = (thing) => thing ? 'yes' : 'no'
 
 myself.isIterable = "A more concise test for iterability."
 const isIterable = (obj) => typeof obj[Symbol.iterator] === 'function'
-}
 
 myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge."
 const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
