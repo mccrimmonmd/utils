@@ -7,7 +7,6 @@ const {
   isEmpty,
   isIterable,
   getSorter,
-  iterXor,
 } = require('./general')
 const { sum, product } = require('./numbers')
 
