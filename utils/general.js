@@ -241,8 +241,8 @@ const flatten = (flattened, bump, i) => {
 
 myself.iterEquals = "Tests two iterables to see if they are equal. Takes an optional parameter to ignore ordering."
 // Generalized from <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
-const iterEquals = (a, b, ordered = true) => {
-  if (a == null || b == null) return a == b
+const iterEquals = (a, b, ordered = true, strictNullables = false) => {
+  if (a == null || b == null) return strictNullables ? a === b : a == b
   if (ordered) {
     a = [...a]
     b = [...b]
