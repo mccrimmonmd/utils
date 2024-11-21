@@ -10,7 +10,7 @@ myself.rollDice = "Generates a list of random dice rolls. Defaults to 4d6."
 myself.countSides = "Generates (or takes as a parameter) a list of dice rolls and returns an array counting the number of times each face came up (index 0 = number of 1s, etc.)"
 const countSides = (dice = 4, sides) => {
   // 'sides' is optional, but it can't be a default parameter because the
-  // default changes depending on whether 'dice' is a number or an array
+  // default is different depending on whether 'dice' is a number or an array
   if (Array.isArray(dice)) {
     sides = sides ?? Math.max(...dice)
   }

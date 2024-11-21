@@ -35,7 +35,7 @@ const randChoice = (arr) => arr[randInt(arr.length)]
 myself.randRemove = "Removes (in-place) a random element from the given array. Returns the removed element."
 const randRemove = (arr) => arr.splice(randInt(arr.length), 1)[0]
 
-myself.shuffle = "Shuffles (in-place) the given array and returns it."
+myself.shuffle = "Shuffles (in-place) and returns the given array."
 const shuffle = (arr) => {
   for (let end = arr.length - 1; end > 0; end--) {
     let swapFrom = randInt(end + 1) // elements can be 'swapped' with themselves

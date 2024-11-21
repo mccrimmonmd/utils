@@ -127,11 +127,15 @@ myself.findUniques = "The complement of deDup's complement."
 const findUniques = (iterable, identifier = (item) => item) => {
   return [...makeGroups(iterable, identifier).values()]
   .filter(group => group.length === 1)
-  .map(group => group[0])
+  .flat()
 }
 
 myself.getSorter = "Returns a sorting function that behaves more sanely than the default (in particular, mixed-case text and numbers sort the way you would expect, and Objects are sorted based on their representation in the REPL). Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties). For mixed-type arrays, sorts by type first, then value."
 const getSorter = (sortOn, reversed = false) => {
+  // In addition to a saner sort order, this function has a secondary goal of
+  // sorting arbitrary permutations *unambiguously.* That is, for any given
+  // Array arr, `shuffle(arr).sort(getSorter())` should always result in a
+  // permutation indistinguishable from `arr.sort(getSorter())`
   const sorters = [].concat(sortOn)
   const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
   
@@ -203,7 +207,7 @@ const swap = (arr, i, j) => {
   return arr
 }
 
-myself.last = "Writing 'someArray[someArray.length - 1]' is juuuuust tedious enough that I think this is worth it."
+myself.last = "Writing 'someArray[someArray.length - 1]' is juuuuust tedious enough that I think this is worth it (I wrote this before I learned about Array.prototype.at)"
 const last = (array, nth = 1) => array[array.length - nth]
 
 myself.flattener = "Flattens the given array to the specified depth. Depth must be finite, as there are no checks for circular references." // <- TODO?
