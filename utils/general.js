@@ -216,10 +216,10 @@ myself.flattener = "Flattens the given array to the specified depth. Depth must 
 const flattener = (array, depth = 1) => {
   if (!array.length) return array
   for (const _ of range(depth)) {
-    if (!array.some(value => Array.isArray(value))) {
-      return array
+    if (array.some(value => Array.isArray(value))) {
+      array = array.reduce(flatten)
     }
-    array = array.reduce(flatten)
+    else break
   }
   return array
 }
