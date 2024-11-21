@@ -4,7 +4,7 @@ const { print } = require('./general')
 myself.roundDecimal = "Rounds (towards zero) to a given number of decimal places."
 const roundDecimal = (value, places = 2) => {
   if (typeof value !== 'number' || Number.isInteger(value)) return value
-  let magnitude = 10 ** places
+  const magnitude = 10 ** places
   return Math.trunc(value * magnitude) / magnitude
 }
 

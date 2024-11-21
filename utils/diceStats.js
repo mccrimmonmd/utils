@@ -18,14 +18,14 @@ const countSides = (dice = 4, sides) => {
     sides = sides ?? 6
     dice = rollDice(dice, sides)
   }
-  let multiples = arrayOf(sides, 0)
+  const multiples = arrayOf(sides, 0)
   for (const result of dice) multiples[result - 1] += 1
   return multiples
 }
 
 myself.getShortNames = "Takes the counts returned by countSides and determines the number of times any side came up twice, three times, etc. Returns an object with keys in the form '2s', '3s', '4s', ..."
 const getShortNames = (multiples) => {
-  let names = {}
+  const names = {}
   for (const count of multiples) {
     if (count < 2) continue
     let howMany = names[`${count}s`]

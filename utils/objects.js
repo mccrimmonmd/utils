@@ -35,9 +35,9 @@ const merge = (
 
 myself.recombine = "Sort of like Python's 'zip' function, generalized for Objects: transforms [{ id: xid, key: val1 }, { id: xid, key: val2 }, { id: yid, key: val3 }, ...] into [{ id: xid, key: [val1, val2] }, { id: yid, key: [val3] }, ...]"
 const recombine = (listOfObjects, getKey, showDuplicates = true) => {
-  let mapped = listOfObjects.reduce((masterObj, obj) => {
-    let masterKey = getKey(obj)
-    let combinedObj = masterObj[masterKey] ?? {}
+  const mapped = listOfObjects.reduce((masterObj, obj) => {
+    const masterKey = getKey(obj)
+    const combinedObj = masterObj[masterKey] ?? {}
     for (const [key, val] of Object.entries(obj)) {
       if (val === masterKey) {
         combinedObj[key] = val
