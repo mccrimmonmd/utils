@@ -244,6 +244,9 @@ myself.flattener = "Flattens the given array to the specified depth. Depth must 
 // array nested thousands of layers deep, but containing only a handful 
 // (hundreds?) of elements per layer. (Y'know, just in case that ever comes up.)
 const flattener = (array, depth = 1) => {
+  if (!['number', 'bigint'].includes(typeof depth) || depth === Infinity) {
+    throw new RangeError('Depth must be finite')
+  }
   if (!array.length) return array
   for (const _ of range(depth)) {
     if (array.some(value => Array.isArray(value))) {
