@@ -115,6 +115,7 @@ myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy>
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/groupBy>
 const makeGroups = (iterable, idFunc = (item) => item, strong = true) => {
+  // memoizing should probably be the caller's responsibility, actually
   const identifier = memoize((item) => {
     const id = idFunc(item)
     return (strong || typeof id === 'symbol') ? id : String(id)
