@@ -64,8 +64,9 @@ const allKeys = (listOfObjects, regex = /(?:)/) => {
   return [...uniqueKeys].filter(key => regex.test(key))
 }
 
-myself.filter = {}
-myself.filter.object = "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a regular expression or an iterable."
+myself.filter = {
+  object: "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a regular expression or an iterable."
+}
 const filterObject = (
   obj,
   filter,
@@ -90,7 +91,7 @@ const filterObject = (
   return Object.fromEntries(filtered)
 }
 
-// TODO: export, document, move getComposition to general (instead of iterOr & friends)
+// TODO: export, document
 const getComposition = (type) => (a, b, options) => {
   const filterOn = options.filterOn ?? 'keys'
   const diffOn = filterOn === 'keys' ? Object.keys : Object.values
@@ -103,10 +104,11 @@ const getComposition = (type) => (a, b, options) => {
   }
 }
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#set_composition>
-const objDiff = getComposition('difference')
-const objAnd  = getComposition('intersection')
-const objXor  = getComposition('symmetricDifference')
-const objOr   = getComposition('union')
+// myself.diff = 'oneWay, and, or, xor: ...'
+const oneWay = getComposition('difference')
+const and  = getComposition('intersection')
+const or   = getComposition('union')
+const xor  = getComposition('symmetricDifference')
 
 myself.extractNested = "Flattens (by one) the given object, returning the flattened values and, separately, any remaining nested values."
 const extractNested = (obj) => {

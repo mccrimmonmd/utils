@@ -6,8 +6,8 @@ myself.range = "Python-style range function. Generator."
 // Alternate version (source: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#sequence_generator_range>)
 // const range = (start, stop, step) =>
 //   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step)
-// Using Array.from is simpler, but a generator uses no heap space, so
-// it can accomodate very large (or even infinite!) ranges.
+// Using Array.from is simpler, but a generator uses no heap space, so it can
+// accomodate very large (or even infinite!) ranges.
 const range = function* (start = 0, stop, step = 1) {
   const big = typeof start === 'bigint'
   if (big && step === 1) step = 1n
@@ -81,21 +81,27 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   return !value
 }
 
-myself.memoize = "Wraps a (possibly expensive) lookup function in a closure that memoizes the results."
-const memoize = (lookup) => {
+myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value."
+const memoize = (func) => {
   const cache = new Map()
-  return (obj) => {
-    if (!cache.has(obj)) {
-      cache.set(obj, lookup(obj))
+  return (param) => {
+    // TODO: come up with a key that will work for rest parameters (...params) 
+    // (the same paramaters won't make the same array, since they're objects,
+    // so the cache becomes useless)
+    // use iterEquals somehow?
+    if (!cache.has(param)) {
+      cache.set(param, func(param))
     }
-    return cache.get(obj)
+    return cache.get(param)
   }
 }
 
 "Not exported or used, just here as a reminder."
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
-myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default: identity). Returns a Map."
+myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default: identity). Returns a Map. (Yet another function I worked super hard on that's already in the spec, lol)"
+// <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy>
+// <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/groupBy>
 const makeGroups = (iterable, idFunc = (item) => item, strong = true) => {
   const identifier = memoize((item) => {
     const id = idFunc(item)
@@ -109,7 +115,7 @@ const makeGroups = (iterable, idFunc = (item) => item, strong = true) => {
   }
   return groups
 }
-myself.deDup = "Removes duplicates. Caller determines what counts as a dupe (default: identity). Uses makeGroups but returns an Array."
+myself.deDup = "Removes duplicates. Caller determines what counts as a dupe (default: identity). Uses Map.groupBy but returns an Array."
 const deDup = (
   iterable, 
   identifier = (item) => item, 
@@ -130,12 +136,13 @@ const findUniques = (iterable, identifier = (item) => item) => {
   .flat()
 }
 
-myself.getSorter = "Returns a sorting function that behaves more sanely than the default (in particular, mixed-case text and numbers sort the way you would expect, and Objects are sorted based on their representation in the REPL). Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties). For mixed-type arrays, sorts by type first, then value."
+myself.getSorter = "Returns a sorting function that behaves more sanely than the default (specifically: mixed-case text, text with diacritics, and numbers sort the way you would expect; Objects are sorted with util.inspect; and mixed-type arrays are sorted by type first, then value). Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties)."
 const getSorter = (sortOn, reversed = false) => {
   // In addition to a saner sort order, this function has a secondary goal of
   // sorting arbitrary permutations *unambiguously.* That is, for any given
   // Array arr, `shuffle(arr).sort(getSorter())` should always result in a
-  // permutation indistinguishable from `arr.sort(getSorter())`
+  // permutation indistinguishable from `arr.sort(getSorter())` (this may or
+  // may not be possible).
   const sorters = [].concat(sortOn)
   const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
   
@@ -148,7 +155,6 @@ const getSorter = (sortOn, reversed = false) => {
         return [ aObj[sorter], bObj[sorter] ]
       case 'undefined':
       case 'object':
-        // identity
         if (sorter == null) return [ aObj, bObj ]
       default:
         throw new Error(`Unexpected type '${typeof sorter}' for sorter parameter`)
@@ -210,9 +216,16 @@ const swap = (arr, i, j) => {
 myself.last = "Writing 'someArray[someArray.length - 1]' is juuuuust tedious enough that I think this is worth it (I wrote this before I learned about Array.prototype.at)"
 const last = (array, nth = 1) => array[array.length - nth]
 
-myself.flattener = "Flattens the given array to the specified depth. Depth must be finite, as there are no checks for circular references." // <- TODO?
-// Whoops, this is already in the JS standard: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat>
-// and <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap>
+myself.flattener = "Flattens the given array to the specified depth. Depth must be finite, as there are no checks for circular references. (Whoops, this is already in the JS standard...)"
+// <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat>
+// <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap>
+
+// Unsurprisingly, this function is slower than the built-in method. However, 
+// because it operates in a flat loop instead of using recursion, it can handle
+// much larger depths! On the other hand, due to its use of reduce it's limited
+// to shorter arrays. So, it's superior to the built-in only when flattening an 
+// array nested thousands of layers deep, but containing only a handful 
+// (hundreds?) of elements per layer. (Y'know, just in case that ever comes up.)
 const flattener = (array, depth = 1) => {
   if (!array.length) return array
   for (const _ of range(depth)) {
@@ -263,7 +276,10 @@ const iterEquals = (a, b, ordered = true, strictNullables = false) => {
   }
 }
 
-// TODO: document, export
+// TODO?: document, export
+// Alternative: just use Set composition methods
+// e.g. `[...new Set(a).difference(new Set(b))]`
+// <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#set_composition>
 const iterOr = (a, b) => {
   if (a == null || iterEquals(a, b, false)) return []
   if (b == null) return [...a]
@@ -276,13 +292,6 @@ const iterOr = (a, b) => {
   return [...diffs]
 }
 const iterXor = (a, b) => findUniques([...a].concat(...b))
-
-// Alternative: just use Set composition methods?
-// <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#set_composition>
-// const iterDiff = (a, b) => [...new Set(a).difference(new Set(b))]
-// const iterOr = (a, b) => [...new Set(a).union(new Set(b))]
-// const iterXor = (a, b) => [...new Set(a).symmetricDifference(new Set(b))]
-// const iterAnd = (a, b) => [...new Set(a).intersection(new Set(b))]
 
 myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be commented)."
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
