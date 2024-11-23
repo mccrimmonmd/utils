@@ -175,22 +175,27 @@ const getSorter = (sortOn, reversed = false) => {
   
   const makeComparable = (aObj, bObj, sortBy) => {
     let [ a, b ] = resolve(aObj, bObj, sortBy)
+    if (a === b) return [ a, b ]
     const [ aType, bType ] = [ typeof a, typeof b ]
     if (aType !== bType) return [ aType, bType ]
     if (['number', 'bigint'].includes(aType)) return [ a, b ]
     
     if (aType === 'object' && a !== null) {
-      a = util.inspect(a)
-      b = util.inspect(b)
+      return [
+        util.inspect(a, { depth: null }),
+        util.inspect(b, { depth: null })
+      ]
     }
     else {
       a = String(a)
       b = String(b)
       if (a.toLowerCase() !== b.toLowerCase()) {
-        return [ a.toLowerCase(), b.toLowerCase() ]
+        a = a.toLowerCase()
+        b = b.toLowerCase()
       }
+      const localeCompare = a.localeCompare(b)
+      return [ localeCompare, -localeCompare ]
     }
-    return [ a, b ]
   }
 
   return (aObj, bObj) => {
