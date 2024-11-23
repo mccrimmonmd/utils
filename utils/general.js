@@ -115,18 +115,9 @@ myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy>
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/groupBy>
 const makeGroups = (iterable, idFunc = (item) => item, strong = true) => {
-  // memoizing should probably be the caller's responsibility, actually
-  const identifier = memoize((item) => {
-    const id = idFunc(item)
-    return (strong || typeof id === 'symbol') ? id : String(id)
-  })
-  const groups = new Map()
-  for (const item of iterable) {
-    const id = identifier(item)
-    const group = groups.has(id) ? groups.get(id) : []
-    groups.set(id, group.concat([item]))
-  }
-  return groups
+  return strong ?
+      Map.groupBy(iterable, idFunc)
+    : Object.groupBy(iterable, idFunc)
 }
 myself.deDup = "Removes duplicates. Caller determines what counts as a dupe (default: identity). Uses Map.groupBy but returns an Array."
 const deDup = (
