@@ -69,7 +69,7 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   if (typeof value === 'boolean') return false
   if (value.length != null) return value.length === 0
   if (value.size != null) return value.size === 0
-  if (typeof value[Symbol.iterator] === 'function') {
+  if (isIterable(value)) {
     for (const _ of value) return false
     return true
   }
