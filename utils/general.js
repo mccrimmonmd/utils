@@ -279,20 +279,17 @@ const iterEquals = (a, b, ordered = true, strictNullables = false) => {
   if (ordered) {
     a = [...a]
     b = [...b]
-    if (a.length === b.length) {
-      return a.every((value, index) => value === b[index])
-    }
-    return false
+    return (
+      a.length === b.length &&
+      a.every((value, index) => value === b[index])
+    )
   }
   else {
     a = makeGroups(a)
     b = makeGroups(b)
-    if (a.size === b.size) {
-      return [...a.entries()].every(
-        ([key, aGroup]) => b.has(key) && b.get(key).length === aGroup.length
+    return (a.size === b.size) && [...a.entries()].every(
+        ( [key, aGroup] ) => b.has(key) && b.get(key).length === aGroup.length
       )
-    }
-    return false
   }
 }
 
