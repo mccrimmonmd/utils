@@ -35,7 +35,12 @@ const getShortNames = (multiples) => {
 }
 
 myself.getFullName = "Takes the object returned by getShortNames and translates the corresponding multiple into its english nickname (dubs, trips, etc.) Combinations of multiples (e.g. a double and a triple at the same time) are given their own special names."
-const getFullName = (shortNames) => {
+const getFullName = (source) => {
+  let shortNames
+  if (typeof source === 'object') shortNames = source
+  else {
+    shortNames = getShortNames(countSides(source))
+  }
   const shortNamesArray = Object.keys(shortNames).sort().reverse()
   if (shortNamesArray.length === 0) {
     return 'singles'
