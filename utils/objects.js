@@ -194,9 +194,8 @@ module.exports = {
   allKeys,
   filter: {
     object: filterObject,
-    many: (listOfObjects, filter, options) => {
-      return listOfObjects.map(obj => filterObject(obj, filter, options))
-    },
+    many: (listOfObjects, filter, options) =>
+      listOfObjects.map(obj => filterObject(obj, filter, options)),
     byKeys: (obj, filter) => filterObject(obj, filter),
     byValues: (obj, filter) => filterObject(obj, filter, valOpts),
     excludeKeys: (obj, filter) => filterObject(obj, filter, excludeOpts),
