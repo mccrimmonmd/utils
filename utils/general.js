@@ -88,7 +88,7 @@ const memoize = (func) => {
     // TODO: come up with a key that will work for rest parameters (...params) 
     // (the same paramaters won't make the same array, since they're objects,
     // so the cache becomes useless)
-    // use iterEquals somehow?
+    // use iterEquals somehow? or map/join?
     if (!cache.has(param)) {
       cache.set(param, func(param))
     }
@@ -111,7 +111,7 @@ const timeIt = (func, params = [], self = this, silent = false) => {
 "Not exported or used, just here as a reminder."
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
-myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default: identity). Returns a Map. (Yet another function I worked super hard on that's already in the spec, lol)"
+myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default: identity). Returns a Map by default, or an Object for when the 'bucket' names can safely be coerced to strings. (Yet another function I worked super hard on that's already in the spec, lol)"
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy>
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/groupBy>
 const makeGroups = (iterable, idFunc = (item) => item, strong = true) => {
@@ -119,10 +119,10 @@ const makeGroups = (iterable, idFunc = (item) => item, strong = true) => {
       Map.groupBy(iterable, idFunc)
     : Object.groupBy(iterable, idFunc)
 }
-myself.deDup = "Removes duplicates. Caller determines what counts as a dupe (default: identity). Uses Map.groupBy but returns an Array."
+myself.deDup = "Removes duplicates. Caller determines what counts as a dupe, and which duplicate to keep (default: first). Uses Map.groupBy but returns an Array. If you're using identity to determine dupes, you should probably just do `[...new Set(iterable)]` instead."
 const deDup = (
   iterable, 
-  identifier = (item) => item, 
+  identifier, 
   decider = (bestSoFar, candidate) => bestSoFar
 ) => {
   return [...makeGroups(iterable, identifier).values()]
@@ -201,7 +201,7 @@ const getSorter = (sortOn, reversed = false) => {
   }
 }
 
-myself.arrayOf = "Returns 'length' copies of 'item' (which can be a generator function)."
+myself.arrayOf = "Returns 'length' copies of 'item' (which can be a generator function). If 'item' is a primitive, this is equivalent to `Array(length).fill(item)`"
 const arrayOf = (length, item) => Array.from({ length }, (_, i) => {
   if (typeof item === 'function') return item(i)
   else if (typeof item === 'object') return structuredClone(item)
@@ -235,6 +235,8 @@ myself.flattener = "Flattens the given array to the specified depth. Depth must 
 // to shorter arrays. So, it's superior to the built-in only when flattening an 
 // array nested thousands of layers deep, but containing only a handful 
 // (hundreds?) of elements per layer. (Y'know, just in case that ever comes up.)
+// (I wonder if I could get the best of both worlds by combining a plain loop 
+// with a call to Array.prototype.flat?)
 const flattener = (array, depth = 1) => {
   if (!['number', 'bigint'].includes(typeof depth) || depth === Infinity) {
     throw new RangeError('Depth must be finite')

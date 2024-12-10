@@ -19,6 +19,9 @@ const diffsCalculator = (mean) =>
   (diffs, value) => diffs.concat((value - mean) ** 2)
 
 myself.stdDeviation = "Calculates the standard deviation of a list of numbers. Assumes the list is a population, not sample."
+// To calculate the sample std deviation, you would maybe use a 'sampleMean' 
+// function that divides by `values.length - 1` and returns NaN if the sample
+// size is 1
 const stdDeviation = (values) => {
   const mean = arithmeticMean(values)
   const diffs = values.reduce(diffsCalculator(mean), [])
