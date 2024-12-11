@@ -32,7 +32,7 @@ const zip = (arrays, { padResults = false, padWith } = {}) => {
   for (const i of range(len)) {
     let group = []
     for (const array of arrays) {
-      let val = (padResults && i >= array.length) ? padWith : array[i]
+      let val = i >= array.length ? padWith : array[i]
       group.push(val)
     }
     zipped.push(group)
@@ -179,13 +179,7 @@ const getSorter = (sortOn, reversed = false) => {
       ]
     }
     else {
-      a = String(a)
-      b = String(b)
-      if (a.toLowerCase() !== b.toLowerCase()) {
-        a = a.toLowerCase()
-        b = b.toLowerCase()
-      }
-      const localeCompare = a.localeCompare(b)
+      const localeCompare = String(a).localeCompare(String(b))
       return [ localeCompare, -localeCompare ]
     }
   }
