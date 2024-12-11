@@ -7,8 +7,8 @@ const { allKeys } = require('./objects')
 myself.rollDie = "Simulates a single roll of a die. Defaults to d6."
 myself.rollDice = "Generates a list of random dice rolls. Defaults to 4d6."
 
-myself.countSides = "Generates (or takes as a parameter) a list of dice rolls and returns an array counting the number of times each face came up (index 0 = number of 1s, etc.)"
-const countSides = (dice = 4, sides) => {
+myself.countSides = "Generates (or takes as a parameter) a list of dice rolls and returns an array counting the number of times each face came up (index 0 = number of 1s, etc.) Takes an optional parameter for using 'Reddit style' multiples, where duplicates only count if they're at the end."
+const countSides = (dice = 4, sides, rStyle = false) => {
   // 'sides' is optional, but it can't be a default parameter because the
   // default is different depending on whether 'dice' is a number or an array
   if (Array.isArray(dice)) {
@@ -19,7 +19,11 @@ const countSides = (dice = 4, sides) => {
     dice = rollDice(dice, sides)
   }
   const multiples = arrayOf(sides, 0)
-  for (const result of dice) multiples[result - 1] += 1
+  dice = dice.toReversed()
+  for (const result of dice) {
+    if (rStyle && result !== dice[0]) break
+    multiples[result - 1] += 1
+  }
   return multiples
 }
 
@@ -35,11 +39,11 @@ const getShortNames = (multiples) => {
 }
 
 myself.getFullName = "Takes the object returned by getShortNames and translates the corresponding multiple into its english nickname (dubs, trips, etc.) Combinations of multiples (e.g. a double and a triple at the same time) are given their own special names."
-const getFullName = (source) => {
+const getFullName = (...source) => {
   let shortNames
-  if (typeof source === 'object') shortNames = source
+  if (typeof source[0] === 'object') shortNames = source[0]
   else {
-    shortNames = getShortNames(countSides(source))
+    shortNames = getShortNames(countSides(...source))
   }
   const shortNamesArray = Object.keys(shortNames).sort().reverse()
   if (shortNamesArray.length === 0) {
@@ -70,8 +74,12 @@ const getFullName = (source) => {
 }
 
 myself.generateMultiples = "Calls countSides the given number of times and aggregates the results in an array (for use by e.g. fullNameStats)."
-const generateMultiples = (amount = 1000, dice = 4, sides = 6) => 
-  arrayOf(amount, () => countSides(dice, sides))
+const generateMultiples = (
+  amount = 1000,
+  dice = 4,
+  sides = 6,
+  rStyle = false,
+) => arrayOf(amount, () => countSides(dice, sides, rStyle))
 
 myself.printMultiples = "Takes a result from countSides and prints it to the console."
 const printMultiples = (multiples) =>
@@ -133,10 +141,11 @@ const runStatsTest = (
     precision = 2,
     dice = 4,
     sides = 6,
+    rStyle = false,
   } = {}
 ) => {
   const start = Date.now()
-  const results = generateMultiples(iters, dice, sides)
+  const results = generateMultiples(iters, dice, sides, rStyle)
   if (verbose) {
     for (const multiples of results) {
       printMultiples(multiples)
