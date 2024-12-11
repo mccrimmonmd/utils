@@ -20,14 +20,7 @@ myself.randDigit = "Returns a random integer in the range [0, 9]."
 const randDigit = () => randInt(10)
 
 myself.randDigitString = "Returns a string of random digits of the given length."
-const randDigitString = (length) => {
-  let digits = []
-  while (length > 0) {
-    digits.push(randDigit())
-    length -= 1
-  }
-  return digits.join('')
-}
+const randDigitString = (length) => arrayOf(length, randDigit).join('')
 
 myself.randChoice = "Returns a random element from the given array."
 const randChoice = (arr) => arr[randInt(arr.length)]
