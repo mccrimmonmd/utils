@@ -4,8 +4,8 @@ const backToWork = require('./BACK TO WORK')
 
 myself.range = "Python-style range function. Generator."
 // Alternate version (source: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#sequence_generator_range>)
-// const range = (start, stop, step) =>
-//   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step)
+// const range = (start, stop, step = 1) =>
+//   Array.from({ length: (stop - start) / step }, (_, i) => start + i * step)
 // Using Array.from is simpler, but a generator uses no heap space, so it can
 // accomodate very large (or even infinite!) ranges.
 const range = function* (start = 0, stop, step = 1) {
