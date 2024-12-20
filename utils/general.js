@@ -81,19 +81,30 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   return !value
 }
 
+"Helper object for memoize"
+const MultiCache = function () {
+  this.cache = new Map()
+  this.leafKey = Symbol()
+}
+MultiCache.prototype.cacheIt = function (params, wrappedFunc) {
+  const getOrSet = (map, key, func) => {
+    if (!map.has(key)) {
+      map.set(key, func(...params))
+    }
+    return map.get(key)
+  }
+  if (!Array.isArray(params)) params = [params]
+  let nestedCache = this.cache
+  for (const key of params) {
+    nestedCache = getOrSet(nestedCache, key, () => new Map())
+  }
+  return getOrSet(nestedCache, this.leafKey, wrappedFunc)
+}
+
 myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value."
 const memoize = (func) => {
-  const cache = new Map()
-  return (param) => {
-    // TODO: come up with a key that will work for rest parameters (...params) 
-    // (the same paramaters won't make the same array, since they're objects,
-    // so the cache becomes useless)
-    // use iterEquals somehow? or map/join?
-    if (!cache.has(param)) {
-      cache.set(param, func(param))
-    }
-    return cache.get(param)
-  }
+  const multiCache = new MultiCache()
+  return (...params) => multiCache.cacheIt(params, func)
 }
 
 myself.timeIt = "Executes the given function with the given parameters and times how long it takes to finish. Returns an object containing the return value of the function and the time taken, in milliseconds."
