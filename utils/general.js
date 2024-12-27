@@ -88,6 +88,9 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   return !value
 }
 
+myself.iterify = "Wraps the given parameter in an array, unless it's already iterable. More terse than `if(!isIterable(thing)) thing = [thing]`; less obtuse/more general than `thing = [].concat(thing)`."
+const iterify = (thing) => isIterable(thing) ? thing : [thing]
+
 "Helper object for memoize"
 const MultiCache = function () {
   this.cache = new Map()
@@ -165,7 +168,7 @@ const getSorter = (sortOn, reversed = false) => {
   // Array arr, `shuffle(arr).sort(getSorter())` should always result in a
   // permutation indistinguishable from `arr.sort(getSorter())` (this may or
   // may not be possible).
-  const sorters = [].concat(sortOn)
+  const sorters = iterify(sortOn)
   const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
   
   const resolve = (aObj, bObj, sorter) => {
@@ -334,6 +337,7 @@ module.exports = {
   isTruthy,
   isIterable,
   isEmpty,
+  iterify,
   memoize,
   timeIt,
   makeGroups,
