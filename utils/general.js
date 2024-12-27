@@ -9,11 +9,13 @@ myself.range = "Python-style range function. Generator."
 // Using Array.from is simpler, but a generator uses no heap space, so it can
 // accomodate very large (or even infinite!) ranges.
 const range = function* (start = 0, stop, step = 1) {
-  const big = typeof start === 'bigint'
-  if (big && step === 1) step = 1n
+  if (typeof start !== typeof step) {
+    start = BigInt(start)
+    step = BigInt(step)
+  }
   if (stop === undefined) {
     stop = start
-    start = big ? 0n : 0
+    start = (start - start)
   }
   if (start < stop && step <= 0) return
   if (start > stop && step >= 0) return
