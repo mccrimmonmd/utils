@@ -54,8 +54,10 @@ const play = (maxRounds = Infinity, totalScore = 0, modifiers = arrayOf(5, 0)) =
   let firstTen = true
   let firstTwelve = true
   let lockTwelves = false
-  let skipTests = 0 // 0 = none, 1 = quads, 2 = quints
-  let endgame = 0 // 0 = none, 1 = any tens, 2 = three tens, 3 = four tens & any twelves, 4 = all twelves
+  let skipTestsEnum = ['none', 'quads', 'quints']
+  let skipTests = 0
+  let endgameEnum = ['none', 'any tens', 'three tens', 'any twelves', 'all twelves']
+  let endgame = 0
   console.log('START!')
   for (const round of range(maxRounds)) {
     // before the round
