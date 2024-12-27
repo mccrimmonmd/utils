@@ -50,7 +50,7 @@ const print = (obj, depth = null, repl = true) => {
 
 myself.ifFunc = "Pure-ish 'if' function with short-circuiting. Just because. (Only 'ish' because, without the side effect of assignment, the return value of the executed branch would be lost, making the construct useless unless the branches themselves had side effects.)"
 const ifFunc = (condition, onTrue, onFalse = () => {}) => {
-  let forceTrue = (thingy) => thingy || true
+  const forceTrue = (thingy) => thingy || true
   let result
   ;( condition && forceTrue(result = onTrue()) ) || ( result = onFalse() )
   return result
