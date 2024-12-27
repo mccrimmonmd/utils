@@ -75,11 +75,16 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
     for (const _ of value) return false
     return true
   }
+  if (typeof value === 'function') {
+    // this will probably never be useful, but it was a fun regex exercise
+    return multilineRegex([
+      /^(function([\w-]*))?\(\)(=>)?{/, // [function[ name]] () [=>] {
+      /;*(return(undefined)?;*)?/,       // [;][return [undefined][;]]
+      /}$/                               // }
+    ]).test(value.toString().replaceAll(/\s/g, ''))
+  }
   if (typeof value === 'object' && Object.keys(value).length === 0) return true
-  // TODO: anything else to test? Empty function?
-  // if (typeof value === 'function') {
-  //   return /\(\)=>{(return)?}/.test(value.toString().replaceAll(/\s/g, '')
-  // }
+  // TODO: anything else to test?
   return !value
 }
 
