@@ -60,7 +60,7 @@ myself.isTruthy = "Javascript's truthiness rules are obnoxious and I always seco
 const isTruthy = (thing) => thing ? 'yes' : 'no'
 
 myself.isIterable = "A more concise test for iterability."
-const isIterable = (obj) => typeof obj[Symbol.iterator] === 'function'
+const isIterable = (thing) => typeof thing?.[Symbol.iterator] === 'function'
 
 myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge."
 const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
