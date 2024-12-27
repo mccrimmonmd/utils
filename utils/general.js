@@ -127,9 +127,16 @@ const memoize = (func) => {
 }
 
 myself.timeIt = "Executes the given function with the given parameters and times how long it takes to finish. Returns an object containing the return value of the function and the time taken, in milliseconds."
-const timeIt = (func, params = [], self = this, silent = false) => {
+const timeIt = (
+  func,
+  {
+    params = [],
+    silent = false,
+    me = this,
+  } = {}
+) => {
   const start = Date.now()
-  const result = func.apply(self, params)
+  const result = func.apply(me, params)
   const time = Date.now() - start
   if (!silent) console.log(`Time taken: ${time / 1_000} seconds`)
   return {
