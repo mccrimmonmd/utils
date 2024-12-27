@@ -92,29 +92,38 @@ myself.iterify = "Wraps the given parameter in an array, unless it's already ite
 const iterify = (thing) => isIterable(thing) ? thing : [thing]
 
 "Helper object for memoize"
-const MultiCache = function () {
-  this.cache = new Map()
-  this.leafKey = Symbol()
-}
-MultiCache.prototype.cacheIt = function (params, wrappedFunc) {
-  const getOrSet = (map, key, func) => {
-    if (!map.has(key)) {
-      map.set(key, func(...params))
+const MultiCache = class {
+  constructor () {
+    this.nestedCache = new Map()
+    this.simpleCache = new Map()
+    this.leafKey = Symbol()
+  }
+
+  cache (params, wrappedFunc) {
+    const getOrSet = (map, key, func) => {
+      if (!map.has(key)) {
+        map.set(key, func(...params))
+      }
+      return map.get(key)
     }
-    return map.get(key)
+    params = [...iterify(params)]
+    if (params.length <= 1) {
+      return getOrSet(this.simpleCache, params?.[0], wrappedFunc)
+    }
+    else {
+      let innerCache = this.nestedCache
+      for (const key of params) {
+        innerCache = getOrSet(innerCache, key, () => new Map())
+      }
+      return getOrSet(innerCache, this.leafKey, wrappedFunc)
+    }
   }
-  if (!Array.isArray(params)) params = [params]
-  let nestedCache = this.cache
-  for (const key of params) {
-    nestedCache = getOrSet(nestedCache, key, () => new Map())
-  }
-  return getOrSet(nestedCache, this.leafKey, wrappedFunc)
 }
 
 myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value."
 const memoize = (func) => {
   const multiCache = new MultiCache()
-  return (...params) => multiCache.cacheIt(params, func)
+  return (...params) => multiCache.cache(params, func)
 }
 
 myself.timeIt = "Executes the given function with the given parameters and times how long it takes to finish. Returns an object containing the return value of the function and the time taken, in milliseconds."
