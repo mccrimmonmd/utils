@@ -1,4 +1,4 @@
-const { range, findDupes } = require('./general')
+const { range, timeIt, findDupes } = require('./general')
 const { sum, roundDecimal, arithmeticMean } = require('./numbers')
 const { rollDice } = require('./random')
 
@@ -22,16 +22,16 @@ const playGame = (rounds = 6, days = 30, options = {}) => {
   const averagePerRound = initObject()
   const variation  = initObject()
   
-  const start = Date.now()
-  for (const _ of range(rounds)) {
-    const results = playRound(days, options)
-    for (const [key, value] of Object.entries(results)) {
-      averagePerRound[key].push(value)
-      variation[key][0] = Math.min(value, variation[key][0] ?? Infinity)
-      variation[key][1] = Math.max(value, variation[key][1] ?? -Infinity)
+  timeIt(() => {
+    for (const _ of range(rounds)) {
+      const results = playRound(days, options)
+      for (const [key, value] of Object.entries(results)) {
+        averagePerRound[key].push(value)
+        variation[key][0] = Math.min(value, variation[key][0] ?? Infinity)
+        variation[key][1] = Math.max(value, variation[key][1] ?? -Infinity)
+      }
     }
-  }
-  console.log(`time: ${Date.now() - start}ms`)
+  })
   for (const [key, values] of Object.entries(averagePerRound)) {
     averagePerRound[key] = roundDecimal(arithmeticMean(values), 5)
   }
