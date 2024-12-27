@@ -205,11 +205,16 @@ const getSorter = (sortOn, descending = false) => {
   const makeComparable = (aObj, bObj, sortBy) => {
     let [ a, b ] = resolve(aObj, bObj, sortBy)
     if (a === b) return [ a, b ]
+
+    // sort null to the end of the list, just before undefined
+    if (a == null) return b === undefined ? [ 0, 1 ] : [ 1, 0 ]
+    if (b == null) return a === undefined ? [ 1, 0 ] : [ 0, 1 ]
+
     const [ aType, bType ] = [ typeof a, typeof b ]
     if (aType !== bType) return [ aType, bType ]
     if (['number', 'bigint'].includes(aType)) return [ a, b ]
     
-    if (aType === 'object' && a !== null) {
+    if (aType === 'object') {
       return [
         util.inspect(a, { depth: null }),
         util.inspect(b, { depth: null })
