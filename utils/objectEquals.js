@@ -1,3 +1,5 @@
+const { isIterable } = require('./general')
+
 module.exports = (
   objA,
   objB, 
@@ -42,7 +44,7 @@ module.exports = (
   if (typeOfA === 'object') {
     if ( objA === null
       || (maxDepth !== null && maxDepth <= 0)
-      || Array.isArray(objA) !== Array.isArray(objB)
+      || isIterable(objA) !== isIterable(objB)
     ) {
       return false
     }
