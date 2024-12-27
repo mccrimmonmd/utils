@@ -166,12 +166,12 @@ const deDup = (
   .map(group => group.reduce(decider))
 }
 myself.findDupes = "The complement of deDup."
-const findDupes = (iterable, identifier = (item) => item) => {
+const findDupes = (iterable, identifier) => {
   return [...makeGroups(iterable, identifier).values()]
   .filter(group => group.length > 1)
 }
 myself.findUniques = "The complement of deDup's complement."
-const findUniques = (iterable, identifier = (item) => item) => {
+const findUniques = (iterable, identifier) => {
   return [...makeGroups(iterable, identifier).values()]
   .filter(group => group.length === 1)
   .flat()
