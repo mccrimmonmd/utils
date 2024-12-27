@@ -178,14 +178,14 @@ const findUniques = (iterable, identifier) => {
 }
 
 myself.getSorter = "Returns a sorting function that behaves more sanely than the default (specifically: mixed-case text, text with diacritics, and numbers sort the way you would expect; Objects are sorted with util.inspect; and mixed-type arrays are sorted by type first, then value). Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties)."
-const getSorter = (sortOn, reversed = false) => {
+const getSorter = (sortOn, descending = false) => {
   // In addition to a saner sort order, this function has a secondary goal of
   // sorting arbitrary permutations *unambiguously.* That is, for any given
   // Array arr, `shuffle(arr).sort(getSorter())` should always result in a
   // permutation indistinguishable from `arr.sort(getSorter())` (this may or
   // may not be possible).
   const sorters = iterify(sortOn)
-  const [ifLess, ifMore] = reversed ? [1, -1] : [-1, 1]
+  const [ifLess, ifMore] = descending ? [1, -1] : [-1, 1]
   
   const resolve = (aObj, bObj, sorter) => {
     switch (typeof sorter) {
