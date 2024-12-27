@@ -237,7 +237,7 @@ const getSorter = (sortOn, descending = false) => {
   }
 }
 
-myself.arrayOf = "Returns 'length' copies of 'item' (which can be a generator function). If 'item' is a primitive, this is equivalent to `Array(length).fill(item)`"
+myself.arrayOf = "Returns 'length' copies of 'item' (which can be a generator function). If 'item' is not mutable or a function, this is equivalent to `Array(length).fill(item)`"
 const arrayOf = (length, item) => Array.from({ length }, (_, i) => {
   if (typeof item === 'function') return item(i)
   else if (typeof item === 'object') return structuredClone(item)
