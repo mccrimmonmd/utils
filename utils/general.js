@@ -69,12 +69,6 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   
   if (value == null) return true
   if (typeof value === 'boolean') return false
-  if (value.length != null) return value.length === 0
-  if (value.size != null) return value.size === 0
-  if (isIterable(value)) {
-    for (const _ of value) return false
-    return true
-  }
   if (typeof value === 'function') {
     // this will probably never be useful, but it was a fun regex exercise
     return multilineRegex([
@@ -82,6 +76,12 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
       /;*(return(undefined)?;*)?/,       // [;][return [undefined][;]]
       /}$/                               // }
     ]).test(value.toString().replaceAll(/\s/g, ''))
+  }
+  if (value.length != null) return value.length === 0
+  if (value.size != null) return value.size === 0
+  if (isIterable(value)) {
+    for (const _ of value) return false
+    return true
   }
   if (typeof value === 'object' && Object.keys(value).length === 0) return true
   // TODO: anything else to test?
