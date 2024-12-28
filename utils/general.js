@@ -106,7 +106,6 @@ const MultiCache = class {
       }
       return map.get(key)
     }
-    params = [...iterify(params)]
     if (params.length <= 1) {
       return getOrSet(this.simpleCache, params?.[0], wrappedFunc)
     }
