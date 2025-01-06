@@ -72,7 +72,7 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   if (typeof value === 'function') {
     // this will probably never be useful, but it was a fun regex exercise
     return multilineRegex([
-      /^(function([\w-]*))?\(\)(=>)?{/, // [function[ name]] () [=>] {
+      /^(function([\w-]*))?\(\)(=>)?{/,  // [function[ name]] () [=>] {
       /;*(return(undefined)?;*)?/,       // [;][return [undefined][;]]
       /}$/                               // }
     ]).test(value.toString().replaceAll(/\s/g, ''))
@@ -236,7 +236,7 @@ const getSorter = (sortOn, descending = false) => {
   }
 }
 
-myself.arrayOf = "Returns 'length' copies of 'item' (which can be a generator function). If 'item' is not mutable or a function, this is equivalent to `Array(length).fill(item)`"
+myself.arrayOf = "Returns 'length' copies of 'item' (which can be a generator function). If 'item' is copy-by-value (e.g. a primitive), this is equivalent to `Array(length).fill(item)`"
 const arrayOf = (length, item) => Array.from({ length }, (_, i) => {
   if (typeof item === 'function') return item(i)
   else if (typeof item === 'object') return structuredClone(item)
