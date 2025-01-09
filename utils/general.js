@@ -56,6 +56,20 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
   return result
 }
 
+const TypeCheckedArray = class extends Array {
+  #type
+  constructor(type, ...params) {
+    super(...params)
+    this.#type = type
+    return new Proxy(this, {
+      set: (target, prop, value) => {
+        if (typeof value !== this.#type && prop !== 'length') return false
+        return Reflect.set(target, prop, value)
+      }
+    })
+  }
+}
+
 myself.isTruthy = "Javascript's truthiness rules are obnoxious and I always second-guess myself when trying to remember them."
 const isTruthy = (thing) => thing ? 'yes' : 'no'
 
