@@ -2,14 +2,19 @@ const fs = require('fs')
 const path = require('path')
 
 const myself = {} // documentation
-const { print, isEmpty, textSorter, flatten } = require('./general')
+const {
+  print,
+  isEmpty,
+  isIterable,
+  getSorter,
+} = require('./general')
 const { sum, product } = require('./numbers')
 
 myself.merge = "Merges a secondary or 'fallback' object into a primary or 'reference' object. Returns a new object that matches the primary, plus all non-empty values from the secondary that are empty in the primary. Uses general.isEmpty to determine what counts as empty."
 const merge = (
   a, b,
   {
-    decider = (one, two) => one, 
+    decider = (first, second) => first, 
     alwaysEmpty = ['undefined', 'null'],
     neverEmpty = [0],
   } = {}
@@ -27,22 +32,22 @@ const merge = (
   return merged
 }
 
-myself.recombine = "Tranforms [{ id: xid, key: val1 }, { id: xid, key: val2 }, { id: yid, key: val3 }, ...] into [{ id: xid, key: [val1, val2] }, { id: yid, key: [val3] }, ...]"
-const recombine = (listOfObjects, getId, showDuplicates = true) => {
-  let mapped = listOfObjects.reduce((combined, obj) => {
-    let id = getId(obj)
-    let referenceObject = combined[id] ?? {} // masterObject?
+myself.recombine = "Sort of like Python's 'zip' function, generalized for Objects: transforms [{ id: xid, key: val1 }, { id: xid, key: val2 }, { id: yid, key: val3 }, ...] into [{ id: xid, key: [val1, val2] }, { id: yid, key: [val3] }, ...]"
+const recombine = (listOfObjects, getKey, showDuplicates = true) => {
+  const mapped = listOfObjects.reduce((masterObj, obj) => {
+    const masterKey = getKey(obj)
+    const combinedObj = masterObj[masterKey] ?? {}
     for (const [key, val] of Object.entries(obj)) {
-      if (val === id) {
-        referenceObject[key] = val
+      if (val === masterKey) {
+        combinedObj[key] = val
         continue
       }
-      let bucket = referenceObject[key] ?? []
+      let bucket = combinedObj[key] ?? []
       if (showDuplicates || !bucket.includes(val)) bucket.push(val)
-      referenceObject[key] = bucket
+      combinedObj[key] = bucket
     }
-    combined[id] = referenceObject
-    return combined
+    masterObj[masterKey] = combinedObj
+    return masterObj
   }, {})
   return Object.values(mapped)
 }
@@ -55,12 +60,13 @@ const allValues = (listOfObjects, field) => {
 myself.allKeys = "Returns an array of every unique key among the objects provided. Takes an optional regular expression to filter the results."
 const allKeys = (listOfObjects, regex = /(?:)/) => {
   // The empty regex /(?:)/ matches any string
-  let uniqueKeys = new Set(listOfObjects.map(Object.keys).reduce(flatten))
+  const uniqueKeys = new Set(listOfObjects.flatMap(Object.keys))
   return [...uniqueKeys].filter(key => regex.test(key))
 }
 
-myself.filter = {}
-myself.filter.object = "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a regular expression or an array."
+myself.filter = {
+  object: "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a regular expression or an iterable."
+}
 const filterObject = (
   obj,
   filter,
@@ -70,67 +76,39 @@ const filterObject = (
   } = {}
 ) => {
   if (obj == null) return obj
-  const passesFilter = Array.isArray(filter)
-    ? (value) => filter.includes(value) === includeOnMatch
-    : (value) => filter.test(value) === includeOnMatch
-  let filtered = Object.entries(obj).filter(([key, value]) => {
-    let candidate = filterOn === 'keys' ? key : value
+  let passesFilter
+  if (isIterable(filter)) {
+    filter = new Set(filter)
+    passesFilter = (value) => filter.has(value) === includeOnMatch
+  }
+  else {
+    passesFilter = (value) => filter.test(value) === includeOnMatch
+  }
+  const filtered = Object.entries(obj).filter(([key, value]) => {
+    const candidate = filterOn === 'keys' ? key : value
     return passesFilter(candidate)
   })
   return Object.fromEntries(filtered)
 }
 
-const oneWayDiff = (a, b) => {
-  let diffs
-  let sames
-  if (a === b) [diffs, sames] = [{}, { ...a }]
-  else if (a == null) [diffs, sames] = [{ ...b }, {}]
-  else if (b == null) [diffs, sames] = [{ ...a }, {}]
-  else {
-    [diffs, sames] = Object.entries(a).reduce(([diff, same], [key, val]) => {
-      if (b[key] === val) same[key] = val
-      else diff[key] = val
-      return [diff, same]
-    }, [{}, {}])
-  }
+// TODO: export, document
+const getComposition = (type) => (a, b, options) => {
+  const filterOn = options.filterOn ?? 'keys'
+  const diffOn = filterOn === 'keys' ? Object.keys : Object.values
+  const diffs = new Set(diffOn(a))[type](new Set(diffOn(b)))
+  a = filterObject(a, diffs, options)
+  b = filterObject(b, diffs, options)
   return {
-    diffs,
-    sames,
+    ...a,
+    ...b
   }
 }
-const biDiff = (a, b) => {
-  let left = oneWayDiff(a, b).diffs
-  let right = oneWayDiff(b, a).diffs
-  return { left, right }
-}
-const intersection = (listOfObjects) => {
-  if (listOfObjects == null || !listOfObjects.length) return {}
-  return listOfObjects.reduce((shared, obj) =>
-    oneWayDiff(shared, obj).sames
-  )
-}
-// TODO: ~~make results true union/intersection/symmetric difference~~ figure
-// out what the heck 'multiDiff' even means; why does anyone need this function?
-// Possible A: outliers! I think I wanted a way to find values that stood out
-// among a group of similar objects (i.e. reduce it to just its
-// "differences"). I should use general.makeGroups for that...
-const multiDiff = (listOfObjects) => {
-  if (listOfObjects.length <= 1) return []
-  let allDiffs = []
-  listOfObjects.reduce((a, b, i) => {
-    let { left, right } = biDiff(a, b)
-    if (Object.keys(left).length || Object.keys(right).length) {
-      allDiffs.push({
-        left,
-        leftIndex: i - 1,
-        right,
-        rightIndex: i,
-      })
-    }
-    return b
-  })
-  return allDiffs
-}
+// <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#set_composition>
+// myself.diff = 'oneWay, and, or, xor: ...'
+const oneWay = getComposition('difference')
+const and  = getComposition('intersection')
+const or   = getComposition('union')
+const xor  = getComposition('symmetricDifference')
 
 myself.extractNested = "Flattens (by one) the given object, returning the flattened values and, separately, any remaining nested values."
 const extractNested = (obj) => {
@@ -171,7 +149,7 @@ const toCsv = (
   }
   else {
     header = allKeys(listOfObjects)
-    if (sortHeader) header.sort(textSorter())
+    if (sortHeader) header.sort(getSorter())
     for (const obj of listOfObjects) body.push(makeLine(header, obj))
   }
   let output = [makeLine(header), ...body]
@@ -216,21 +194,16 @@ module.exports = {
   allKeys,
   filter: {
     object: filterObject,
-    many: (listOfObjects, filter, options) => {
-      return listOfObjects.map(obj => filterObject(obj, filter, options))
-    },
+    many: (listOfObjects, filter, options) =>
+      listOfObjects.map(obj => filterObject(obj, filter, options)),
     byKeys: (obj, filter) => filterObject(obj, filter),
     byValues: (obj, filter) => filterObject(obj, filter, valOpts),
     excludeKeys: (obj, filter) => filterObject(obj, filter, excludeOpts),
     excludeValues: (obj, filter) => filterObject(obj, filter, excludeValOpts),
   },
-  oneWayDiff,
-  diff: biDiff,
-  multiDiff,
   extractNested,
   escapeCsvEntry,
   toCsv,
   count,
   multiply,
 }
-

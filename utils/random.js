@@ -20,14 +20,7 @@ myself.randDigit = "Returns a random integer in the range [0, 9]."
 const randDigit = () => randInt(10)
 
 myself.randDigitString = "Returns a string of random digits of the given length."
-const randDigitString = (length) => {
-  let digits = []
-  while (length > 0) {
-    digits.push(randDigit())
-    length -= 1
-  }
-  return digits.join('')
-}
+const randDigitString = (length) => arrayOf(length, randDigit).join('')
 
 myself.randChoice = "Returns a random element from the given array."
 const randChoice = (arr) => arr[randInt(arr.length)]
@@ -35,15 +28,16 @@ const randChoice = (arr) => arr[randInt(arr.length)]
 myself.randRemove = "Removes (in-place) a random element from the given array. Returns the removed element."
 const randRemove = (arr) => arr.splice(randInt(arr.length), 1)[0]
 
-myself.shuffled = "Returns a shuffled copy of the given array."
-const shuffled = (arr) => {
-  arr = [...arr]
+myself.shuffle = "Shuffles (in-place) and returns the given array."
+const shuffle = (arr) => {
   for (let end = arr.length - 1; end > 0; end--) {
     let swapFrom = randInt(end + 1) // elements can be 'swapped' with themselves
     swap(arr, swapFrom, end)
   }
   return arr
 }
+myself.shuffled = "Returns a shuffled copy of the given array."
+const shuffled = (arr) => shuffle([...arr])
 // Alternate implementation - slower, but more intuitive
 // (also works on sparse arrays)
   // let oldDeck = arr
@@ -69,5 +63,6 @@ module.exports = {
   randDigitString,
   randChoice,
   randRemove,
+  shuffle,
   shuffled,
 }

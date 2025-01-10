@@ -1,3 +1,5 @@
+const { isIterable } = require('./general')
+
 module.exports = (
   objA,
   objB, 
@@ -42,7 +44,7 @@ module.exports = (
   if (typeOfA === 'object') {
     if ( objA === null
       || (maxDepth !== null && maxDepth <= 0)
-      || Array.isArray(objA) !== Array.isArray(objB)
+      || isIterable(objA) !== isIterable(objB)
     ) {
       return false
     }
@@ -55,8 +57,8 @@ module.exports = (
     if (maxDepth === null) {
       // circular reference tracking
       let wasComparedTo = Symbol.for('circularRefKey')
-      let aComps = objA[wasComparedTo]
-      let bComps = objB[wasComparedTo]
+      let aComps = objA[wasComparedTo] ?? []
+      let bComps = objB[wasComparedTo] ?? []
       if (aComps && bComps && aComps.some(id => bComps.includes(id))) {
         // if these two objects have already been compared, then we know they
         // either contain a circular reference, or their parent object contains
@@ -66,12 +68,12 @@ module.exports = (
       else {
         // otherwise, we have to follow the references
         let comparisonId = Symbol()
-        objA[wasComparedTo] = aComps ? aComps.concat(comparisonId) : [comparisonId]
-        objB[wasComparedTo] = bComps ? bComps.concat(comparisonId) : [comparisonId]
+        objA[wasComparedTo] = aComps.concat(comparisonId)
+        objB[wasComparedTo] = bComps.concat(comparisonId)
       }
     }
     
-    // TODO: test for iterability (otherwise fails on Maps, Sets, etc.)
+    // TODO: test for iterability (otherwise gives false positive on Maps, Sets, etc.)
     aKeys.sort()
     bKeys.sort()
     return Object.entries(aKeys).every(([i, aKey]) => {

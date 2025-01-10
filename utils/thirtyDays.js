@@ -1,65 +1,66 @@
-const { range, findDupes } = require('./general')
-const { sum, roundDecimal } = require('./numbers')
+const { range, timeIt, findDupes } = require('./general')
+const { sum, roundDecimal, arithmeticMean } = require('./numbers')
 const { rollDice } = require('./random')
 
-const runAverage = (rounds, days = 30, options) => {
+const playGame = (rounds = 6, days = 30, options = {}) => {
+  options = {
+    verbose: false,
+    ...options
+  }
   if (rounds < 1) rounds = 1
-  const averagePerRound = {
-    singles: 0,
-    doubles: 0,
-    triples: 0,
-    pairs: 0,
-    perfects: 0,
-    totalScore: 0,
-    totalDays: 0,
-  }
-  const variation = {
-    singles: [],
-    doubles: [],
-    triples: [],
-    pairs: [],
-    perfects: [],
-    totalScore: [],
-    totalDays: [],
-  }
+
+  const names = [
+    'singles',
+    'doubles',
+    'triples',
+    'pairs',
+    'perfects',
+    'totalScore',
+    'totalDays',
+  ]
+  const initObject = () => Object.fromEntries(names.map(name => [ name, [] ]))
+  const averagePerRound = initObject()
+  const variation  = initObject()
   
-  const start = Date.now()
-  for (const _ of range(rounds)) {
-    const results = playDice(days, false, options)
-    for (let [key, value] of Object.entries(results)) {
-      variation[key][0] = Math.min(value, variation[key][0] ?? Infinity)
-      variation[key][1] = Math.max(value, variation[key][1] ?? -Infinity)
-      averagePerRound[key] += value
+  timeIt(() => {
+    for (const _ of range(rounds)) {
+      const results = playRound(days, options)
+      for (const [key, value] of Object.entries(results)) {
+        averagePerRound[key].push(value)
+        variation[key][0] = Math.min(value, variation[key][0] ?? Infinity)
+        variation[key][1] = Math.max(value, variation[key][1] ?? -Infinity)
+      }
     }
-  }
-  console.log(`time: ${Date.now() - start}ms`)
-  for (const [key, value] of Object.entries(averagePerRound)) {
-    averagePerRound[key] = roundDecimal(value / rounds, 5)
+  })
+  for (const [key, values] of Object.entries(averagePerRound)) {
+    averagePerRound[key] = roundDecimal(arithmeticMean(values), 5)
   }
   
   return {
     averagePerRound,
-    variation,
+    variation: rounds > 1 ? variation : 'N/A',
   }
 }
 
-const playDice = (
-  days,
-  verbose = true,
-  options = {
-    players = 2,
-    dice = 4,
-    baseScore = 2,
-    highDie = 5,
-    highDieScore = 1,
-    singlesScore = 0,
-    tripScore = 1,
-    pairScore = 4,
-    pairDays = 2,
-    perfectScore = 7,
-    perfectDays = 7,
-  } = {},
+const playRound = (
+  days = 30,
+  options = {},
 ) => {
+  options = {
+    verbose: true,
+    players: 2,
+    dice: 4,
+    baseScore: 2,
+    highDie: 5,
+    highDieScore: 1,
+    singlesScore: 0,
+    tripScore: 1,
+    pairScore: 4,
+    pairDays: 1,
+    perfectScore: 7,
+    perfectDays: 7,
+    ...options
+  }
   const totals = [
     0,
     0,
@@ -123,11 +124,11 @@ const playDice = (
     }
     const combinedScore = scores.reduce(sum)
     totalScore += combinedScore
-    if (verbose) {
+    if (options.verbose) {
       console.log(`**Day ${totalDays}**`)
       for (const i of range(options.players)) {
-        var name = names[dupeTypes[i]]
-        console.log(`- ${resultSets[i]} (${scores[i]} points)`, name && ` - ${name}!`)
+        const name = names[dupeTypes[i]]
+        console.log(`- ${resultSets[i]} (${scores[i]} points)`, name && `- ${name}!`)
       }
       console.log(`Combined score: ${combinedScore}`)
     }
@@ -143,4 +144,7 @@ const playDice = (
   }
 }
 
-playDice(30)
+module.exports = {
+  round: playRound,
+  game: playGame,
+}
