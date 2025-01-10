@@ -56,6 +56,32 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
   return result
 }
 
+const getFunc = (opcode) => {
+  switch (opcode) {
+    case 'eq':
+      return (a, b) => a === b
+    case 'gt':
+      return (a, b) => a > b
+    case 'gte':
+      return (a, b) => a >= b
+    case 'lt':
+      return (a, b) => a < b
+    case 'lte':
+      return (a, b) => a <= b
+    default:
+      throw new Error(`Unrecognized operator '${opcode}'`)
+  }
+}
+
+const chainOp = (opcode, ...items) => {
+  items = items.flat()
+  if (items.length === 1) items.push(items[0])
+  const func = getFunc(opcode)
+  return items.every(
+    (item, i) => i === 0 ? true : func(items[i - 1], item)
+  )
+}
+
 const TypeCheckedArray = class extends Array {
   #type
   constructor(type, ...params) {
@@ -190,6 +216,8 @@ const findUniques = (iterable, identifier) => {
   .flat()
 }
 
+const allEqual = (...things) => things.every(thing => thing === things[0])
+
 myself.getSorter = "Returns a sorting function that behaves more sanely than the default (specifically: mixed-case text, text with diacritics, and numbers sort the way you would expect; Objects are sorted with util.inspect; and mixed-type arrays are sorted by type first, then value). Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties)."
 const getSorter = (sortOn, descending = false) => {
   // In addition to a saner sort order, this function has a secondary goal of
@@ -227,7 +255,7 @@ const getSorter = (sortOn, descending = false) => {
     if (aType !== bType) return [ aType, bType ]
     if (['number', 'bigint'].includes(aType)) return [ a, b ]
     
-    if (aType === 'object') {
+    if (chainOp('eq', aType, bType, 'object')) {
       return [
         util.inspect(a, { depth: null }),
         util.inspect(b, { depth: null })
