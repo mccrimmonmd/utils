@@ -56,6 +56,8 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
   return result
 }
 
+// TODO: make into object w/functions for each op, export directly
+// (possibly in separate module)
 const getFunc = (opcode) => {
   switch (opcode) {
     case 'eq':
@@ -134,8 +136,8 @@ const iterify = (thing) => isIterable(thing) ? thing : [thing]
 "Helper object for memoize"
 const MultiCache = class {
   constructor () {
-    this.nestedCache = new Map()
     this.simpleCache = new Map()
+    this.nestedCache = new Map()
     this.leafKey = Symbol()
   }
 
@@ -216,7 +218,7 @@ const findUniques = (iterable, identifier) => {
   .flat()
 }
 
-const allEqual = (...things) => things.every(thing => thing === things[0])
+const allEqual = (...things) => things.flat().every(thing => thing === things[0])
 
 myself.getSorter = "Returns a sorting function that behaves more sanely than the default (specifically: mixed-case text, text with diacritics, and numbers sort the way you would expect; Objects are sorted with util.inspect; and mixed-type arrays are sorted by type first, then value). Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties)."
 const getSorter = (sortOn, descending = false) => {
@@ -255,7 +257,7 @@ const getSorter = (sortOn, descending = false) => {
     if (aType !== bType) return [ aType, bType ]
     if (['number', 'bigint'].includes(aType)) return [ a, b ]
     
-    if (chainOp('eq', aType, bType, 'object')) {
+    if (allEqual(aType, bType, 'object')) {
       return [
         util.inspect(a, { depth: null }),
         util.inspect(b, { depth: null })
