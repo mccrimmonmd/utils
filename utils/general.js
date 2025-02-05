@@ -86,9 +86,9 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   if (typeof value === 'function') {
     // this will probably never be useful, but it was a fun regex exercise
     return multilineRegex([
-      /^(function([\w-]*))?\(\)(=>)?{/,  // [function[ name]] () [=>] {
-      /;*(return(undefined)?;*)?/,       // [;][return [undefined][;]]
-      /}$/                               // }
+      /^(function([\w]*))?\(\)(=>)?{/,  // [function[ name]] () [=>] {
+      /;*(return(undefined)?;*)?/,      // [;][return [undefined][;]]
+      /}$/                              // }
     ]).test(value.toString().replaceAll(/\s/g, ''))
   }
   if (value.length != null) return value.length === 0
