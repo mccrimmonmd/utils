@@ -81,8 +81,12 @@ const filterObject = (
     filter = new Set(filter)
     passesFilter = (value) => filter.has(value) === includeOnMatch
   }
-  else {
+  else if (filter instanceof RegExp) {
     passesFilter = (value) => filter.test(value) === includeOnMatch
+  }
+  else {
+    console.dir(filter)
+    throw new Error('filter must be either an iterable or a regular expression')
   }
   const filtered = Object.entries(obj).filter(([key, value]) => {
     const candidate = filterOn === 'keys' ? key : value
