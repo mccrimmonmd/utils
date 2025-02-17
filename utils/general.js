@@ -56,6 +56,7 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
   return result
 }
 
+myself.TypeCheckedArray = "An Array which can only contain values that are all the same type. It was supposed to be an exercise in inheritance, but ended up mostly being about Proxies instead."
 const TypeCheckedArray = class extends Array {
   #type
   constructor(type, ...params) {
@@ -369,6 +370,7 @@ module.exports = {
   zip,
   print,
   ifFunc,
+  TypeCheckedArray,
   isTruthy,
   isIterable,
   isEmpty,
