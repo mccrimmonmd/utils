@@ -1,4 +1,6 @@
 <cluster URL>/_cat/indices?v=true
+<cluster URL>/_cat/nodes?v=true
+<cluster URL>/_cat/segments?v=true&s=size
 
 GET /sev_incidents/_search
 {
