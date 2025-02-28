@@ -114,23 +114,22 @@ const MultiCache = class {
     this.leafKey = Symbol()
   }
 
-  getOrSet (map, key, func) {
-    if (!map.has(key)) {
-      map.set(key, func(...params))
-    }
-    return map.get(key)
-  }
-
   cache (params, wrappedFunc) {
+    const getOrSet = (map, key, func) => {
+      if (!map.has(key)) {
+        map.set(key, func(...params))
+      }
+      return map.get(key)
+    }
     if (params.length <= 1) {
-      return this.getOrSet(this.simpleCache, params?.[0], wrappedFunc)
+      return getOrSet(this.simpleCache, params?.[0], wrappedFunc)
     }
     else {
       let innerCache = this.nestedCache
       for (const key of params) {
-        innerCache = this.getOrSet(innerCache, key, () => new Map())
+        innerCache = getOrSet(innerCache, key, () => new Map())
       }
-      return this.getOrSet(innerCache, this.leafKey, wrappedFunc)
+      return getOrSet(innerCache, this.leafKey, wrappedFunc)
     }
   }
 }
