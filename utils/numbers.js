@@ -29,6 +29,23 @@ const stdDeviation = (values) => {
   return Math.sqrt(variance)
 }
 
+myself.msConverter = "Converts milliseconds into other common units, or vice versa."
+const msConverter = (ms, unit, toMs = false) => {
+  const op = (a, b) => toMs ? a * b : a / b
+  switch (unit) {
+    case 'days':
+      return op(msConverter(ms, 'hours', toMs), 24)
+    case 'hours':
+      return op(msConverter(ms, 'minutes', toMs), 60)
+    case 'minutes':
+      return op(msConverter(ms, 'seconds', toMs), 60)
+    case 'seconds':
+      return op(ms, 1_000)
+    default:
+      throw new Error(`Time unit '${unit} invalid or unimplemented`)
+  }
+}
+
 myself.sum = "Adds two numbers. For use as an argument to Array.prototype.reduce"
 const sum = (total, value) => total + value
 
