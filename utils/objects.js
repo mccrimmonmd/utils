@@ -9,7 +9,7 @@ const {
   getSorter,
   compareItersBy,
 } = require('./general')
-const { sum, product } = require('./numbers')
+const { sum, product } = require('./reducers')
 
 myself.merge = "Merges a secondary or 'fallback' object into a primary or 'reference' object. Returns a new object that matches the primary, plus all non-empty values from the secondary that are empty in the primary. Uses general.isEmpty to determine what counts as empty."
 const merge = (

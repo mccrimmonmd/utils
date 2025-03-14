@@ -1,6 +1,7 @@
 const { range, timeIt, findDupes } = require('./general')
-const { sum, roundDecimal, arithmeticMean } = require('./numbers')
+const { roundDecimal, arithmeticMean } = require('./numbers')
 const { rollDice } = require('./random')
+const { sum } = require('./reducers')
 
 const playGame = (rounds = 6, days = 30, options = {}) => {
   options = {

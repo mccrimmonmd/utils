@@ -1,4 +1,5 @@
 const myself = {} // documentation
+const { max, min, flatten } = require('./reducers')
 
 const backToWork = require('./BACK TO WORK')
 
@@ -30,7 +31,7 @@ const zip = (arrays, { padResults = false, padWith } = {}) => {
   if (!arrays?.length) return zipped
   const len = arrays
     .map(array => array.length)
-    .reduce(padResults ? Math.max : Math.min)
+    .reduce(padResults ? max : min)
   for (const i of range(len)) {
     let group = []
     for (const array of arrays) {
@@ -362,21 +363,6 @@ const flattener = (array, depth = 1) => {
   }
   return array
 }
-myself.flatten = "Concatenates two items that may or may not be arrays, using push instead of concat for speed. For use as an argument to Array.prototype.reduce"
-const flatten = (flattened, bump, i) => {
-  if (!Array.isArray(flattened)) flattened = [flattened]
-  else if (i === 1) {
-    // If we're not given an initial value, 'flattened' will be an element of
-    // the array being reduced, which we want to avoid mutating, but if we copy
-    // on every iteration we lose the speedup gained from using push. We take
-    // the first iteration to be i === 1, not 0, because i only equals 0 when
-    // an initial value *is* provided.
-    flattened = [...flattened]
-  }
-  if (Array.isArray(bump)) flattened.push(...bump)
-  else flattened.push(bump)
-  return flattened
-}
 
 myself.iterEquals = "Tests two iterables to see if they are equal. Takes an optional parameter to ignore ordering."
 // Generalized from <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
@@ -437,7 +423,6 @@ module.exports = {
   swap,
   last,
   flattener,
-  flatten,
   iterEquals,
   compareItersBy,
   multilineRegex,
