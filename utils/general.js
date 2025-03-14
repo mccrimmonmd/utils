@@ -24,17 +24,17 @@ const range = function* (start = 0, stop, step = 1) {
   }
 }
 
-myself.zip = "Python-style zip function: combines a list of arrays into a list of pairs/triplets/etc. Takes optional parameters for padding the results when the input arrays are different lengths; if padding is disabled, the output will be the length of the shortest input array. (Note: normally I would use a single parameter with a default of 'false' or similar, but because padWith can potentially be anything, including false and undefined, two separate parameters are necessary.)"
+myself.zip = "Python-style zip function: combines a list of arrays into a list of pairs/triplets/etc. Takes optional parameters for padding the results when the input arrays are different lengths; if padding is disabled, the output will be the length of the shortest input array. (Normally I would use a single parameter with a default of 'false' or similar, but because padWith can potentially be anything, including false and undefined, two separate parameters are necessary.)"
 const zip = (arrays, { padResults = false, padWith } = {}) => {
   const zipped = []
-  if (!arrays.length) return zipped
+  if (!arrays?.length) return zipped
   const len = arrays
     .map(array => array.length)
     .reduce(padResults ? Math.max : Math.min)
   for (const i of range(len)) {
     let group = []
     for (const array of arrays) {
-      let val = i >= array.length ? padWith : array[i]
+      let val = i < array.length ? array[i] : padWith
       group.push(val)
     }
     zipped.push(group)
