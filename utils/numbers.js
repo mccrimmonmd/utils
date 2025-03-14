@@ -1,5 +1,5 @@
 const myself = {} // documentation
-const { print } = require('./general')
+const { print, op } = require('./general')
 
 myself.roundDecimal = "Rounds (towards zero) to a given number of decimal places."
 const roundDecimal = (value, places = 2) => {
@@ -27,20 +27,51 @@ const stdDeviation = (values, isSample = true) => {
 }
 
 myself.msConverter = "Converts milliseconds into other common units, or vice versa."
-const msConverter = (ms, unit, toMs = false) => {
-  const op = (a, b) => toMs ? a * b : a / b
-  switch (unit) {
+const msConverter = (time, rawUnits, fromMs = true) => {
+  const units = rawUnits.toLowerCase() + rawUnits.endsWith('s') ? '' : 's'
+  const factors = []
+
+  switch (units) {
     case 'days':
-      return op(msConverter(ms, 'hours', toMs), 24)
+      factors.push(24)
     case 'hours':
-      return op(msConverter(ms, 'minutes', toMs), 60)
+      factors.push(60)
     case 'minutes':
-      return op(msConverter(ms, 'seconds', toMs), 60)
+      factors.push(60)
     case 'seconds':
-      return op(ms, 1_000)
+      factors.push(1_000)
+      break
     default:
-      throw new Error(`Time unit '${unit} invalid or unimplemented`)
+      throw new TypeError(`Time unit '${rawUnits}' invalid or unimplemented`)
   }
+
+  const divOrMul = fromMs ? '/' : '*'
+  const factor = factors.reduce(product, 1)
+  return op(time, divOrMul, factor)
+
+  // time = op(time, divOrMul, 1_000)
+  // if (units === 'seconds') return time
+  // time = op(time, divOrMul, 60)
+  // if (units === 'minutes') return time
+  // time = op(time, divOrMul, 60)
+  // if (units === 'hours') return time
+  // time = op(time, divOrMul, 24)
+  // if (units === 'days') return time
+  
+  // throw new TypeError(`Time unit '${rawUnits}' invalid or unimplemented`)
+  
+  // switch (units) {
+  //   case 'seconds':
+  //     return op(time, divOrMul, 1_000)
+  //   case 'minutes':
+  //     return op(msConverter(time, 'seconds', fromMs), divOrMul, 60)
+  //   case 'hours':
+  //     return op(msConverter(time, 'minutes', fromMs), divOrMul, 60)
+  //   case 'days':
+  //     return op(msConverter(time, 'hours', fromMs), divOrMul, 24)
+  //   default:
+  //     throw new TypeError(`Time unit '${rawUnits}' invalid or unimplemented`)
+  // }
 }
 
 myself.sum = "Adds two numbers. For use as an argument to Array.prototype.reduce"
@@ -100,4 +131,5 @@ module.exports = {
   product,
   average,
   stats,
+  msConverter,
 }
