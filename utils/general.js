@@ -56,6 +56,59 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
   return result
 }
 
+myself.op = "Turn JavaScript's native operators into proper functions."
+const op = (a, opType, b) => {
+// const op = (opType, ...rest) => {
+// const op = (opType) => (...params) => {
+  let result
+  switch (opType) {
+    case '+':
+      return a + b
+      // return rest.reduce(sum, 0)
+    case '-':
+      return a - b
+    case '*':
+      return a * b
+    case '/':
+      return a / b
+    case '**':
+      return a ** b
+    case '||':
+      return a || b
+    case '&&':
+      return a && b
+    case 'eq':
+      return a === b
+    case 'if':
+      return a ? b[0] : b[1]
+    case 'while':
+      while (b) {
+        b = a(b)
+      }
+      return b
+    case 'forEach':
+      for (const i of b) {
+        result = a(i)
+      }
+      return result
+    case 'switch':
+      result = []
+      // TODO: can this support break/fall-through?
+      for (const [tests, task] of b) {
+        tests = [].concat(tests)
+        if (tests.every(test => test === a[0])) {
+          result.push(task)
+        }
+      }
+      for (const [i, task] of result.entries()) {
+        result[i] = task(...a[1])
+      }
+      return result
+    default:
+      throw new TypeError(`Unsupported or invalid operator '${opType}'`)
+  }
+}
+
 myself.TypeCheckedArray = "An Array which can only contain values that are all the same type. Was supposed to be an exercise in inheritance, but ended up mostly being about Proxies instead."
 const TypeCheckedArray = class extends Array {
   #type
@@ -365,6 +418,7 @@ module.exports = {
   zip,
   print,
   ifFunc,
+  op,
   TypeCheckedArray,
   isTruthy,
   isIterable,
