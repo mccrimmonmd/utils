@@ -8,22 +8,19 @@ const roundDecimal = (value, places = 2) => {
   return Math.trunc(value * magnitude) / magnitude
 }
 
-myself.arithmeticMean = "Calculates the arithmetic mean of a list of numbers"
-const arithmeticMean = (values) => {
-  if (values == null || !values.length) return NaN
-  return values.reduce(sum) / values.length
+myself.arithmeticMean = "Calculates the arithmetic mean of a list of numbers. Can also be used to calculate the 'sample mean' (e.g. for finding the variance)."
+const arithmeticMean = (values, isSample = false) => {
+  if (!values?.length || (values.length === 1 && isSample)) return NaN
+  return values.reduce(sum) / (isSample ? values.length - 1 : values.length)
 }
 
 myself.diffsCalculator = "Helper function for stdDeviation, but can also be used by itself. Returns a function for use as an argument to Array.prototype.reduce"
 const diffsCalculator = (mean) => 
   (diffs, value) => diffs.concat((value - mean) ** 2)
 
-myself.stdDeviation = "Calculates the standard deviation of a list of numbers. Assumes the list is a population, not sample."
-// To calculate the sample std deviation, you would maybe use a 'sampleMean' 
-// function that divides by `values.length - 1` and returns NaN if the sample
-// size is 1
-const stdDeviation = (values) => {
-  const mean = arithmeticMean(values)
+myself.stdDeviation = "Calculates the standard deviation of a list of numbers. Assumes the list is a sample by default, but can also be used on populations."
+const stdDeviation = (values, isSample = true) => {
+  const mean = arithmeticMean(values, isSample)
   const diffs = values.reduce(diffsCalculator(mean), [])
   const variance = arithmeticMean(diffs)
   return Math.sqrt(variance)
