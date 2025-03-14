@@ -25,7 +25,7 @@ const randDigitString = (length) => arrayOf(length, randDigit).join('')
 myself.randChoice = "Returns a random element from the given array."
 const randChoice = (arr) => arr[randInt(arr.length)]
 
-myself.randRemove = "Removes (in-place) a random element from the given array. Returns the removed element."
+myself.randRemove = "Removes (in-place) and returns a random element from the given array."
 const randRemove = (arr) => arr.splice(randInt(arr.length), 1)[0]
 
 myself.shuffle = "Shuffles (in-place) and returns the given array."
