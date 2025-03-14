@@ -33,8 +33,8 @@ const getShortNames = (multiples) => {
   const names = {}
   for (const count of multiples) {
     if (count < 2) continue
-    let howMany = names[`${count}s`]
-    names[`${count}s`] = (howMany ?? 0) + 1
+    let howMany = names[`${count}s`] ?? 0
+    names[`${count}s`] = howMany + 1
   }
   return names
 }
