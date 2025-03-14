@@ -109,8 +109,11 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   return !value
 }
 
-myself.iterify = "Wraps the given parameter in an array, unless it's already iterable. More terse than `if(!isIterable(thing)) thing = [thing]`; less obtuse/more general than `thing = [].concat(thing)`."
+myself.iterify = "Wraps the given parameter in an array, unless it's already iterable. (In case you want to preserve the original type and/or avoid making a copy--otherwise, `[].concat(thing)` is probably a better choice.)"
 const iterify = (thing) => isIterable(thing) ? thing : [thing]
+
+myself.arrayify = "Converts iterables into arrays; non-iterables result in an empty array. For when you want to ensure Array methods and properties like length, reduce, slice, etc. are available. (If you want non-iterables to also be converted instead of ignored, you should probably use `[].concat(thing)` instead.)"
+const arrayify = (thing) => isIterable(thing) ? [...thing] : []
 
 "Helper object for memoize"
 const MultiCache = class {
@@ -380,6 +383,7 @@ module.exports = {
   isIterable,
   isEmpty,
   iterify,
+  arrayify,
   memoize,
   timeIt,
   makeGroups,
