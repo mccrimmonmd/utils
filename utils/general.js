@@ -345,22 +345,10 @@ const iterEquals = (a, b, ordered = true) => {
   }
 }
 
-// TODO?: document, export
-// Alternative: just use Set composition methods
-// e.g. `[...new Set(a).difference(new Set(b))]`
+// TODO: document, export
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#set_composition>
-const iterOr = (a, b) => {
-  if (a == null || iterEquals(a, b, false)) return []
-  if (b == null) return [...a]
-
-  b = new Set(b)
-  const diffs = new Set()
-  for (const value of a) {
-    if (!b.has(value)) diffs.add(value)
-  }
-  return [...diffs]
-}
-const iterXor = (a, b) => findUniques([...a].concat(...b))
+const compTypes = ['difference', 'intersection', 'union', 'symmetricDifference']
+const compareItersBy = (type) => (a, b) => [...new Set(a)[type](new Set(b))]
 
 myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be commented)."
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
@@ -397,6 +385,7 @@ module.exports = {
   flattener,
   flatten,
   iterEquals,
+  compareItersBy,
   multilineRegex,
   backToWork,
 } // = require('./general')
