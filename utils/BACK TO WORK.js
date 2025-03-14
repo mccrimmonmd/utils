@@ -1,4 +1,4 @@
-const backToWork = '***_BACK TO WORK_***'
+const backToWork = '***~~GET OUT~~***'
 
 console.log(backToWork)
 
