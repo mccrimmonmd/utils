@@ -86,11 +86,17 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   if (typeof value === 'boolean') return false
   if (typeof value === 'function') {
     // this will probably never be useful, but it was a fun regex exercise
-    return multilineRegex([
-      /^(function([\w]*))?\(\)(=>)?{/,  // [function[ name]] () [=>] {
-      /;*(return(undefined)?;*)?/,      // [;][return [undefined][;]]
-      /}$/                              // }
-    ]).test(value.toString().replaceAll(/\s/g, ''))
+    const arrowRegex = multilineRegex([
+      /^\(\)=>({;*)?/,               // () => [{[;]]
+      /(return)?(undefined)?;*}?$/   // [return][undefined][;][}]
+    ])
+    const funcRegex = multilineRegex([
+      /^function([\w]*)\(\){/,       // function[ name] () {
+      /;*(return(undefined)?;*)?/,   // [;][return [undefined][;]]
+      /}$/                           // }
+    ])
+    const valueString = value.toString().replaceAll(/\s/g, '')
+    return arrowRegex.test(valueString) || funcRegex.test(valueString)
   }
   if (value.length != null) return value.length === 0
   if (value.size != null) return value.size === 0
