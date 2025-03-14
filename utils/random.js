@@ -14,7 +14,7 @@ myself.rollDie = "Same as randInt, but with 1 added to the result."
 const rollDie = (sides = 6) => randInt(sides) + 1
 
 myself.rollDice = "Returns an array of random integers between 1 and 'sides', inclusive."
-const rollDice = (number, sides = 6) => arrayOf(number, () => rollDie(sides))
+const rollDice = (howMany, sides = 6) => arrayOf(howMany, () => rollDie(sides))
 
 myself.randDigit = "Returns a random integer in the range [0, 9]."
 const randDigit = () => randInt(10)
