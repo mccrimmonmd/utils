@@ -45,30 +45,6 @@ const msConverter = (time, rawUnits, fromMs = true) => {
   const divOrMul = fromMs ? '/' : '*'
   const factor = factors.reduce(product, 1)
   return op(time, divOrMul, factor)
-
-  // time = op(time, divOrMul, 1_000)
-  // if (units === 'seconds') return time
-  // time = op(time, divOrMul, 60)
-  // if (units === 'minutes') return time
-  // time = op(time, divOrMul, 60)
-  // if (units === 'hours') return time
-  // time = op(time, divOrMul, 24)
-  // if (units === 'days') return time
-  
-  // throw new TypeError(`Time unit '${rawUnits}' invalid or unimplemented`)
-  
-  // switch (units) {
-  //   case 'seconds':
-  //     return op(time, divOrMul, 1_000)
-  //   case 'minutes':
-  //     return op(msConverter(time, 'seconds', fromMs), divOrMul, 60)
-  //   case 'hours':
-  //     return op(msConverter(time, 'minutes', fromMs), divOrMul, 60)
-  //   case 'days':
-  //     return op(msConverter(time, 'hours', fromMs), divOrMul, 24)
-  //   default:
-  //     throw new TypeError(`Time unit '${rawUnits}' invalid or unimplemented`)
-  // }
 }
 
 
