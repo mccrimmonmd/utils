@@ -20,56 +20,92 @@
 
 List of 'addresses', with arrows indicating direction (I vs. O)? (Addresses = variable names; some internal, some external.) Initialize addresses at top of circuit; each one references a 'template' that gets copied. (Create your own templates...how?)
 
-```json
-// implicit "global" outer circuit:
-// { "global/window/whatever": {
-//   "inputs": [ built-in inputs ],
-//   "outputs": [ built-in outputs ],
-//   "embedded": {
-"Circuit address": { // template name?
-  "inputs": [
-    "case",
-    "ifTrue",
-    "ifFish",
-    { "inputWithDefault": "otherCircuit[.outputName]" }, // ???
+## Syntax
+
+Grammar below is for JSON-compliant 'internal' syntax, rarely used directly
+
+Compiles to intermediate representation that preserves the general structure,
+but loosens the syntax requirements for readability and convenience
+
+TODO: position, designating circuits (or circuit refs) as templates
+
+```text
+program -> '{' circuitList '}'
+circuitList -> namedCircuit [ ',' namedCircuit ]
+namedCircuit -> circuitName ':' circuitRef
+
+circuitRef -> circuitName | circuitLiteral
+circuitName -> variable
+
+variable -> '"' varChars '"'
+varChars -> alpha [ alphaNumeric ]
+alpha -> /[a-zA-Z_.]/ # ':' too?
+alphaNumeric -> ( alpha | /[0-9]/ ) [ alphaNumeric ]
+
+circuitLiteral -> '{' [ inputList ',' outputList ',' subcircuits ',' connections ] '}'
+inputList -> '"in": [' [ varList ] ']'
+outputList -> '"out": [' [ varList ] ']'
+subcircuits -> '"sub": {' [ circuitList ] '}'
+connections -> '"link": {' [ pairList ] '}'
+
+varList -> variable [ ',' variable ]
+pairList -> variable ':' variable [ ',' pairList ]
+```
+
+Example program using 'loosened' syntax:
+
+```javascript
+// outermost "global" circuit is implicit:
+// { "global/window/top/whatever": {
+//   "in": [ built-in inputs ],
+//   "out": [ built-in outputs ],
+//   "sub": {
+//     built-in circuits,
+circuitAddress: {
+  in: [
+    case,
+    ifTrue,
+    ifFish,
     ...
   ],
-  "outputs": [
-    "howManyIters",
-    "finalResult",
-    "oompaLoompas",
+  out: [
+    howManyIters,
+    finalResult,
+    oompaLoompas,
     ...
   ],
-  "embedded": {
-    "innerAddress": templateName, // creates a copy
-    "otherInnerAddress": "externalCircuitAddress", // does not create a copy -- possible recursion!
-    "yetAnotherInnerAddress": 42, // literal values are 'circuits' (always templates) that output their own addresses
-    "circuitLiteral": {
-      "inputs": [ ... ],
+  sub: {
+    innerAddress: circuitName, // copy if template, otherwise direct reference
+    circuitLiteral: {
+      in: [ ... ],
       ...
     },
     ...
   },
-  "connections": {
-    "from": "to",
-    "allFrom.toPairs": "useInner.addresses",
-    "orOwnInput": "andOwnOutputNames", // circuits are only in control of connections inside themselves, not to other circuits
-    "innerAddress.outputName": "otherInnerAddress.inputName",
-    "innerAddress.outputName": "myOwnOutputName",
-    "myOwnInputName": "innerAddress.inputName",
-    "yetAnotherInnerAddress": "innerAddress.otherInputName", // parsed JSON will resolve literals, so the left-hand side will just be 42 (and yetAnotherInnerAddress disappears)
-    "singleOutputCircuit": "singleInputCircuit", // name is optional if circuit only has one input/output, unless address conflicts with own input/output name
+  link: {
+    fromCircuit.outputName: toCircuit.inputName, // all connections follow this general form
+    all.connections: useInner.addresses, // circuits are only in control of connections inside themselves, not to other circuits
+    this.outputName: innerAddress.inputName, // the special circuit address 'this' (or 'self', or whatever) references the circuit's own inputs/outputs
+    innerAddress.outputName: ownInputName, // dotted syntax is optional when referring to own outputs/inupts...
+    singleOutputCircuit: singleInputCircuit, // or when referring to a circuit that has only one input/output...
+    [this.]illegalSyntax: [innerCircuit.]illegalSyntax, // unless there is a conflict
+    this.pair: this.isIllegal, // a circuit cannot recurse on itself...
+    innerCircuit.thisPair: innerCircuit.isLegal, // except from within a parent circuit
+    42: giveMeLiterals.number, // literals are circuits that evaluate to their own addresses/names
+    "Here is a string literal.": giveMeLiterals.string,
+    false: giveMeLiterals.boolean,
+    null: giveMeLiterals.null, // the null circuit '{}' ignores all inupt and outputs itself
     ...
   },
-  ...?
 },
-"moreGlobalCircuits": { ... },
+anotherCircuitAddress: { ... },
 ...
-// built-in circuits/templates,
-// }, "connections":
+//   },
+//   "link":
 {
-  "connections.inThe": "global.scope",
+  connections.between: global.circuits,
   ...
 }
-// }}
+//   }
+// }
 ```
