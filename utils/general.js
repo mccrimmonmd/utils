@@ -1,4 +1,5 @@
 const myself = {} // documentation
+const { max, min, flatten } = require('./reducers')
 
 const backToWork = require('./BACK TO WORK')
 
@@ -24,17 +25,17 @@ const range = function* (start = 0, stop, step = 1) {
   }
 }
 
-myself.zip = "Python-style zip function: combines a list of arrays into a list of pairs/triplets/etc. Takes optional parameters for padding the results when the input arrays are different lengths; if padding is disabled, the output will be the length of the shortest input array. (Note: normally I would use a single parameter with a default of 'false' or similar, but because padWith can potentially be anything, including false and undefined, two separate parameters are necessary.)"
+myself.zip = "Python-style zip function: combines a list of arrays into a list of pairs/triplets/etc. Takes optional parameters for padding the results when the input arrays are different lengths; if padding is disabled, the output will be the length of the shortest input array. (Normally I would use a single parameter with a default of 'false' or similar, but because padWith can potentially be anything, including false and undefined, two separate parameters are necessary.)"
 const zip = (arrays, { padResults = false, padWith } = {}) => {
   const zipped = []
-  if (!arrays.length) return zipped
+  if (!arrays?.length) return zipped
   const len = arrays
     .map(array => array.length)
-    .reduce(padResults ? Math.max : Math.min)
+    .reduce(padResults ? max : min)
   for (const i of range(len)) {
     let group = []
     for (const array of arrays) {
-      let val = i >= array.length ? padWith : array[i]
+      let val = i < array.length ? array[i] : padWith
       group.push(val)
     }
     zipped.push(group)
@@ -48,7 +49,7 @@ const print = (obj, depth = null, repl = true) => {
   return repl ? undefined : obj
 }
 
-myself.ifFunc = "Pure-ish 'if' function with short-circuiting. Just because. (Only 'ish' because, without the side effect of assignment, the return value of the executed branch would be lost, making the construct useless unless the branches themselves had side effects.)"
+myself.ifFunc = "Pure-ish 'if' function with short-circuiting. Just because. (Only 'ish' because, without the side effect of assignment, the return value of the executed branch would be lost, making the function useless unless the branches themselves had side effects.)"
 const ifFunc = (condition, onTrue, onFalse = () => {}) => {
   const forceTrue = (thingy) => thingy || true
   let result
@@ -56,6 +57,60 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
   return result
 }
 
+myself.op = "Turn JavaScript's native operators into proper functions."
+const op = (a, opType, b) => {
+// const op = (opType, ...rest) => {
+// const op = (opType) => (...params) => {
+  let result
+  switch (opType) {
+    case '+':
+      return a + b
+      // return rest.reduce(sum, 0)
+    case '-':
+      return a - b
+    case '*':
+      return a * b
+    case '/':
+      return a / b
+    case '**':
+      return a ** b
+    case '||':
+      return a || b
+    case '&&':
+      return a && b
+    case 'eq':
+      return a === b
+    case 'if':
+      return a ? b[0] : b[1]
+    case 'while':
+      while (b) {
+        b = a(b)
+      }
+      return b
+    case 'forEach':
+      for (const i of b) {
+        result = a(i)
+      }
+      return result
+    case 'switch':
+      result = []
+      // TODO: can this support break/fall-through?
+      for (const [tests, task] of b) {
+        tests = [].concat(tests)
+        if (tests.every(test => test === a[0])) {
+          result.push(task)
+        }
+      }
+      for (const [i, task] of result.entries()) {
+        result[i] = task(...a[1])
+      }
+      return result
+    default:
+      throw new TypeError(`Unsupported or invalid operator '${opType}'`)
+  }
+}
+
+myself.TypeCheckedArray = "An Array which can only contain values that are all the same type. Was supposed to be an exercise in inheritance, but ended up mostly being about Proxies instead."
 const TypeCheckedArray = class extends Array {
   #type
   constructor(type, ...params) {
@@ -85,11 +140,17 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   if (typeof value === 'boolean') return false
   if (typeof value === 'function') {
     // this will probably never be useful, but it was a fun regex exercise
-    return multilineRegex([
-      /^(function([\w-]*))?\(\)(=>)?{/,  // [function[ name]] () [=>] {
-      /;*(return(undefined)?;*)?/,       // [;][return [undefined][;]]
-      /}$/                               // }
-    ]).test(value.toString().replaceAll(/\s/g, ''))
+    const arrowRegex = multilineRegex([
+      /^\(\)=>({;*)?/,               // () => [{[;]]
+      /(return)?(undefined)?;*}?$/   // [return][undefined][;][}]
+    ])
+    const funcRegex = multilineRegex([
+      /^function([\w]*)\(\){/,       // function[ name] () {
+      /;*(return(undefined)?;*)?/,   // [;][return [undefined][;]]
+      /}$/                           // }
+    ])
+    const valueString = value.toString().replaceAll(/\s/g, '')
+    return arrowRegex.test(valueString) || funcRegex.test(valueString)
   }
   if (value.length != null) return value.length === 0
   if (value.size != null) return value.size === 0
@@ -102,8 +163,11 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   return !value
 }
 
-myself.iterify = "Wraps the given parameter in an array, unless it's already iterable. More terse than `if(!isIterable(thing)) thing = [thing]`; less obtuse/more general than `thing = [].concat(thing)`."
+myself.iterify = "Wraps the given parameter in an array, unless it's already iterable. (In case you want to preserve the original type and/or avoid making a copy--otherwise, `[].concat(thing)` is probably a better choice.)"
 const iterify = (thing) => isIterable(thing) ? thing : [thing]
+
+myself.arrayify = "Converts iterables into arrays; non-iterables result in an empty array. For when you want to ensure Array methods and properties like length, reduce, slice, etc. are available. (If you want non-iterables to also be converted instead of ignored, you should probably use `[].concat(thing)` instead.)"
+const arrayify = (thing) => isIterable(thing) ? [...thing] : []
 
 "Helper object for memoize"
 const MultiCache = class {
@@ -274,6 +338,9 @@ const swap = (arr, i, j) => {
 myself.last = "Writing 'someArray[someArray.length - 1]' is juuuuust tedious enough that I think this is worth it (I wrote this before I learned about Array.prototype.at)"
 const last = (array, nth = 1) => array[array.length - nth]
 
+// const last = (iterable, nth = 1) =>
+//   [...iterable].at(-nth)
+
 myself.flattener = "Flattens the given array to the specified depth. Depth must be finite, as there are no checks for circular references. (Whoops, this is already in the JS standard...)"
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat>
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap>
@@ -299,26 +366,10 @@ const flattener = (array, depth = 1) => {
   }
   return array
 }
-myself.flatten = "Concatenates two items that may or may not be arrays, using push instead of concat for speed. For use as an argument to Array.prototype.reduce"
-const flatten = (flattened, bump, i) => {
-  if (!Array.isArray(flattened)) flattened = [flattened]
-  else if (i === 1) {
-    // If we're not given an initial value, 'flattened' will be an element of
-    // the array being reduced, which we want to avoid mutating, but if we copy
-    // on every iteration we lose the speedup gained from using push. We take
-    // the first iteration to be i === 1, not 0, because i only equals 0 when
-    // an initial value *is* provided.
-    flattened = [...flattened]
-  }
-  if (Array.isArray(bump)) flattened.push(...bump)
-  else flattened.push(bump)
-  return flattened
-}
 
 myself.iterEquals = "Tests two iterables to see if they are equal. Takes an optional parameter to ignore ordering."
 // Generalized from <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
-const iterEquals = (a, b, ordered = true, strictNullables = false) => {
-  if (a == null || b == null) return strictNullables ? a === b : a == b
+const iterEquals = (a, b, ordered = true) => {
   if (ordered) {
     a = [...a]
     b = [...b]
@@ -331,27 +382,15 @@ const iterEquals = (a, b, ordered = true, strictNullables = false) => {
     a = makeGroups(a)
     b = makeGroups(b)
     return (a.size === b.size) && [...a.entries()].every(
-        ( [key, aGroup] ) => b.has(key) && b.get(key).length === aGroup.length
+        ([key, aGroup]) => b.has(key) && b.get(key).length === aGroup.length
       )
   }
 }
 
-// TODO?: document, export
-// Alternative: just use Set composition methods
-// e.g. `[...new Set(a).difference(new Set(b))]`
+// TODO: document, export
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#set_composition>
-const iterOr = (a, b) => {
-  if (a == null || iterEquals(a, b, false)) return []
-  if (b == null) return [...a]
-
-  b = new Set(b)
-  const diffs = new Set()
-  for (const value of a) {
-    if (!b.has(value)) diffs.add(value)
-  }
-  return [...diffs]
-}
-const iterXor = (a, b) => findUniques([...a].concat(...b))
+const compTypes = ['difference', 'intersection', 'union', 'symmetricDifference']
+const compareItersBy = (type) => (a, b) => [...new Set(a)[type](new Set(b))]
 
 myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be commented)."
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
@@ -368,10 +407,13 @@ module.exports = {
   zip,
   print,
   ifFunc,
+  op,
+  TypeCheckedArray,
   isTruthy,
   isIterable,
   isEmpty,
   iterify,
+  arrayify,
   memoize,
   timeIt,
   makeGroups,
@@ -384,8 +426,8 @@ module.exports = {
   swap,
   last,
   flattener,
-  flatten,
   iterEquals,
+  compareItersBy,
   multilineRegex,
   backToWork,
 } // = require('./general')

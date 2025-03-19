@@ -7,8 +7,9 @@ const {
   isEmpty,
   isIterable,
   getSorter,
+  compareItersBy,
 } = require('./general')
-const { sum, product } = require('./numbers')
+const { sum, product } = require('./reducers')
 
 myself.merge = "Merges a secondary or 'fallback' object into a primary or 'reference' object. Returns a new object that matches the primary, plus all non-empty values from the secondary that are empty in the primary. Uses general.isEmpty to determine what counts as empty."
 const merge = (
@@ -32,7 +33,7 @@ const merge = (
   return merged
 }
 
-myself.recombine = "Sort of like Python's 'zip' function, generalized for Objects: transforms [{ id: xid, key: val1 }, { id: xid, key: val2 }, { id: yid, key: val3 }, ...] into [{ id: xid, key: [val1, val2] }, { id: yid, key: [val3] }, ...]"
+myself.recombine = "Sort of like Python's 'zip' function, generalized for Objects: transforms [{ id: xid, key: xVal1 }, { id: xid, key: xVal2 }, { id: yid, otherKey: yVal1 }, ...] into [{ id: xid, key: [xVal1, xVal2, ...] }, { id: yid, otherKey: [yVal1, ...] }, ...]"
 const recombine = (listOfObjects, getKey, showDuplicates = true) => {
   const mapped = listOfObjects.reduce((masterObj, obj) => {
     const masterKey = getKey(obj)
@@ -81,8 +82,12 @@ const filterObject = (
     filter = new Set(filter)
     passesFilter = (value) => filter.has(value) === includeOnMatch
   }
-  else {
+  else if (filter instanceof RegExp) {
     passesFilter = (value) => filter.test(value) === includeOnMatch
+  }
+  else {
+    console.dir(filter)
+    throw new TypeError('filter must be either an iterable or a regular expression')
   }
   const filtered = Object.entries(obj).filter(([key, value]) => {
     const candidate = filterOn === 'keys' ? key : value
@@ -92,10 +97,10 @@ const filterObject = (
 }
 
 // TODO: export, document
-const getComposition = (type) => (a, b, options) => {
+const compareBy = (type) => (a, b, options = {}) => {
   const filterOn = options.filterOn ?? 'keys'
   const diffOn = filterOn === 'keys' ? Object.keys : Object.values
-  const diffs = new Set(diffOn(a))[type](new Set(diffOn(b)))
+  const diffs = compareItersBy(type)(diffOn(a), diffOn(b))
   a = filterObject(a, diffs, options)
   b = filterObject(b, diffs, options)
   return {
@@ -104,11 +109,11 @@ const getComposition = (type) => (a, b, options) => {
   }
 }
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#set_composition>
-// myself.diff = 'oneWay, and, or, xor: ...'
-const oneWay = getComposition('difference')
-const and  = getComposition('intersection')
-const or   = getComposition('union')
-const xor  = getComposition('symmetricDifference')
+// myself.compareBy = 'diff, both, either, xor: ...'
+const compareDiff   = compareBy('difference')
+const compareBoth   = compareBy('intersection')
+const compareEither = compareBy('union')
+const compareXor    = compareBy('symmetricDifference')
 
 myself.extractNested = "Flattens (by one) the given object, returning the flattened values and, separately, any remaining nested values."
 const extractNested = (obj) => {

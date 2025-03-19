@@ -1,5 +1,5 @@
 const myself = {} // documentation
-const { print, arrayOf } = require('./general')
+const { print, arrayify, arrayOf } = require('./general')
 const { roundDecimal } = require('./numbers')
 const { rollDie, rollDice } = require('./random')
 const { allKeys } = require('./objects')
@@ -11,12 +11,13 @@ myself.countSides = "Generates (or takes as a parameter) a list of dice rolls an
 const countSides = (dice = 4, sides, rStyle = false) => {
   // 'sides' is optional, but it can't be a default parameter because the
   // default is different depending on whether 'dice' is a number or an array
-  if (Array.isArray(dice)) {
-    sides = sides ?? Math.max(...dice)
-  }
-  else {
+  if (['number', 'bigint'].includes(typeof dice)) {
     sides = sides ?? 6
     dice = rollDice(dice, sides)
+  }
+  else {
+    dice = arrayify(dice)
+    sides = sides ?? Math.max(...dice)
   }
   const multiples = arrayOf(sides, 0)
   dice = dice.toReversed()
@@ -32,8 +33,8 @@ const getShortNames = (multiples) => {
   const names = {}
   for (const count of multiples) {
     if (count < 2) continue
-    let howMany = names[`${count}s`]
-    names[`${count}s`] = (howMany ?? 0) + 1
+    let howMany = names[`${count}s`] ?? 0
+    names[`${count}s`] = howMany + 1
   }
   return names
 }
