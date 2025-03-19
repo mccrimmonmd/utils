@@ -40,20 +40,31 @@ List of 'addresses', with arrows indicating direction (I vs. O)? (Addresses = va
     "oompaLoompas",
     ...
   ],
-  "embedded": {
-    "innerAddress": templateName, // creates a copy
-    "otherInnerAddress": "externalCircuitAddress", // does not create a copy -- possible recursion!
+  "embedded": [
+    { 
+      "name": "theAddress",
+      "ref": "templateOrAddressOrLiteral",
+      "pos": [x, y, z] // all default to 0
+    }
+    { "innerAddress": templateName }, // shorthand
+    "otherCircuitAddress", // ultra shorthand
+    "otherInnerAddress": "externalCircuitAddress", // does not create a copy? -- possible recursion!
     "yetAnotherInnerAddress": 42, // literal values are 'circuits' (always templates) that output their own addresses
     "circuitLiteral": {
       "inputs": [ ... ],
       ...
     },
     ...
-  },
+  ],
   "connections": {
     "from": "to",
     "allFrom.toPairs": "useInner.addresses",
     "orOwnInput": "andOwnOutputNames", // circuits are only in control of connections inside themselves, not to other circuits
+    "theSameOutput": "canBeCopiedTo",
+    "theSameOutput": "multipleInputs",
+    "ifMultipleOutputs": "goToTheSameInput",
+    "theyActAsDefaults": "goToTheSameInput",
+    "fromTopToBottom": "goToTheSameInput",
     "innerAddress.outputName": "otherInnerAddress.inputName",
     "innerAddress.outputName": "myOwnOutputName",
     "myOwnInputName": "innerAddress.inputName",

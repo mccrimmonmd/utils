@@ -338,6 +338,9 @@ const swap = (arr, i, j) => {
 myself.last = "Writing 'someArray[someArray.length - 1]' is juuuuust tedious enough that I think this is worth it (I wrote this before I learned about Array.prototype.at)"
 const last = (array, nth = 1) => array[array.length - nth]
 
+// const last = (iterable, nth = 1) =>
+//   [...iterable].at(-nth)
+
 myself.flattener = "Flattens the given array to the specified depth. Depth must be finite, as there are no checks for circular references. (Whoops, this is already in the JS standard...)"
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat>
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap>
