@@ -41,6 +41,13 @@ List of 'addresses', with arrows indicating direction (I vs. O)? (Addresses = va
     ...
   ],
   "embedded": {
+    { 
+      "name": "theAddress",
+      "ref": "templateOrAddressOrLiteral",
+      "pos": [x, y, z] // all default to 0
+    },
+    { "innerAddress": templateName }, // shorthand
+    "otherCircuitAddress", // ultra shorthand
     "innerAddress": templateName, // creates a copy
     "otherInnerAddress": "externalCircuitAddress", // does not create a copy -- possible recursion!
     "yetAnotherInnerAddress": 42, // literal values are 'circuits' (always templates) that output their own addresses
