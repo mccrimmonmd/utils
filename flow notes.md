@@ -76,12 +76,22 @@ circuitAddress: {
     ...
   ],
   sub: {
+    fullSyntax: {
+      ref: templateOrAddressOrLiteral,
+      pos: [x, y, z], // all default to 0, but must be in this order
+      others: ?,
+    },
+    nameIsRefShorthand: [x, y, z],
+    defaultPositionShorthand: templateOrAddressOrLiteral,
+    ultraShorthand,
+    // ---------------------------------------------------------- //
     innerAddress: templateName, // creates a copy (a la class/prototype)
     circuitName, // references an ancestor (any?) circuit directly (sort of like an import; implies possible recursion)
     // wait, should this even exist? the 'state' of ancestor circuits should be unmodifiable, since they've already run (and if you need that state, you should simply pass it to the child circuit as input), and if you do change the state, it's now a copy and not a 'direct' reference
     // maybe this is just a shorthand for passing state from ancestor to child, without having to create a bunch of intermediary inputs and outputs?
     // I suppose state could also go from child to parent, but what advantage would that have over a template?
     // perhaps there could also be a shorthand that means "whatever input such-and-such circuit got the last time it ran, give so-and-so circuit that same input" (with exceptions specified in the links)?
+    // ---------------------------------------------------------- //
     circuitLiteral: {
       in: [ ... ],
       ...
