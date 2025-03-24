@@ -137,3 +137,21 @@ anotherUserDefinedCircuit: { ... },
 //   }
 }
 ```
+
+## Implementation
+
+```javascript
+{
+"choose": {
+  chips: {
+    cond: op("if")
+  },
+  wires: {
+    in.condition: cond.0,
+    in.ifTrue: cond.1,
+    in.ifFalse: cond.2,
+    cond.return: out.result
+  }
+}
+}
+```
