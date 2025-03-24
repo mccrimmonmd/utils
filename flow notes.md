@@ -85,8 +85,9 @@ circuitAddress: {
     ...
   },
   wires: {
-    source=>outputName: destination=>inputName, // all wires follow this general form
-    // source=>outputName::inputName=>destination, ?
+    // source=>outputName: destination=>inputName,
+    source=>outputName::inputName=>destination, // all wires follow this general form
+    source => outputName :: inputName => destination, // optional WS
 
     // comparing alternative syntaxii:
     src.out: dst.in,   // % easy to type, intuitive to experienced programmers, but the shorthands are difficult to read at a glance; might be better for disambiguating ancrefs
@@ -101,48 +102,48 @@ circuitAddress: {
     // src=>: =>in, =>out: =>in, crt=>=>, crt=>in=>, crt=>=>out
     src.>out: dst.>in, // % about as easy as :>, looks very weird to someone used to traditional operators, possible ambiguity with comparison
 
-    all=>wires: useInternal=>addresses, // circuits are only in control of wires inside themselves, not to other circuits
-    42: giveMeLiterals=>number, // "primitive" literals are circuits (all singletons, theoretically) that output themselves and have no inupts...
-    { chips: { ... }, wires: { ... } }: giveMeLiterals=>anonymousCircuit // although non-primitives can also output themselves!
+    all=>wires::useInternal=>addresses, // circuits are only in control of wires inside themselves, not to other circuits
+    42::number=>giveMeLiterals, // "primitive" literals are circuits (all singletons, theoretically) that output themselves and have no inupts...
+    { chips: { ... }, wires: { ... } } :: anonymousCircuit=>giveMeLiterals // although non-primitives can also output themselves!
     "Here is a string literal.": giveMeLiterals=>string,
     true: giveMeLiterals=>isBoolean,
     null: giveMeLiterals=>nuthinHere, // null (also written '{}') is a primitive representing the empty circuit: it has no endpoints, so  it can only output itself
     // (null is the default for all unused endpoints, so its only use in wires is for overriding another source/destination)
     giveMeLiterals=>ignored: {}, // normally, using a circuit instead of an endpoint as a destination is an error, but null is an exception (it ignores all input)
-    this: someHigherOrderCircuit=>fancyIGuess // the special address 'this' is used to send the circuit itself to an endpoint...
-    this=>endpointName: this=>endpointName, // as well as to define (and reference) the circuit's own endpoints
-    =>ownInpointName: =>ownOutpointName, // it can be omitted...
-    singleOutputCircuit=>: singleInputCircuit=>, // and so can the endpoints of circuits with only one input/output...
-    wholeEntireCircuit: [circuit=>?]maybeCircuitMaybeEndpoint[=>endpoint?], // but the separator is not optional (as a source, it takes the entire circuit as input; as a destination, it may be ambiguous)
-    this=>isNotRecursion: this=>isAlwaysIdentity, // there is no way for circuits to recurse on themselves directly (that would equal defining wires outside the circuit)
-    thisIsRecursion=>output: thisIsRecursion=>input, // recursion of a child circuit is allowed, of course...
-    recursiveCircuit=>output=>input, // and even has its own shorthand syntax...
-    simpleRecursiveCircuit=>=>input, // which can be even shorter if the circuit only has one output...
-    otherSimpleRecursion=>output=>, // or input...
-    simplestRecursiveCircuit=>=>, // or both
-    this=>: receiver=> ( // shorthand for defining multiple wires between the same two components...
+    this:: inputTo=>someHigherOrderCircuit// the special address 'this' is used to send the circuit itself to an endpoint...
+    this=>endpointName::endpointName=>this, // as well as to define (and reference) the circuit's own endpoints
+    =>ownInpointName::ownOutpointName=>, // it can be omitted...
+    singleOutputCircuit=>::=>singleInputCircuit, // and so can the endpoints of circuits with only one input/output...
+    wholeEntireCircuit::[endpoint=>?]maybeCircuitMaybeEndpoint[=>circuit?], // but the separator is not optional (as a source, it takes the entire circuit as input; as a destination, it may be ambiguous)
+    this=>isNotRecursion::itsJustIdentity=>this, // there is no way for circuits to recurse on themselves directly (that would mean defining wires outside the circuit)
+    thisIsRecursion=>output::input=>thisIsRecursion, // recursion of a child circuit is allowed, of course...
+    input=>recursiveCircuit=>output, // and even has its own shorthand syntax...
+    input=>simpleRecursiveCircuit=>, // which can be even shorter if the circuit only has one output...
+    =>otherSimpleRecursion=>output, // or input...
+    =>simplestRecursiveCircuit=>, // or both
+    sender=>::=>receiver ( // shorthand for defining multiple wires between the same two components...
       a: x,
       b: y,
       c: z
     ),
-    this=>someData: ( // sending the same output to multiple different circuits...
-      receiver=>catch,
-      kyooBee=>pass,
-      lineFronter=>fumble
+    sender=>someData:: ( // sending the same output to multiple different circuits...
+      catch=>receiver,
+      pass=>kyooBee,
+      fumble=>lineFronter
     ),
-    this=>someData: receiver ( // multiple inputs on the same circuit...
+    sender=>someData::=>receiver ( // multiple inputs on the same circuit...
       catch,
       pass,
       fumble
     ),
     ( // and so forth...
-      this=>someData,
-      some=>otherData
-    ): yoDude=>checkThis,
-    this=> ( // and so on.
+      sender=>someData,
+      otherSender=>otherData
+    ) ::yoDude=>checkThis,
+    sender=> ( // and so on.
       someData,
       otherData
-    ): yoDude=>thisIsWicked,
+    ) ::yoDude=>thisIsWicked,
     ...
   },
 },
@@ -152,8 +153,8 @@ anotherUserDefinedCircuit: { ... },
 //   wires:
 {
   // built-in wires (?)
-  wires=>between: builtIn=>circuits,
-  and=>or: userDefined=>circuits,
+  wires=>between::builtIn=>circuits,
+  and=>or::userDefined=>circuits,
   ...
 }
 //   }
@@ -169,12 +170,12 @@ anotherUserDefinedCircuit: { ... },
     if: op("choose")
   },
   wires: {
-    this=>: if=> (
+    this=>::=>if (
       condition: 0,
       ifTrue: 1,
       ifFalse: 2
     ),
-    if=>return: this=>result
+    if=>return::result=>this
   }
 }
 }
