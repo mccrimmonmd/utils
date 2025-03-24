@@ -74,7 +74,7 @@ const stats = (totalStats, value) => {
   }
 }
 
-modules.exports = {
+module.exports = {
   docs: () => print(myself),
   flatten,
   diffsCalculator,
