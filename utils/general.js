@@ -58,15 +58,18 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
 }
 
 myself.op = "Turn JavaScript's native operators into proper functions."
-const op = (a, opType, b) => {
-// const op = (opType, ...rest) => {
-// const op = (opType) => (...params) => {
-  let result
+"binOp is a private helper function"
+const binOp = (opType, params) => {
+  // return reducers[opType](params)
+  var [a, b] = params
   switch (opType) {
     case '+':
       return a + b
-      // return rest.reduce(sum, 0)
+      // return params.reduce(sum, 0)
     case '-':
+      // if (params.length > 1) params[0] = -params[0]
+      // for (const i of Object.keys(params)) params[i] = -params[i]
+      // return params.reduce(sum, 0)
       return a - b
     case '*':
       return a * b
@@ -80,33 +83,48 @@ const op = (a, opType, b) => {
       return a && b
     case 'eq':
       return a === b
-    case 'if':
-      return a ? b[0] : b[1]
-    case 'while':
-      while (b) {
-        b = a(b)
-      }
-      return b
-    case 'forEach':
-      for (const i of b) {
-        result = a(i)
+    default:
+      throw new TypeError(`Unsupported or invalid operator '${opType}'`)
+  }
+}
+// const op = (a, opType, b) => {
+// const op = (opType, ...rest) => {
+const op = (opType) => (...params) => {
+  let result
+  switch (opType) {
+    case 'choose':
+      var [cond, ifTrue, ifFalse] = params
+      return cond ? ifTrue : ifFalse
+    case 'loop':
+      var [cond, exec] = params
+      while (cond) {
+        [cond, result] = exec(...params.slice(2))
       }
       return result
-    case 'switch':
-      result = []
-      // TODO: can this support break/fall-through?
-      for (const [tests, task] of b) {
-        tests = [].concat(tests)
-        if (tests.every(test => test === a[0])) {
-          result.push(task)
-        }
+    case 'iter':
+      var [arr, exec] = params
+      for (const i of arr) {
+        result = exec(i)
       }
-      for (const [i, task] of result.entries()) {
-        result[i] = task(...a[1])
+      return result
+    case 'match':
+      var testAgainst = params[0]
+      // TODO: can this support a default case?
+      for (const {
+        tests,
+        task,
+        params: taskParams = [],
+        me = this,
+        stop = false
+      } of params.slice(1)) {
+        if (tests.includes(testAgainst)) {
+          result = task.apply(me, taskParams)
+        }
+        if (stop) break
       }
       return result
     default:
-      throw new TypeError(`Unsupported or invalid operator '${opType}'`)
+      return binOp(opType, params)
   }
 }
 
