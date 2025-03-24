@@ -35,7 +35,7 @@ const max = (a, b) => Math.max(a, b)
 myself.min = "See documentation for 'max'"
 const min = (a, b) => Math.min(a, b)
 
-`statsInit: Helper function for 'stats' that allows it to be used incrementally:
+;`statsInit: Helper function for 'stats' that allows it to be used incrementally:
 
   var consolidatedStats
   while (collectingData) {
