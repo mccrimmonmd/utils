@@ -97,6 +97,7 @@ circuitAddress: {
     src:>out: dst:>in, // * somewhat less easy to type, but looks 20% cooler, esp. for recursive shorthand (crt:>:>in, crt:>out:>, crt:>:>) (src:>:>: :>in)
     src>:out: dst>:in, // % not sure why I think circuit:>endpoint is better than circuit>:endpoint, but I do (maybe 'cause it looks more like an arrow?)
     src=>out: dst=>in, // * speaking of which, also not sure why I'm resisting the obvious. Just to be different? Tricky to type, but not for *me*, and it clearly hasn't hurt other languages.
+    // src=>: =>in, =>out: =>in, crt=>=>, crt=>in=>, crt=>=>out
     src.>out: dst.>in, // ! about as easy as :>, looks very weird to someone used to traditional operators, possible ambiguity with comparison
     src>:out: dst:>in, // X confusing as heck
     src:>out: dst>:in, // X (see?)
