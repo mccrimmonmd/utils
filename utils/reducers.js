@@ -55,7 +55,7 @@ const statsInit = (value) => {
     count: 1,
   }
 }
-myself.stats = "Calculates min, max, total, and count. Can be used with a single array, or in a loop to accumulate statistics incrementally."
+myself.stats = "Calculates min, max, total, and count. Can be used in one pass with a single array, or in a loop to accumulate statistics incrementally."
 const stats = (totalStats, value) => {
   // initial value when collecting stats from multiple arrays
   if (totalStats == null) {
