@@ -120,6 +120,29 @@ circuitAddress: {
     simpleRecursiveCircuit=>=>input, // which can be even shorter if the circuit only has one output...
     otherSimpleRecursion=>output=>, // or input...
     simplestRecursiveCircuit=>=>, // or both
+    this=>: receiver=> ( // shorthand for defining multiple wires between the same two components...
+      a: x,
+      b: y,
+      c: z
+    ),
+    this=>someData: ( // sending the same output to multiple different circuits...
+      receiver=>catch,
+      kyooBee=>pass,
+      lineFronter=>fumble
+    ),
+    this=>someData: receiver ( // multiple inputs on the same circuit...
+      catch,
+      pass,
+      fumble
+    ),
+    ( // and so forth...
+      this=>someData,
+      some=>otherData
+    ): yoDude=>checkThis,
+    this=> ( // and so on.
+      someData,
+      otherData
+    ): yoDude=>thisIsWicked,
     ...
   },
 },
@@ -146,10 +169,12 @@ anotherUserDefinedCircuit: { ... },
     if: op("choose")
   },
   wires: {
-    in=>condition: if=>0,
-    in=>ifTrue: if=>1,
-    in=>ifFalse: if=>2,
-    if=>return: out=>result
+    this=>: if=> (
+      condition: 0,
+      ifTrue: 1,
+      ifFalse: 2
+    ),
+    if=>return: this=>result
   }
 }
 }
