@@ -87,30 +87,29 @@ circuitAddress: {
   wires: {
     // source=>outputName: destination=>inputName,
     source=>outputName::inputName=>destination, // all wires follow this general form
-    source => outputName :: inputName => destination, // optional WS
+    source => outputName :: inputName => destination , // optional WS
 
     // comparing alternative syntaxii:
-    src.out: dst.in,   // % easy to type, intuitive to experienced programmers, but the shorthands are difficult to read at a glance; might be better for disambiguating ancrefs
-    src::out: dst::in, // X ugly; shorthand syntax leads to even worse ugliness (`src::: ::in`, `::out: ::in`, `crt::::`, etc.)
-    src>out: dst>in,   // X ambiguity with comparison
-    src->out: dst->in, // % tricky to type
-    src..out: dst..in, // % somewhat better than just one, but still ugly
-    src>>out: dst>>in, // ! very easy to type, ambiguous with bit shift operator (but that will be moot if there are none), recursive shorthand looks a bit ugly (crt>>>>in, crt>>out>>, crt>>>>)
-    src:>out: dst:>in, // * somewhat less easy to type, but looks 20% cooler, esp. for recursive shorthand (crt:>:>in, crt:>out:>, crt:>:>) (actually, maybe not: src:>out:>: :>in, src:>: dst:>in)
-    src>:out: dst>:in, // % not sure why I think circuit:>endpoint is better than circuit>:endpoint, but I do (maybe 'cause it looks more like an arrow?)
-    src=>out: dst=>in, // ** speaking of arrows, also not sure why I'm resisting the obvious. Just to be different? Tricky to type, but not for *me*, and it clearly hasn't hurt other languages.
-    // src=>: =>in, =>out: =>in, crt=>=>, crt=>in=>, crt=>=>out
-    src.>out: dst.>in, // % about as easy as :>, looks very weird to someone used to traditional operators, possible ambiguity with comparison
+    src.out::in.dst,   // % easy to type, intuitive to experienced programmers, but the shorthands are difficult to read at a glance; might be better for disambiguating ancrefs
+    src>out::in>dst,   // X ambiguity with comparison
+    src->out::in->dst, // % tricky to type
+    src..out::in..dst, // % somewhat better than just one, but still ugly
+    src>>out::in>>dst, // * very easy to type, ambiguous with bit shift operator (but that will be moot if there are none), much more readable now that I've modified the recursive shorthand (>>::>>, >>out::>>dst, src>>::>>dst, >>out::in>>, in>>crt>>out, in>>crt>>, >>crt>>)
+    src:>out::in:>dst, // ! somewhat less easy to type, a bit less readable, but looks 20% cooler (in:>crt:>, :>crt:>out, :>crt:>, src:>:::>dst, :>out::in:>dst)
+    src>:out::in>:dst, // % not sure why I think circuit:>endpoint is better than circuit>:endpoint, but I do (maybe 'cause it looks more like an arrow?)
+    src=>out::in=>dst, // * speaking of arrows, also not sure why I'm resisting the obvious. Just to be different? Tricky to type, but not for *me*, and it clearly hasn't hurt other languages.
+    // src=>::=>dst, =>out::in=>, =>crt=>, in=>crt=>, =>crt=>out
+    src.>out::in.>dst, // % about as easy as :>, looks very weird to someone used to traditional operators, possible ambiguity with comparison
 
     all=>wires::useInternal=>addresses, // circuits are only in control of wires inside themselves, not to other circuits
     42::number=>giveMeLiterals, // "primitive" literals are circuits (all singletons, theoretically) that output themselves and have no inupts...
     { chips: { ... }, wires: { ... } } :: anonymousCircuit=>giveMeLiterals // although non-primitives can also output themselves!
-    "Here is a string literal.": giveMeLiterals=>string,
-    true: giveMeLiterals=>isBoolean,
-    null: giveMeLiterals=>nuthinHere, // null (also written '{}') is a primitive representing the empty circuit: it has no endpoints, so  it can only output itself
+    "Here is a string literal."::string=>giveMeLiterals,
+    true::isBoolean=>giveMeLiterals,
+    null::nuthinHere=>giveMeLiterals, // null (also written '{}') is a primitive representing the empty circuit: it has no endpoints, so  it can only output itself
     // (null is the default for all unused endpoints, so its only use in wires is for overriding another source/destination)
-    giveMeLiterals=>ignored: {}, // normally, using a circuit instead of an endpoint as a destination is an error, but null is an exception (it ignores all input)
-    this:: inputTo=>someHigherOrderCircuit// the special address 'this' is used to send the circuit itself to an endpoint...
+    giveMeLiterals=>ignored::{}, // normally, using a circuit instead of an endpoint as a destination is an error, but null is an exception (it ignores all input)
+    this::inputTo=>someHigherOrderCircuit// the special address 'this' is used to send the circuit itself to an endpoint...
     this=>endpointName::endpointName=>this, // as well as to define (and reference) the circuit's own endpoints
     =>ownInpointName::ownOutpointName=>, // it can be omitted...
     singleOutputCircuit=>::=>singleInputCircuit, // and so can the endpoints of circuits with only one input/output...
@@ -121,29 +120,36 @@ circuitAddress: {
     input=>simpleRecursiveCircuit=>, // which can be even shorter if the circuit only has one output...
     =>otherSimpleRecursion=>output, // or input...
     =>simplestRecursiveCircuit=>, // or both
+    // sender:>receiver !
     sender=>::=>receiver ( // shorthand for defining multiple wires between the same two components...
       a: x,
       b: y,
       c: z
     ),
-    sender=>someData:: ( // sending the same output to multiple different circuits...
+    sender=>output:: ( // sending the same output to multiple different circuits...
       catch=>receiver,
       pass=>kyooBee,
       fumble=>lineFronter
     ),
-    sender=>someData::=>receiver ( // multiple inputs on the same circuit...
+    // sender=>output:>receiver
+    sender=>output::=>receiver ( // multiple inputs on the same circuit...
       catch,
       pass,
       fumble
     ),
     ( // and so forth...
-      sender=>someData,
-      otherSender=>otherData
-    ) ::yoDude=>checkThis,
+      sender=>output,
+      otherSender=>moreOutput
+    ) ::input=>receiver,
     sender=> ( // and so on.
-      someData,
-      otherData
-    ) ::yoDude=>thisIsWicked,
+      output,
+      moreOutput
+    ) ::input=>receiver,
+    sender:> (
+      a,
+      b,
+      c
+    ) ::=>receiver, 
     ...
   },
 },
@@ -170,12 +176,12 @@ anotherUserDefinedCircuit: { ... },
     if: op("choose")
   },
   wires: {
-    this=>::=>if (
+    this:>if (
       condition: 0,
       ifTrue: 1,
       ifFalse: 2
     ),
-    if=>return::result=>this
+    if>>return::result>>this
   }
 }
 }
