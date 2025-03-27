@@ -60,70 +60,85 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
 myself.op = "Turn JavaScript's native operators into proper functions."
 // const op = (a, opType, b) => {
 // const op = (opType, ...rest) => {
-const op = (opType) => (...params) => {
-  let result
+const op = (opType) => {
   switch (opType) {
     case 'choose':
-      var [cond, ifTrue, ifFalse] = params
-      return cond ? ifTrue : ifFalse
+      return opFuncs.choose
     case 'loop':
-      var [cond, exec] = params
-      while (cond) {
-        [cond, result] = exec(...params.slice(2))
-      }
-      return result
+      return opFuncs.loop
     case 'iter':
-      var [arr, exec] = params
-      for (const i of arr) {
-        result = exec(i)
-      }
-      return result
+      return opFuncs.iter
     case 'match':
-      var testAgainst = params[0]
-      // TODO: can this support a default case?
-      for (const {
-        tests,
-        task,
-        params: taskParams = [],
-        me = this,
-        stop = false
-      } of params.slice(1)) {
-        if (tests.includes(testAgainst)) {
-          result = task.apply(me, taskParams)
-          if (stop) break
-        }
-      }
-      return result
+      return opFuncs.match
     default:
-      return binOp(opType, params)
+      return binOp(opType)
   }
 }
-const binOp = (opType, params) => {
-  // return reducers[opType](params)
-  var [a, b] = params
+const binOp = (opType) => {
   switch (opType) {
     case '+':
-      return a + b
-      // return params.reduce(sum, 0)
+      // return (...params) => params.reduce(sum, 0)
+      return (a, b) => a + b
     case '-':
       // if (params.length > 1) params[0] = -params[0]
       // for (const i of Object.keys(params)) params[i] = -params[i]
       // return params.reduce(sum, 0)
-      return a - b
+      return (a, b) => a - b
     case '*':
-      return a * b
+      // return params.reduce(product, 1)
+      return (a, b) => a * b
     case '/':
-      return a / b
+      // if (params.length > 1) {
+      //   if (params[0] === 0) return 0
+      //   params[0] = 1 / params[0]
+      // }
+      // for (const i of Object.keys(params)) params[i] = 1 / params[i]
+      // return params.reduce(product, 1)
+      return (a, b) => a / b
     case '**':
-      return a ** b
+      return (a, b) => a ** b
     case 'or':
-      return a || b
+      return (a, b) => a || b
     case 'and':
-      return a && b
+      return (a, b) => a && b
     case 'eq':
-      return a === b
+      return (a, b) => a === b
     default:
       throw new TypeError(`Unsupported or invalid operator '${opType}'`)
+  }
+}
+const opFuncs = {
+  choose: (cond, ifTrue, ifFalse) => cond ? ifTrue : ifFalse,
+  loop: (cond, exec, params) => {
+    let result
+    while (cond) {
+      [cond, result] = exec(...params)
+    }
+    return result
+  },
+  iter: (exec, arr) => {
+    let result
+    for (const i of arr) {
+      result = exec(i)
+    }
+    return result
+  },
+  match: (testAgainst, ...tasks) => {
+    // TODO: can this support a default case?
+    let result
+    for (const {
+      tests,
+      task,
+      params = [],
+      me = this,
+      stop = false
+    } of tasks) {
+      if (tests.includes(testAgainst)) {
+        result = task.apply(me, params)
+        if (stop) break
+      }
+    }
+    return result
   }
 }
 
