@@ -72,14 +72,14 @@ CircuitAddress: { # TemplateName?
     nameEqualsRefShorthand: [x, y, z, ...],
     allDefaultsShorthand: ref,
     combinedShorthand,
-    # ---------------------------------------------------------- #
+    # ------------------------------------------------------------- #
     innerAddress: templateName, # creates a copy (a la class/prototype)
     circuitName, # references an ancestor (any?) circuit directly (sort of like an import; implies possible recursion)
     # wait, should this even exist? the 'state' of ancestor circuits should be unmodifiable, since they've already run (and if you need that state, you should simply pass it to the child circuit as input), and if you do change the state, it's now a copy and not a 'direct' reference
     # maybe this is just a shorthand for passing state from ancestor to child, without having to create a bunch of intermediary endpoints?
     # I suppose state could also go from child to parent, but what advantage would that have over a template?
     # perhaps there could also be a shorthand that means "whatever input such-and-such circuit got the last time it ran, give so-and-so circuit that same input as defaults"?
-    # ---------------------------------------------------------- #
+    # ------------------------------------------------------------- #
     circuitLiteral: {
       chips: { ... },
       wires: { ... },
@@ -89,8 +89,9 @@ CircuitAddress: { # TemplateName?
   wires: {
     source>>outputName::inputName>>destination, # all wires follow this general form
     source >> outputName :: inputName >> destination , # optional WS
+    source >> ouputName::inputName >> destination, # recommended style (?)
 
-    # comparing alternative syntaxii:
+    # comparing alternative syntaxii: ----------------------------- #
     src.out::in.dst,   # % easy to type, intuitive to experienced programmers, but the shorthands are difficult to read at a glance; might be better for disambiguating ancrefs
     src>out::in>dst,   # X ambiguity with comparison
     src->out::in->dst, # % tricky to type
@@ -101,9 +102,10 @@ CircuitAddress: { # TemplateName?
     src=>out::in=>dst, # * speaking of arrows, also not sure why I'm resisting the obvious. Just to be different? Tricky to type, but not for *me*, and it clearly hasn't hurt other languages.
     # src=>::=>dst, =>out::in=>, =>crt=>, in=>crt=>, =>crt=>out
     src.>out::in.>dst, # % about as easy as :>, looks very weird to someone used to traditional operators, possible ambiguity with comparison
+    # ------------------------------------------------------------- #
 
     all>>wires::useInternal>>addresses, # circuits are only in control of wires inside themselves, not to other circuits
-    # conversely, no circuit can change another's wires (all wires are private)
+    # conversely, no circuit can change another's wires (i.e. all wires are private)
     42::number>>giveMeLiterals, # "primitive" literals are circuits (all singletons, theoretically) that output themselves and have no inupts...
     { chips: { ... }, wires: { ... } } :: anonymousCircuit>>giveMeLiterals # although non-primitives can also output themselves!
     "Here is a string literal."::string>>giveMeLiterals,
@@ -136,23 +138,23 @@ CircuitAddress: { # TemplateName?
     sender:>receiver ( # sending the same output to multiple inputs...
       throw:: (catch, miss, fumble)
     ),
-    sender>>throw:: ( # or circuits...
-      catch>>beeQueue,
-      miss>>looseStart,
-      fumble>>arcFronter
+    sender:> ( # or circuits...
+      throw:: (
+        catch>>beeQueue,
+        miss>>looseStart,
+        fumble>>arcFronter
+      )
     ),
     sender:>receiver ( # or vice versa
       (throw, kick, tackle) ::touchdown
     ),
-    ~~sender:> ( # can be combined in various ways
-      throw:: (
-        catch>>looseStart,
-      ),
+    sender:> ( # can be combined in various ways (?)
+      throw::catch>>looseStart,
       :>beeQueue (
         kick::miss,
         tackle::fumble
       )
-    ),~~
+    ),
     ( # however, this syntax is NOT supported, both because a circuit's outputs should be fairly encapsulated, (sort of like a function's multiple callers/one return value), and because I find this very difficult to read at a glance and can't think of a better syntax
       beeQueue>>throw,
       arcFronter>>kick
@@ -183,12 +185,12 @@ wires:
     if: op("choose")
   },
   wires: {
-    this:>if (
-      condition: 0,
-      ifTrue: 1,
-      ifFalse: 2
+    this :> if (
+      condition::0,
+      ifTrue::1,
+      ifFalse::2
     ),
-    if>>return::result>>this
+    if >> return::result >> this
   }
 }
 }
