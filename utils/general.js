@@ -90,8 +90,8 @@ const op = (opType) => (...params) => {
       } of params.slice(1)) {
         if (tests.includes(testAgainst)) {
           result = task.apply(me, taskParams)
+          if (stop) break
         }
-        if (stop) break
       }
       return result
     default:
