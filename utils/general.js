@@ -58,35 +58,6 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
 }
 
 myself.op = "Turn JavaScript's native operators into proper functions."
-"binOp is a private helper function"
-const binOp = (opType, params) => {
-  // return reducers[opType](params)
-  var [a, b] = params
-  switch (opType) {
-    case '+':
-      return a + b
-      // return params.reduce(sum, 0)
-    case '-':
-      // if (params.length > 1) params[0] = -params[0]
-      // for (const i of Object.keys(params)) params[i] = -params[i]
-      // return params.reduce(sum, 0)
-      return a - b
-    case '*':
-      return a * b
-    case '/':
-      return a / b
-    case '**':
-      return a ** b
-    case '||':
-      return a || b
-    case '&&':
-      return a && b
-    case 'eq':
-      return a === b
-    default:
-      throw new TypeError(`Unsupported or invalid operator '${opType}'`)
-  }
-}
 // const op = (a, opType, b) => {
 // const op = (opType, ...rest) => {
 const op = (opType) => (...params) => {
@@ -125,6 +96,34 @@ const op = (opType) => (...params) => {
       return result
     default:
       return binOp(opType, params)
+  }
+}
+const binOp = (opType, params) => {
+  // return reducers[opType](params)
+  var [a, b] = params
+  switch (opType) {
+    case '+':
+      return a + b
+      // return params.reduce(sum, 0)
+    case '-':
+      // if (params.length > 1) params[0] = -params[0]
+      // for (const i of Object.keys(params)) params[i] = -params[i]
+      // return params.reduce(sum, 0)
+      return a - b
+    case '*':
+      return a * b
+    case '/':
+      return a / b
+    case '**':
+      return a ** b
+    case 'or':
+      return a || b
+    case 'and':
+      return a && b
+    case 'eq':
+      return a === b
+    default:
+      throw new TypeError(`Unsupported or invalid operator '${opType}'`)
   }
 }
 
@@ -187,7 +186,11 @@ const iterify = (thing) => isIterable(thing) ? thing : [thing]
 myself.arrayify = "Converts iterables into arrays; non-iterables result in an empty array. For when you want to ensure Array methods and properties like length, reduce, slice, etc. are available. (If you want non-iterables to also be converted instead of ignored, you should probably use `[].concat(thing)` instead.)"
 const arrayify = (thing) => isIterable(thing) ? [...thing] : []
 
-"Helper object for memoize"
+myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value."
+const memoize = (func) => {
+  const multiCache = new MultiCache()
+  return (...params) => multiCache.cache(params, func)
+}
 const MultiCache = class {
   constructor () {
     this.nestedCache = new Map()
@@ -213,12 +216,6 @@ const MultiCache = class {
       return getOrSet(innerCache, this.leafKey, wrappedFunc)
     }
   }
-}
-
-myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value."
-const memoize = (func) => {
-  const multiCache = new MultiCache()
-  return (...params) => multiCache.cache(params, func)
 }
 
 myself.timeIt = "Executes the given function with the given parameters and times how long it takes to finish. Returns an object containing the return value of the function and the time taken, in milliseconds."

@@ -35,6 +35,24 @@ const max = (a, b) => Math.max(a, b)
 myself.min = "See documentation for 'max'"
 const min = (a, b) => Math.min(a, b)
 
+myself.stats = "Calculates min, max, total, and count. Can be used in one pass with a single array, or in a loop to accumulate statistics incrementally."
+const stats = (totalStats, value) => {
+  // initial value when collecting stats from multiple arrays
+  if (totalStats == null) {
+    return statsInit(value)
+  }
+  // initial value when one is not passed explicitly
+  if (typeof totalStats === 'number') {
+    totalStats = statsInit(totalStats)
+  }
+  let { max, min, total, count } = totalStats
+  return {
+    max: Math.max(value, max),
+    min: Math.min(value, min),
+    total: total + value,
+    count: count + 1,
+  }
+}
 ;`statsInit: Helper function for 'stats' that allows it to be used incrementally:
 
   var consolidatedStats
@@ -53,24 +71,6 @@ const statsInit = (value) => {
     min: value,
     total: value,
     count: 1,
-  }
-}
-myself.stats = "Calculates min, max, total, and count. Can be used in one pass with a single array, or in a loop to accumulate statistics incrementally."
-const stats = (totalStats, value) => {
-  // initial value when collecting stats from multiple arrays
-  if (totalStats == null) {
-    return statsInit(value)
-  }
-  // initial value when one is not passed explicitly
-  if (typeof totalStats === 'number') {
-    totalStats = statsInit(totalStats)
-  }
-  let { max, min, total, count } = totalStats
-  return {
-    max: Math.max(value, max),
-    min: Math.min(value, min),
-    total: total + value,
-    count: count + 1,
   }
 }
 
