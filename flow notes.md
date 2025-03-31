@@ -33,24 +33,35 @@ Comment character is '#', multiline comments with '###...###' ('//' is an empty 
 TODO: position, designating circuits (or circuit refs) as templates, distinguishing circuit names from template names (initial capital?), resolving ambiguity when referencing ancestor (or whatever) circuits, defining non-source-order priority for defaults (maybe? keeping it source-order isn't much different than variable shadowing, after all)
 
 ```text
-program -> '{' circuitList '}'
-circuitList -> namedCircuit [ ',' namedCircuit ]
-namedCircuit -> circuitName ':' circuitRef
+program -> '{ "Core":' circuitLiteral '}'
+circuitList -> variable ':' circuit [ ',' circuitList ]
 
-circuitRef -> circuitName | circuitLiteral
-circuitName -> variable
+circuit -> templateRef | circuitLiteral
+templateRef -> '"' templatePath '"'
+templatePath -> varChars [ '.' templatePath ]
 
 variable -> '"' varChars '"'
 varChars -> alpha [ alphaNumeric ]
-alpha -> /[a-zA-Z_.]/ <!-- ':' too? -->
-alphaNumeric -> ( alpha | /[0-9]/ ) [ alphaNumeric ]
+alpha -> /[a-zA-Z_]/
+numeric -> /[0-9]/
+alphaNumeric -> ( alpha | numeric ) [ alphaNumeric ]
 
-circuitLiteral -> '{' [ subcircuits ',' connections ] '}'
+circuitLiteral -> '{' subcircuits ',' connections '}' | null
 subcircuits -> '"chips": {' [ circuitList ] '}'
 connections -> '"wires": {' [ pairList ] '}'
 
-varList -> variable [ ',' variable ]
-pairList -> variable ':' variable [ ',' pairList ]
+pairList -> input ':' output [ ',' pairList ]
+input -> primitive | templateRef | endpoint
+output -> endpoint | null
+endpoint -> '"' varChars '>>' varChars '"'
+primitive -> '"&' number | boolean | regex | string | null '"'
+number -> numeric [ '.' numeric ]
+boolean -> 'true' | 'false'
+regex -> '/' string '/'
+string -> escapedChar [ string ]
+escapedChar -> notAQuoteOrSlash | '\' ( '\' | '/' | '"' )
+
+null -> 'null' | '{}'
 ```
 
 Example program using 'assembly' syntax:
@@ -58,7 +69,7 @@ Example program using 'assembly' syntax:
 ```text
 # outermost "global" circuit is mostly implicit
 # {
-#   core: {
+#   Core: {
 chips: {
 #     built-in circuits,
 CircuitAddress: { # TemplateName?
@@ -165,8 +176,7 @@ CircuitAddress: { # TemplateName?
 anotherUserDefinedCircuit: { ... },
 ...
 },
-wires:
-{
+wires: {
   # built-in wires, (?)
   wires>>between::builtIn>>circuits,
   and>>or::userDefined>>circuits,
