@@ -21,19 +21,15 @@
 - Circuit literals:
   - List of 'addresses', with arrows indicating direction (I vs. O)? (Addresses = variable names; some internal, some external.) Initialize addresses at top of circuit; each one references a 'template' that gets copied. (Create your own templates...how?)
 
-## Syntax
+## Formal Grammar
 
 Grammar below is for JSON-compliant 'internal' syntax, rarely used directly
 
 Compiles ('assembles') to/from intermediate representation that preserves the
 structure, but loosens the syntax requirements for readability and convenience
 
-Comment character is '#', multiline comments with '###...###' ('//' is an empty regex literal)
-
-TODO: position, designating circuits (or circuit refs) as templates, distinguishing circuit names from template names (initial capital?), resolving ambiguity when referencing ancestor (or whatever) circuits, defining non-source-order priority for defaults (maybe? keeping it source-order isn't much different than variable shadowing, after all)
-
 ```text
-program -> '{ "Core":' circuitLiteral '}'
+program -> '{ "core":' circuitLiteral [ ',' circuitList ] '}'
 circuitList -> variable ':' circuit [ ',' circuitList ]
 
 circuit -> templateRef | circuitLiteral
@@ -46,8 +42,7 @@ alpha -> /[a-zA-Z_]/
 numeric -> /[0-9]/
 alphaNumeric -> ( alpha | numeric ) [ alphaNumeric ]
 
-circuitLiteral -> '{' subcircuits ',' connections '}' | null
-subcircuits -> '"chips": {' [ circuitList ] '}'
+circuitLiteral -> '{' circuitList ',' connections '}' | null
 connections -> '"wires": {' [ pairList ] '}'
 
 pairList -> input ':' output [ ',' pairList ]
@@ -64,19 +59,41 @@ escapedChar -> notAQuoteOrSlash | '\' ( '\' | '/' | '"' )
 null -> 'null' | '{}'
 ```
 
-Example program using 'assembly' syntax:
+## Syntax
+
+Comment character is '#', multiline comments with '###...###' ('//' is an empty regex literal)
+
+### TODO
+
+- position
+- appearance
+- designating circuits (or circuit refs) as templates
+- distinguishing circuit names from template names (initial capital? no difference?)
+- resolving ambiguity when referencing ancestor (or whatever) circuits
+- defining non-source-order priority for defaults
+  - (maybe? keeping it source-order isn't much different than variable shadowing, after all)
+- 'blueprint' instead of 'template'
+- only one wire per inpoint rule?
+  - Pros: makes syntax easier (e.g. no many-to-one shorthand), eliminates complexity of automatic defaults, easy to tell computationally when it's being violated
+  - Cons: difficult to tell visually when it's being violated, increases complexity when defaults are needed (i.e. dedicated core circuit with unique evaluation rules)
+
+### Example
 
 ```text
-# outermost "global" circuit is mostly implicit
+# outermost circuit (a.k.a. "program") is partly implicit
 # {
-#   Core: {
-chips: {
-#     built-in circuits,
-CircuitAddress: { # TemplateName?
-  chips: { # components?
+spam:, # imported library of templates, referenced as spam.TemplateName
+ham: `./some/directory/Ham.flw`, # specify filepath (defaults to ./)
+bacon: beans, # import './beans.flw' as 'bacon'
+# core:
+{ # programs that don't have this 'bare' circuit (implicitly 'core') are libraries
+  eggs:, # libraries can be imported inside circuits, too, and are referenced accordingly (e.g. core.eggs.TemplateName)
+  # predefined core circuits,
+  CircuitAddress: { # TemplateName?
     fullSyntax: {
       ref: templateOrAddressOrLiteral,
       pos: [x, y, z], # all default to 0, but must be in this order
+      vis: <???>, # visual representation, defaults to (string literal? invisible?)
       otherFields: ?,
     },
     shorthandSyntax: [ref, x, y, z, ...],
@@ -91,98 +108,106 @@ CircuitAddress: { # TemplateName?
     # I suppose state could also go from child to parent, but what advantage would that have over a template?
     # perhaps there could also be a shorthand that means "whatever input such-and-such circuit got the last time it ran, give so-and-so circuit that same input as defaults"?
     # ------------------------------------------------------------- #
-    circuitLiteral: {
+    CircuitLiteral: {
       chips: { ... },
       wires: { ... },
     },
     ...
-  },
-  wires: {
-    source>>outputName::inputName>>destination, # all wires follow this general form
-    source >> outputName :: inputName >> destination , # optional WS
-    source >> ouputName::inputName >> destination, # recommended style (?)
+    wires: {
+      source>>outputName::inputName>>destination, # all wires follow this general form
+      source >> outputName :: inputName >> destination , # optional WS
+      source >> ouputName::inputName >> destination, # recommended style ("separated circuits, connected endpoints")
+      circuit ::inpoint >> dest, # circuit as output
+      circuit >>::>> dest, # implicit endpoints
+      >> outpoint::inpoint >>, # implicit 'this'
+      :inpoint >> recursiveCircuit >> outpoint:, # recursive shorthand
+      :>> simpleRecursion >>:, # shorterhand
 
-    # comparing alternative syntaxii: ----------------------------- #
-    src.out::in.dst,   # % easy to type, intuitive to experienced programmers, but the shorthands are difficult to read at a glance; might be better for disambiguating ancrefs
-    src>out::in>dst,   # X ambiguity with comparison
-    src->out::in->dst, # % tricky to type
-    src..out::in..dst, # % somewhat better than just one, but still ugly
-    src>>out::in>>dst, # * very easy to type, ambiguous with bit shift operator (but that will be moot if there are none), much more readable now that I've modified the recursive shorthand (>>::>>, >>out::>>dst, src>>::>>dst, >>out::in>>, in>>crt>>out, in>>crt>>, >>crt>>)
-    src:>out::in:>dst, # ! somewhat less easy to type, a bit less readable, but looks 20% cooler (in:>crt:>, :>crt:>out, :>crt:>, src:>:::>dst, :>out::in:>dst)
-    src>:out::in>:dst, # % not sure why I think circuit:>endpoint is better than circuit>:endpoint, but I do (maybe 'cause it looks more like an arrow?)
-    src=>out::in=>dst, # * speaking of arrows, also not sure why I'm resisting the obvious. Just to be different? Tricky to type, but not for *me*, and it clearly hasn't hurt other languages.
-    # src=>::=>dst, =>out::in=>, =>crt=>, in=>crt=>, =>crt=>out
-    src.>out::in.>dst, # % about as easy as :>, looks very weird to someone used to traditional operators, possible ambiguity with comparison
-    # ------------------------------------------------------------- #
+      # comparing alternative syntaxii: ----------------------------- #
+      src.out::in.dst,   # % easy to type, intuitive to experienced programmers, but the shorthands are difficult to read at a glance; might be better for disambiguating ancrefs
+      src>out::in>dst,   # X ambiguity with comparison
+      src->out::in->dst, # % tricky to type
+      src..out::in..dst, # % somewhat better than just one, but still ugly
+      src>>out::in>>dst, # * very easy to type, ambiguous with bit shift operator (but that will be moot if there are none), much more readable now that I've modified the recursive shorthand (>>::>>, >>out::>>dst, src>>::>>dst, >>out::in>>, in>>crt>>out, in>>crt>>, >>crt>>)
+      src:>out::in:>dst, # ! somewhat less easy to type, a bit less readable, but looks 20% cooler (in:>crt:>, :>crt:>out, :>crt:>, src:>:::>dst, :>out::in:>dst)
+      src>:out::in>:dst, # % not sure why I think circuit:>endpoint is better than circuit>:endpoint, but I do (maybe 'cause it looks more like an arrow?)
+      src=>out::in=>dst, # * speaking of arrows, also not sure why I'm resisting the obvious. Just to be different? Tricky to type, but not for *me*, and it clearly hasn't hurt other languages.
+      # src=>::=>dst, =>out::in=>, =>crt=>, in=>crt=>, =>crt=>out
+      src.>out::in.>dst, # % about as easy as :>, looks very weird to someone used to traditional operators, possible ambiguity with comparison
+      # ------------------------------------------------------------- #
 
-    all>>wires::useInternal>>addresses, # circuits are only in control of wires inside themselves, not to other circuits
-    # conversely, no circuit can change another's wires (i.e. all wires are private)
-    42::number>>giveMeLiterals, # "primitive" literals are circuits (all singletons, theoretically) that output themselves and have no inupts...
-    { chips: { ... }, wires: { ... } } :: anonymousCircuit>>giveMeLiterals # although non-primitives can also output themselves!
-    "Here is a string literal."::string>>giveMeLiterals,
-    /here is a regular expression/::regex>>giveMeLiterals,
-    true::isBoolean>>giveMeLiterals,
-    null::nuthinHere>>giveMeLiterals, # null (also written '{}') is a primitive representing the empty circuit: it has no endpoints, so  it can only output itself
-    # (null is the default for all unused endpoints, so its only use in wires is for overriding another source/destination)
-    giveMeLiterals>>ignored::{}, # normally, using a circuit instead of an endpoint as a destination is an error, but null is an exception (it ignores all input)
-    this::anotherCircuit>>giveMeLiterals # the special literal 'this' is used to send the circuit itself to an endpoint...
-    this>>outpointName::inpointName>>this, # as well as to define (and reference) the circuit's own endpoints
-    >>ownInpointName::ownOutpointName>>, # 'this' can be omitted...
-    singleOutputCircuit>>::>>singleInputCircuit, # and so can the endpoints of circuits with only one input/output...
-    wholeEntireCircuit::[endpoint>>?]maybeCircuitMaybeEndpoint[>>circuit?], # but the separator is not optional (as a source, it takes the entire circuit as input; as a destination, it may be ambiguous)
-    this>>isNotRecursion::itsJustIdentity>>this, # there is no way for circuits to recurse on themselves directly (that would mean defining wires outside the circuit)
-    thisIsRecursion>>output::input>>thisIsRecursion, # recursion of a child circuit is allowed, of course...
-    input>>recursiveCircuit>>output, # and even has its own shorthand syntax...
-    input>>simpleRecursiveCircuit>>, # which can be even shorter if the circuit only has one output...
-    >>otherSimpleRecursion>>output, # or input...
-    >>simplestRecursiveCircuit>>, # or both
-    sender:>receiver ( # shorthand for defining multiple wires between the same two components...
-      throw::catch,
-      kick::miss,
-      tackle::fumble
-    ),
-    sender:>receiver ( # even shorter when the endpoints share a name...
-      pass,
-      hike,
-      handoff
-    ),
-    sender:>receiver ( # sending the same output to multiple inputs...
-      throw:: (catch, miss, fumble)
-    ),
-    sender:> ( # or circuits...
-      throw:: (
-        catch>>beeQueue,
-        miss>>looseStart,
-        fumble>>arcFronter
-      )
-    ),
-    sender:>receiver ( # or vice versa
-      (throw, kick, tackle) ::touchdown
-    ),
-    sender:> ( # can be combined in various ways (?)
-      throw::catch>>looseStart,
-      :>beeQueue (
+      all>>wires::useInternal>>addresses, # circuits are only in control of wires inside themselves, not to other circuits
+      # conversely, no circuit can change another's wires (i.e. all wires are private)
+      42::number>>giveMeLiterals, # "primitive" literals are circuits (all singletons, theoretically) that output themselves and have no inupts...
+      { chips: { ... }, wires: { ... } } :: anonymousCircuit>>giveMeLiterals # although non-primitives can also output themselves!
+      "Here is a string literal."::string>>giveMeLiterals,
+      """Here is a "raw" string literal.
+      It can be multiline,
+      and backslashes (i.e. escape characters)
+      are treated literally."""::string>>giveMeLiterals,
+      /here is a regular expression/::regex>>giveMeLiterals,
+      `this/is/a/filePath.txt`::file>>giveMeLiterals,
+      true::isBoolean>>giveMeLiterals,
+      null::nuthinHere>>giveMeLiterals, # null (also written '{}') is a primitive representing the empty circuit: it has no endpoints, so  it can only output itself
+      # (null is the default for all unused endpoints, so its only use in wires is for overriding another source/destination)
+      giveMeLiterals>>ignored::{}, # normally, using a circuit instead of an endpoint as a destination is an error, but null is an exception (it ignores all input)
+      this::anotherCircuit>>giveMeLiterals # the special literal 'this' is used to send the circuit itself to an endpoint...
+      this>>outpointName::inpointName>>this, # as well as to define (and reference) the circuit's own endpoints
+      >>ownInpointName::ownOutpointName>>, # 'this' can be omitted...
+      singleOutputCircuit>>::>>singleInputCircuit, # and so can the endpoints of circuits with only one input/output...
+      wholeEntireCircuit::[endpoint>>?]maybeCircuitMaybeEndpoint[>>circuit?], # but the >> separator is not optional (as a source, leaving it out takes the entire circuit as input; as a destination, it could be ambiguous)
+      this>>isNotRecursion::itsJustIdentity>>this, # there is no way for circuits to recurse on themselves directly (that would mean defining wires outside the circuit)
+      recursiveCircuit>>output::input>>recursiveCircuit, # recursion of a child circuit is allowed, of course...
+      :input>>recursiveCircuit>>output:, # and even has its own shorthand syntax...
+      :input>>simpleRecursiveCircuit>>:, # which can be even shorter if the circuit only has one output...
+      :>>otherSimpleRecursion>>output:, # or input...
+      :>>simplestRecursiveCircuit>>:, # or both (though there wouldn't be much point to this, unless the circuit had side effects or the inpoint had defaults)
+      sender>>receiver ( # shorthand for defining multiple wires between the same two components...
+        throw::catch,
         kick::miss,
         tackle::fumble
-      )
-    ),
-    ( # however, this syntax is NOT supported, both because a circuit's outputs should be fairly encapsulated, (sort of like a function's multiple callers/one return value), and because I find this very difficult to read at a glance and can't think of a better syntax
-      beeQueue>>throw,
-      arcFronter>>kick
-    ) ::catch>>receiver,
-    ...
+      ),
+      sender>>receiver ( # even shorter when the endpoints share a name...
+        pass,
+        hike,
+        handoff
+      ),
+      sender>>receiver ( # sending the same output to multiple inputs...
+        throw: (:catch, :miss, :fumble)
+      ),
+      sender>> ( # or circuits...
+        throw: (
+          :catch>>beeQueue,
+          :miss>>looseStart,
+          :fumble>>arcFronter
+        )
+      ),
+      sender>>receiver ( # or vice versa (only if defaults are implicit)
+        (throw:, kick:, tackle:) :touchdown
+      ),
+      sender>> ( # can be combined in various ways (?)
+        throw::catch>>looseStart,
+        >>beeQueue (
+          kick::miss,
+          tackle::fumble
+        )
+      ),
+      ( # however, this syntax is NOT supported, both because a circuit's outputs should be fairly encapsulated, (sort of like a function's multiple callers/one return value), and because I find this very difficult to read at a glance and can't think of a better syntax
+        beeQueue>>throw,
+        arcFronter>>kick
+      ) ::catch>>receiver,
+      ...
+    },
   },
-},
-anotherUserDefinedCircuit: { ... },
-...
-},
-wires: {
-  # built-in wires, (?)
-  wires>>between::builtIn>>circuits,
-  and>>or::userDefined>>circuits,
+  anotherUserDefinedCircuit: { ... },
   ...
+  wires: {
+    # predefined core wires, (?)
+    wires>>between::builtIn>>circuits,
+    and>>or::userDefined>>circuits,
+    ...
+  }
 }
-#   }
 # }
 ```
 
@@ -195,7 +220,7 @@ wires: {
     if: op("choose")
   },
   wires: {
-    this :> if (
+    this >> if (
       condition::0,
       ifTrue::1,
       ifFalse::2
