@@ -203,17 +203,18 @@ const arrayify = (thing) => isIterable(thing) ? [...thing] : []
 
 myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value."
 const memoize = (func) => {
-  const multiCache = new MultiCache()
-  return (...params) => multiCache.cache(params, func)
+  const multiCache = new MultiCache(func)
+  return (...params) => multiCache.cache(params)
 }
 const MultiCache = class {
-  constructor () {
+  constructor (func) {
+    this.func = func
     this.nestedCache = new Map()
     this.simpleCache = new Map()
     this.leafKey = Symbol()
   }
 
-  cache (params, wrappedFunc) {
+  cache (params) {
     const getOrSet = (map, key, func) => {
       if (!map.has(key)) {
         map.set(key, func(...params))
@@ -221,14 +222,14 @@ const MultiCache = class {
       return map.get(key)
     }
     if (params.length <= 1) {
-      return getOrSet(this.simpleCache, params?.[0], wrappedFunc)
+      return getOrSet(this.simpleCache, params?.[0], this.func)
     }
     else {
       let innerCache = this.nestedCache
       for (const key of params) {
         innerCache = getOrSet(innerCache, key, () => new Map())
       }
-      return getOrSet(innerCache, this.leafKey, wrappedFunc)
+      return getOrSet(innerCache, this.leafKey, this.func)
     }
   }
 }
