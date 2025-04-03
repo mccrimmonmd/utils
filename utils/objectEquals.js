@@ -1,4 +1,4 @@
-const { isIterable } = require('./general')
+const { isIterable, iterEquals } = require('./general')
 
 module.exports = (
   objA,
@@ -6,7 +6,7 @@ module.exports = (
   {
     compareFuncsWith = false,
     compareBigIntToNumber = false,
-    maxDepth = null,
+    maxDepth = Infinity,
   } = {}
 ) => {
   if (objA === objB) {
@@ -43,18 +43,17 @@ module.exports = (
   }
   if (typeOfA === 'object') {
     if ( objA === null
-      || (maxDepth !== null && maxDepth <= 0)
+      || maxDepth <= 0
       || isIterable(objA) !== isIterable(objB)
     ) {
       return false
     }
-    let aKeys = Object.keys(objA)
-    let bKeys = Object.keys(objB)
-    if (aKeys.length !== bKeys.length) {
-      return false
-    }
     
-    if (maxDepth === null) {
+    if (isIterable(objA)) {
+      return iterEquals(objA, objB, false) // move down, make recursive
+    }
+   
+    if (maxDepth === Infinity) {
       // circular reference tracking
       let wasComparedTo = Symbol.for('circularRefKey')
       let aComps = objA[wasComparedTo] ?? []
@@ -73,7 +72,11 @@ module.exports = (
       }
     }
     
-    // TODO: test for iterability (otherwise gives false positive on Maps, Sets, etc.)
+    let aKeys = Object.keys(objA)
+    let bKeys = Object.keys(objB)
+    if (aKeys.length !== bKeys.length) {
+      return false
+    }
     aKeys.sort()
     bKeys.sort()
     return Object.entries(aKeys).every(([i, aKey]) => {
@@ -86,7 +89,7 @@ module.exports = (
         {
           compareFuncsWith,
           compareBigIntToNumber,
-          maxDepth: maxDepth && maxDepth - 1,
+          maxDepth: maxDepth - 1,
         }
       )
       // TODO: test on circularly-nested objects
