@@ -203,19 +203,19 @@ myself.arrayify = "Converts iterables into arrays; non-iterables result in an em
 const arrayify = (thing) => isIterable(thing) ? [...thing] : []
 
 myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value."
+// TODO: doesn't handle recursion -- how to fix?
 const memoize = (func) => {
-  const multiCache = new MultiCache(func)
-  return (...params) => multiCache.cache(params)
+  const multiCache = new MultiCache()
+  return (...params) => multiCache.cache(params, func)
 }
 const MultiCache = class {
-  constructor (func) {
-    this.func = func
+  constructor () {
     this.nestedCache = new Map()
     this.simpleCache = new Map()
     this.leafKey = Symbol()
   }
 
-  cache (params) {
+  cache (params, wrappedFunc) {
     const getOrSet = (map, key, func) => {
       if (!map.has(key)) {
         map.set(key, func(...params))
@@ -223,14 +223,14 @@ const MultiCache = class {
       return map.get(key)
     }
     if (params.length <= 1) {
-      return getOrSet(this.simpleCache, params?.[0], this.func)
+      return getOrSet(this.simpleCache, params?.[0], wrappedFunc)
     }
     else {
       let innerCache = this.nestedCache
       for (const key of params) {
         innerCache = getOrSet(innerCache, key, () => new Map())
       }
-      return getOrSet(innerCache, this.leafKey, this.func)
+      return getOrSet(innerCache, this.leafKey, wrappedFunc)
     }
   }
 }
