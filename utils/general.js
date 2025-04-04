@@ -77,24 +77,25 @@ const op = (opType) => {
 const binOp = (opType) => {
   switch (opType) {
     case '+':
-      // return (...params) => params.reduce(sum, 0)
-      return (a, b) => a + b
+      return (...params) => params.reduce(sum, 0)
+      // return (a, b) => a + b
     case '-':
-      // if (params.length > 1) params[0] = -params[0]
-      // for (const i of Object.keys(params)) params[i] = -params[i]
-      // return params.reduce(sum, 0)
-      return (a, b) => a - b
+      return (...params) => {
+        if (params.length === 1) return -params[0]
+        for (const i of Object.keys(params.slice(1))) params[i] = -params[i]
+        return params.reduce(sum, 0)
+      }
+      // return (a, b) => a - b
     case '*':
-      // return params.reduce(product, 1)
-      return (a, b) => a * b
+      return (...params) => params.reduce(product, 1)
+      // return (a, b) => a * b
     case '/':
-      // if (params.length > 1) {
-      //   if (params[0] === 0) return 0
-      //   params[0] = 1 / params[0]
-      // }
-      // for (const i of Object.keys(params)) params[i] = 1 / params[i]
-      // return params.reduce(product, 1)
-      return (a, b) => a / b
+      return (...params) => {
+        if (params.length === 1) return 1 / params[0]
+        for (const i of Object.keys(params.slice(1))) params[i] = 1 / params[i]
+        return params.reduce(product, 1)
+      }
+      // return (a, b) => a / b
     case '**':
       return (a, b) => a ** b
     case 'or':
