@@ -1,5 +1,9 @@
 # Flow - A Visual Programming Language
 
+## TODO
+
+- Move this mess to its own repo and organize it
+
 ## First Thoughts
 
 - Only one fundamental data type: byte
@@ -20,13 +24,13 @@
     - There could be multiple 'defaults', with later ones taking priority
 - Circuit literals:
   - List of 'addresses', with arrows indicating direction (I vs. O)? (Addresses = variable names; some internal, some external.) Initialize addresses at top of circuit; each one references a 'template' that gets copied. (Create your own templates...how?)
+- [Block Protocol?](https://blockprotocol.org/)
 
 ## Formal Grammar
 
 Grammar below is for JSON-compliant 'internal' syntax, rarely used directly
 
-Compiles ('assembles') to/from intermediate representation that preserves the
-structure, but loosens the syntax requirements for readability and convenience
+Compiles ('assembles') to/from intermediate representation that preserves the structure, but loosens the syntax requirements for readability and convenience
 
 ```text
 program -> '{ "core":' circuitLiteral [ ',' circuitList ] '}'
@@ -61,7 +65,7 @@ null -> 'null' | '{}'
 
 ## Syntax
 
-Comment character is '#', multiline comments with '###...###' ('//' is an empty regex literal)
+Comment character is `#`, multiline comments with `###...###` (`//` is an empty regex literal)
 
 ### TODO
 
@@ -76,24 +80,29 @@ Comment character is '#', multiline comments with '###...###' ('//' is an empty 
 - only one wire per inpoint rule?
   - Pros: makes syntax easier (e.g. no many-to-one shorthand), eliminates complexity of automatic defaults, easy to tell computationally when it's being violated
   - Cons: difficult to tell visually when it's being violated, increases complexity when defaults are needed (i.e. dedicated core circuit with unique evaluation rules)
+- variable number of inpoints
 
 ### Example
 
 ```text
-# outermost circuit (a.k.a. "program") is partly implicit
+# all .flw files are implicitly circuit literals
 # {
-spam:, # imported library of templates, referenced as spam.TemplateName
-ham: `./some/directory/Ham.flw`, # specify filepath (defaults to ./)
-bacon: beans, # import './beans.flw' as 'bacon'
-# core:
-{ # programs that don't have this 'bare' circuit (implicitly 'core') are libraries
-  eggs:, # libraries can be imported inside circuits, too, and are referenced accordingly (e.g. core.eggs.TemplateName)
-  # predefined core circuits,
-  CircuitAddress: { # TemplateName?
+spam:, # 'libraries' are just circuits, but the wires (if any) are ignored
+ham: `./some/directory/ham.flw`, # load circuit from file (defaults to `./` a.k.a. ``)
+bacon: `beans`, # load './beans.flw' as 'bacon'
+maps: { ... }, # libraries can be inlined...
+snaeb: spam.deeply.nested.library, # and aliased
+# implicit (predefined) global circuits,
+core: { # circuits with a 'core' chip are called 'programs' and can be executed (circuits without don't have an 'entry point' and are either templates, libraries, or both)
+# P.S. core is the only library that can be used without being declared, since a circuit can't be toplevel without it
+  # global circuits and libraries can be referenced 'bare' (spam) or with a leading period (.spam)
+  eggs:, # imports can be nested, and are referenced accordingly (e.g. core.eggs.TemplateName)
+  # implicit core circuits (mostly I/O),
+  TemplateName: {
     fullSyntax: {
       ref: templateOrAddressOrLiteral,
       pos: [x, y, z], # all default to 0, but must be in this order
-      vis: <???>, # visual representation, defaults to (string literal? invisible?)
+      vis: <???>, # visual representation, defaults to (string literal? (HTML?) invisible?)
       otherFields: ?,
     },
     shorthandSyntax: [ref, x, y, z, ...],
@@ -109,124 +118,200 @@ bacon: beans, # import './beans.flw' as 'bacon'
     # perhaps there could also be a shorthand that means "whatever input such-and-such circuit got the last time it ran, give so-and-so circuit that same input as defaults"?
     # ------------------------------------------------------------- #
     CircuitLiteral: {
-      chips: { ... },
-      wires: { ... },
+      ...,    # chips
+      [ ... ] # wires
     },
     ...
-    wires: {
+    [
       source>>outputName::inputName>>destination, # all wires follow this general form
-      source >> outputName :: inputName >> destination , # optional WS
+      source >> outputName : : inputName >> destination , # optional WS
       source >> ouputName::inputName >> destination, # recommended style ("separated circuits, connected endpoints")
-      circuit ::inpoint >> dest, # circuit as output
-      circuit >>::>> dest, # implicit endpoints
-      >> outpoint::inpoint >>, # implicit 'this'
+      circuit :inpoint >> dest, # circuit as output (note missing : for 'empty' outpoint)
+      source >> :inpoint >> dest, # a circuit with only one endpoint can also (optionally) leave it empty
+      circuit :>> dest # putting them together
+      source :> dest, # when wiring two singletons together -- can also be written '>>::>>' (see 'when endpoints share a name' below), but *not* '>> >> (that's just gross)'
+      >> outpoint::inpoint >>, # implicit 'this' (?)
+      enter >> outpoint::inpoint >> exit # alternative to 'this' (may be necessary, with wire chaining?)
+      source >>:endpoint:>> dest, # when endpoints share a name (not sure about style yet)
+      source >> crummyName = betterName: ( ... ), # alias an endpoint
+      source >> =betterName: ( ... ) # alias a singleton endpoint
+      ( ... ) :betterName = otherCrummyName >> dest # de-alias
+      ( ... ) :betterName= >> dest # singleton de-alias
+      source >> outpoint = coolName: ( coolName::nameCool ) :nameCool = inpoint >> dest # putting them together
       :inpoint >> recursiveCircuit >> outpoint:, # recursive shorthand
       :>> simpleRecursion >>:, # shorterhand
 
       # comparing alternative syntaxii: ----------------------------- #
-      src.out::in.dst,   # % easy to type, intuitive to experienced programmers, but the shorthands are difficult to read at a glance; might be better for disambiguating ancrefs
+      src >> out==in >> dst, # ! seems less readable than ::, but maybe that's just because I'm used to it? (src >>==>> dst, >> out==in >>, =>> crt >>=, =in >> crt >> out=)
+      src => out::in => dst, # * not sure why I'm resisting the obvious. Just to be different? Tricky to type, but not for *me*, and it clearly hasn't hurt other languages. (src =>::=> dst, => out::in =>, :=> crt =>:, :in => crt =>:, :=> crt => out:)
+
+      src >> out:=:in >> dst, # ! more characters, but looks cooler
+      src >> out<=>in >> dst, # % eh
+
+      src:>out::in:>dst, # % somewhat less easy to type, a bit less readable, but looks 20% cooler (in:>crt:>, :>crt:>out, :>crt:>, src:>:::>dst, :>out::in:>dst)
+      src.out::in.dst,   # X easy to type, intuitive to experienced programmers, but the shorthands are difficult to read at a glance; might be better for disambiguating ancrefs
+      src->out::in->dst, # X tricky to type
+      src..out::in..dst, # X somewhat better than just one, but still ugly
+      src>:out::in>:dst, # X not sure why I think circuit:>endpoint is better than circuit>:endpoint, but I do (maybe 'cause it looks more like an arrow?)
+      src.>out::in.>dst, # X about as easy as :>, looks very weird to someone used to traditional operators, possible ambiguity with comparison
       src>out::in>dst,   # X ambiguity with comparison
-      src->out::in->dst, # % tricky to type
-      src..out::in..dst, # % somewhat better than just one, but still ugly
-      src>>out::in>>dst, # * very easy to type, ambiguous with bit shift operator (but that will be moot if there are none), much more readable now that I've modified the recursive shorthand (>>::>>, >>out::>>dst, src>>::>>dst, >>out::in>>, in>>crt>>out, in>>crt>>, >>crt>>)
-      src:>out::in:>dst, # ! somewhat less easy to type, a bit less readable, but looks 20% cooler (in:>crt:>, :>crt:>out, :>crt:>, src:>:::>dst, :>out::in:>dst)
-      src>:out::in>:dst, # % not sure why I think circuit:>endpoint is better than circuit>:endpoint, but I do (maybe 'cause it looks more like an arrow?)
-      src=>out::in=>dst, # * speaking of arrows, also not sure why I'm resisting the obvious. Just to be different? Tricky to type, but not for *me*, and it clearly hasn't hurt other languages.
-      # src=>::=>dst, =>out::in=>, =>crt=>, in=>crt=>, =>crt=>out
-      src.>out::in.>dst, # % about as easy as :>, looks very weird to someone used to traditional operators, possible ambiguity with comparison
       # ------------------------------------------------------------- #
 
-      all>>wires::useInternal>>addresses, # circuits are only in control of wires inside themselves, not to other circuits
+      all >> wires::useInternal >> addresses, # circuits are only in control of wires inside themselves, not to other circuits
       # conversely, no circuit can change another's wires (i.e. all wires are private)
-      42::number>>giveMeLiterals, # "primitive" literals are circuits (all singletons, theoretically) that output themselves and have no inupts...
-      { chips: { ... }, wires: { ... } } :: anonymousCircuit>>giveMeLiterals # although non-primitives can also output themselves!
-      "Here is a string literal."::string>>giveMeLiterals,
-      """Here is a "raw" string literal.
+
+      42 :number >> giveMeLiterals, # "primitive" literals are circuits (all singletons, theoretically) that output themselves and have no inupts...
+      { chip: { ... }, ..., [ wire, ... ] } :anonymousCircuit >> giveMeLiterals # although non-primitives can also output themselves!
+      "Here's a string literal." :string >> giveMeLiterals,
+      'You can also "write" strings like this.' :otherString >> giveMeLiterals,
+      """Here's a "raw" string literal.
       It can be multiline,
-      and backslashes (i.e. escape characters)
-      are treated literally."""::string>>giveMeLiterals,
-      /here is a regular expression/::regex>>giveMeLiterals,
-      `this/is/a/filePath.txt`::file>>giveMeLiterals,
-      true::isBoolean>>giveMeLiterals,
-      null::nuthinHere>>giveMeLiterals, # null (also written '{}') is a primitive representing the empty circuit: it has no endpoints, so  it can only output itself
+      and backslashes (\, \\, \n, etc.)
+      are treated literally.""" :rawString >> giveMeLiterals,
+      /here is a regular expression/ :regex >> giveMeLiterals,
+      `this/is/a/file.literal` :file >> giveMeLiterals,
+      true :isABoolean >> giveMeLiterals,
+      null :meansNuthinHere >> giveMeLiterals, # null (also written '{}') is a primitive representing the empty circuit; it has no endpoints, so it can only output itself
       # (null is the default for all unused endpoints, so its only use in wires is for overriding another source/destination)
-      giveMeLiterals>>ignored::{}, # normally, using a circuit instead of an endpoint as a destination is an error, but null is an exception (it ignores all input)
-      this::anotherCircuit>>giveMeLiterals # the special literal 'this' is used to send the circuit itself to an endpoint...
-      this>>outpointName::inpointName>>this, # as well as to define (and reference) the circuit's own endpoints
-      >>ownInpointName::ownOutpointName>>, # 'this' can be omitted...
-      singleOutputCircuit>>::>>singleInputCircuit, # and so can the endpoints of circuits with only one input/output...
-      wholeEntireCircuit::[endpoint>>?]maybeCircuitMaybeEndpoint[>>circuit?], # but the >> separator is not optional (as a source, leaving it out takes the entire circuit as input; as a destination, it could be ambiguous)
-      this>>isNotRecursion::itsJustIdentity>>this, # there is no way for circuits to recurse on themselves directly (that would mean defining wires outside the circuit)
-      recursiveCircuit>>output::input>>recursiveCircuit, # recursion of a child circuit is allowed, of course...
-      :input>>recursiveCircuit>>output:, # and even has its own shorthand syntax...
-      :input>>simpleRecursiveCircuit>>:, # which can be even shorter if the circuit only has one output...
-      :>>otherSimpleRecursion>>output:, # or input...
-      :>>simplestRecursiveCircuit>>:, # or both (though there wouldn't be much point to this, unless the circuit had side effects or the inpoint had defaults)
-      sender>>receiver ( # shorthand for defining multiple wires between the same two components...
+      giveMeLiterals >> ignored: {}, # normally, using a circuit instead of an endpoint as a destination is an error, but null is one exception (it ignores all input) (plexers are the other exception)
+
+      <>Here is an HTML literal!</> :html >> giveMeLiterals, # any non-empty tag (e.g. <p>...</p>, <br/>) also works
+      # (when written to a file, html will be automatically wrapped with the Emmet '!' expansion, unless it was explicitly created as <html> ... </html>)
+      <() {
+        const literal = require('./javaScript')
+        return literal(42)
+      }> :js >> giveMeLiterals, # javascript can also be inlined, and is equivalent to a circuit literal with one outpoint named 'return'
+      # <() { return 42 }> >> :theAnswer >> inquiringMinds
+      <(param1, param2) { ... }> :jsWithParams >> giveMeLiterals, # js literals are implicitly wrapped in an IIFE and can accept parameters as inpoints with the same names
+
+      # The special form ( a, b, c ) -- a.k.a. 'plexer' -- is syntactic sugar that makes it easier to wire up chips (including js literals) with multiple endpoints, like so:
+      ( 42, 'helf' ) >> <(param1, param2) { ... }>,
+      # or: [] = plexer, () = mini-circuit? (as in, shorthand for special case of small and/or one-off circuits) (and/or maybe 'namespace'?)
+
+      ### list of chips...
+      consoleAlias: core.console,
+      somePlexer: (),
+      ...
+      [
+        42 :0 >> somePlexer, ' is the answer!' :1 >> somePlexer, somePlexer >> :0: >> consoleAlias, somePlexer >> :1: >> consoleAlias
+      ] # non-sugared plexer
+      ###
+      ( 42 :first, ' is the answer!' :second ) >> weirdArray :> core.console # semi-sugared (necessary for named, rather than anonymous or numbered, endpoints)
+      ( 42, ' is the answer!' ) >> core.console # fully-sugared
+
+      'Hello, world!' :>> core.console, # good ol' hello world
+      core.console >> =name: ('Hello, ', name:, '!') >> core.console, # wires can be chained, chains are separated by commas
+
+      <[
+        body {
+          background-color: lightblue;
+        }
+      ]> :css >> giveMeLiterals, # css can also be inlined...
+      <{
+        js...
+      }
+      [
+        css...
+      ]>
+        html...
+      </> :markedUpHtml >> giveMeLiterals, # and both can be combined with html
+      # (when marked-up html is written to a file, the js and css will be embedded with <script></script> and <style></style> tags, respectively)
+
+      this :thisVeryCircuit >> giveMeLiterals # the special literal 'this' is used to send the circuit itself to an endpoint...
+      this >> outpointName::inpointName >> this, # as well as to define (and reference) the circuit's own endpoints
+      >> ownInpointName::ownOutpointName >>, # 'this' can be omitted...
+      singleOutputCircuit >>::>> singleInputCircuit, # and so can the endpoints of circuits with only one input/output (also written ':>')...
+      wholeEntireCircuit ::[endpoint? >> ]maybeCircuitMaybeEndpoint[ >> circuit?], # but the >> separator is not optional (as a source, leaving it out makes the entire circuit the input; as a destination, it could be ambiguous)
+      this >> isNotRecursion::itsJustIdentity >> this, # there is no way for circuits to recurse on themselves directly (that would mean defining wires outside the circuit)
+      recursiveCircuit >> output::input >> recursiveCircuit, # recursion of a child circuit is allowed, of course...
+      :input >> recursiveCircuit >> output:, # and even has its own shorthand syntax...
+      :input >> simpleRecursiveCircuit >>:, # which can be even shorter if the circuit only has one output...
+      :>> otherSimpleRecursion >> output:, # or input...
+      :>> simplestRecursiveCircuit >>:, # or both (though there wouldn't be much point to this, unless the circuit had side effects or the inpoint had defaults)
+      sender >> ( # plexers can help with defining multiple wires from the same chip...
+        throw::catch >> beeQueue,
+        kick::miss >> looseStart,
+        tackle::fumble >> arcFronter
+      )
+      sender >> ( # and to the same chip...
         throw::catch,
         kick::miss,
         tackle::fumble
+      ) >> receiver,
+      sender >> receiver ( # shorthand for above...
+        throw::catch,
+        ...
       ),
-      sender>>receiver ( # even shorter when the endpoints share a name...
-        pass,
-        hike,
-        handoff
+      sender >> receiver ( # even shorter when the endpoints share a name...
+        :pass:,
+        :hike:,
+        :handoff:
       ),
-      sender>>receiver ( # sending the same output to multiple inputs...
-        throw: (:catch, :miss, :fumble)
-      ),
-      sender>> ( # or circuits...
+      sender >> receiver ( # and of course they can be nested...
         throw: (
-          :catch>>beeQueue,
-          :miss>>looseStart,
-          :fumble>>arcFronter
+          :catch,
+          :miss,
+          :fumble
         )
       ),
-      sender>>receiver ( # or vice versa (only if defaults are implicit)
-        (throw:, kick:, tackle:) :touchdown
+      sender >> throw: ( # in many ways...
+        :catch >> beeQueue,
+        :miss >> looseStart,
+        :fumble >> arcFronter
       ),
-      sender>> ( # can be combined in various ways (?)
-        throw::catch>>looseStart,
-        >>beeQueue (
+      sender >> ( # who even knows what's possible??
+        throw::catch >> looseStart,
+        (
           kick::miss,
-          tackle::fumble
+          :pass:
+        ) >> beeQueue,
+        tackle: (
+          (
+            :fumble,
+            :handoff:
+          ) >> arcFronter,
+          :catch >> narrowSender
         )
       ),
-      ( # however, this syntax is NOT supported, both because a circuit's outputs should be fairly encapsulated, (sort of like a function's multiple callers/one return value), and because I find this very difficult to read at a glance and can't think of a better syntax
-        beeQueue>>throw,
-        arcFronter>>kick
-      ) ::catch>>receiver,
       ...
-    },
+    ],
   },
   anotherUserDefinedCircuit: { ... },
   ...
-  wires: {
-    # predefined core wires, (?)
-    wires>>between::builtIn>>circuits,
-    and>>or::userDefined>>circuits,
+  [
+    # implicit core wires, (?)
+    wires >> between::builtIn >> circuits,
+    and >> or::userDefined >> circuits,
     ...
-  }
-}
+  ]
+},
+[
+  # implicit global wires, (?)
+  ...
+]
 # }
+```
+
+## Use
+
+```text
+# ... #
 ```
 
 ## Implementation
 
 ```javascript
 {
-"choose": {
-  chips: {
-    if: op("choose")
-  },
-  wires: {
-    this >> if (
+Choose: {
+  if: <() { return op("choose") }>,
+  [
+    => if (
       condition::0,
       ifTrue::1,
-      ifFalse::2
+      ifFalse::2,
     ),
-    if >> return::result >> this
-  }
+    if =>::result =>
+  ]
 }
 }
 ```
