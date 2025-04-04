@@ -450,7 +450,6 @@ module.exports = {
   arrayOf,
   stringOf,
   swap,
-  last,
   flattener,
   iterEquals,
   compareItersBy,
