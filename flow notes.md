@@ -186,6 +186,24 @@ wires: {
 # }
 ```
 
+## Usage
+
+```text
+# do I really need separate sections for chips and wires, or can they be differentiated syntactically?
+(this.?)name: ofCircuit, # chip
+circuitRef :name >> ofInpoint, # wire
+[
+  'Hello, world!' :>> core.console,
+  core.console >> ('Hello, ', ::, '!') >> core.console,
+  core.console >> userString: = name,
+  ('Hello, ', name:, '!') >> core.console
+  (5, 3) + := sum,
+  sum core.print,
+  (sum, 2) ** :> core.print,
+  ('hel', 'f') munge := (h, elf)
+]
+```
+
 ## Implementation
 
 ```javascript
