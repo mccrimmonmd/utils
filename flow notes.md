@@ -186,21 +186,53 @@ wires: {
 # }
 ```
 
-## Usage
+## Use
 
 ```text
 # do I really need separate sections for chips and wires, or can they be differentiated syntactically?
+# maybe the chips/imports could just be a big multiplexer? so a circuit would be { ( literalOrAncRefOrSomething
+      => localName,
+    ...
+) 
+some >> wires: >> iGuess, ... }
+
+Chip :variable:,
+{ ### very
+  large
+  chip ###
+} :variable:,
+
+{::}, # identity (anonymous)
+{:endpoint:}, # identity with named endpoint(s)
+||, # also identity
+|name|, # named identity chip
+
+# assignment/aliasing/naming (only chips can have names, not wires)
+variable<=>chip,
+variable:=:chip,
+variable:=chip,
+variable=>chip,
+variable=:chip,
+variable=chip,
+chip |variable|,
+chip >> output: |variable|
+
 (this.?)name: ofCircuit, # chip
 circuitRef :name >> ofInpoint, # wire
+literal singleton, # wire
+literal singleton anotherSingleton, # wire chain
+(plex, er) indexedCircuit # 'indexed' circuits have a variable number of endpoints that are numbered, not named (plexers themselves are indexed circuits)
+# technically it's the chip's endpoints that are indexed, not the chip itself, so there are three kinds: indexed-in, indexed-out, and bi-indexed
 [
-  'Hello, world!' :>> core.console,
-  core.console >> ('Hello, ', ::, '!') >> core.console,
-  core.console >> userString: = name,
-  ('Hello, ', name:, '!') >> core.console
-  (5, 3) + := sum,
+  'Hello, world!' core.print,
+  core.print :> |name|,
+  ('Hello, ', name:, '!') core.print,
+  core.console >> userString: |name|,
+  ('Hello, ', name:, '!') >> core.console,
+  (5, 3) + :> |sum|,
   sum core.print,
   (sum, 2) ** :> core.print,
-  ('hel', 'f') munge := (h, elf)
+  ('hel', 'f') munge |h, elf|
 ]
 ```
 
