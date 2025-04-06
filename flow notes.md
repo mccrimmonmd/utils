@@ -103,6 +103,32 @@ CircuitAddress: { # TemplateName?
     source >> ouputName::inputName >> destination, # recommended style (?)
 
     # comparing alternative syntaxii: ----------------------------- #
+    src out::in dst,   # ? do I even need the circuit separators? Maybe only to resolve ambiguity? (src out: dst, src :in dst, src >>:in dst, src >> dst, )
+    src:out in:dst, # src out: dst, src :in dst, src::dst, chp >> dst, chp >> :in dst, :>in rcr out:>,
+    ###
+    src out::in dst;
+    src@out::in@dst;
+    src :in dst;
+    chp@ :in dst;
+    src ::in dst;
+    src :: dst;
+    this (a:, b:) + (::, 2) ** ('The squared sum is ', ::, ', dawg.') :words this;
+    this isButtered:: not (::condition, n@@) incWhile (@@result, result::, this butterAmount::) * (|quantity|, ::howMuchButter this);
+    bread isToasted:: choose (isTrue::startButtering bread, quantity@ :butter bread, bread@ :toast this, isFalse::startToasting toaster, bread@ :: toaster);
+    
+    src:out >> in:dst, # disambiguated
+    src:out in:dst, # equivalent^
+    chp >> in:dst, # chip as signal 
+    chp >> dst, # anonymous inpoint
+    src:out dst, # non-meta version
+    src in:dst, # anonymous outpoint
+    src::dst, # also `src: :dst`, `src: >> :dst`
+    in:>> rcr >>:out,
+    this (:a, :b) + (::, 2) ** ('The squared sum is ', ::, ', dawg.') words:this,
+    this:isButtered not (condition:, n:>) incWhile (:>result, :result, this:butterAmount) * (|quantity|, howMuchButter:this);
+    bread:isToasted choose (:isTrue startButtering:bread, quantity butter:bread, bread toast:this, :isFalse startToasting:toaster, bread:toaster);
+    ###
+    
     src.out::in.dst,   # % easy to type, intuitive to experienced programmers, but the shorthands are difficult to read at a glance; might be better for disambiguating ancrefs
     src>out::in>dst,   # X ambiguity with comparison
     src->out::in->dst, # % tricky to type
@@ -214,8 +240,10 @@ variable:=chip,
 variable=>chip,
 variable=:chip,
 variable=chip,
-chip |variable|,
-chip >> output: |variable|
+chip >> |variable|,
+chip:output |variable|;
+singleton |variable|;
+src:out |name| in:dst;
 
 (this.?)name: ofCircuit, # chip
 circuitRef :name >> ofInpoint, # wire
@@ -225,10 +253,10 @@ literal singleton anotherSingleton, # wire chain
 # technically it's the chip's endpoints that are indexed, not the chip itself, so there are three kinds: indexed-in, indexed-out, and bi-indexed
 [
   'Hello, world!' core.print,
-  core.print :> |name|,
-  ('Hello, ', name:, '!') core.print,
+  core.console |name|,
+  ('Hello, ', :name, '!') core.print,
   core.console >> userString: |name|,
-  ('Hello, ', name:, '!') >> core.console,
+  ('Hello, ', name:, '!') :>> core.console,
   (5, 3) + :> |sum|,
   sum core.print,
   (sum, 2) ** :> core.print,
