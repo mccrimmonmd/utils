@@ -103,31 +103,11 @@ CircuitAddress: { # TemplateName?
     source >> ouputName::inputName >> destination, # recommended style (?)
 
     # comparing alternative syntaxii: ----------------------------- #
+    src:out => in:dst;
+    src:out -> in:dst;
+    src:out >> in:dst;
     src out::in dst,   # ? do I even need the circuit separators? Maybe only to resolve ambiguity? (src out: dst, src :in dst, src >>:in dst, src >> dst, )
     src:out in:dst, # src out: dst, src :in dst, src::dst, chp >> dst, chp >> :in dst, :>in rcr out:>,
-    ###
-    src out::in dst;
-    src@out::in@dst;
-    src :in dst;
-    chp@ :in dst;
-    src ::in dst;
-    src :: dst;
-    this (a:, b:) + (::, 2) ** ('The squared sum is ', ::, ', dawg.') :words this;
-    this isButtered:: not (::condition, n@@) incWhile (@@result, result::, this butterAmount::) * (|quantity|, ::howMuchButter this);
-    bread isToasted:: choose (isTrue::startButtering bread, quantity@ :butter bread, bread@ :toast this, isFalse::startToasting toaster, bread@ :: toaster);
-    
-    src:out >> in:dst, # disambiguated
-    src:out in:dst, # equivalent^
-    chp >> in:dst, # chip as signal 
-    chp >> dst, # anonymous inpoint
-    src:out dst, # non-meta version
-    src in:dst, # anonymous outpoint
-    src::dst, # also `src: :dst`, `src: >> :dst`
-    in:>> rcr >>:out,
-    this (:a, :b) + (::, 2) ** ('The squared sum is ', ::, ', dawg.') words:this,
-    this:isButtered not (condition:, n:>) incWhile (:>result, :result, this:butterAmount) * (|quantity|, howMuchButter:this);
-    bread:isToasted choose (:isTrue startButtering:bread, quantity butter:bread, bread toast:this, :isFalse startToasting:toaster, bread:toaster);
-    ###
     
     src.out::in.dst,   # % easy to type, intuitive to experienced programmers, but the shorthands are difficult to read at a glance; might be better for disambiguating ancrefs
     src>out::in>dst,   # X ambiguity with comparison
@@ -144,7 +124,7 @@ CircuitAddress: { # TemplateName?
     all>>wires::useInternal>>addresses, # circuits are only in control of wires inside themselves, not to other circuits
     # conversely, no circuit can change another's wires (i.e. all wires are private)
     42::number>>giveMeLiterals, # "primitive" literals are circuits (all singletons, theoretically) that output themselves and have no inupts...
-    { chips: { ... }, wires: { ... } } :: anonymousCircuit>>giveMeLiterals # although non-primitives can also output themselves!
+    { ... } :: anonymousCircuit>>giveMeLiterals # although non-primitives can also output themselves!
     "Here is a string literal."::string>>giveMeLiterals,
     /here is a regular expression/::regex>>giveMeLiterals,
     true::isBoolean>>giveMeLiterals,
@@ -222,6 +202,10 @@ wires: {
 ) 
 some >> wires: >> iGuess, ... }
 
+Blueprint = { ... };
+|label| { ... };
+BlueprintThatIs = |labeled| { ... };
+
 Chip :variable:,
 { ### very
   large
@@ -262,6 +246,49 @@ literal singleton anotherSingleton, # wire chain
   (sum, 2) ** :> core.print,
   ('hel', 'f') munge |h, elf|
 ]
+
+src out::in dst;
+src@out::in@dst;
+chp@ :in dst;
+src ::in dst;
+src :: dst;
+this (a:, b:) + (::, 2) ** ('The squared sum is ', ::, ', dawg.') :words this;
+this isButtered:: not (::condition, n@@) incWhile (@@result, result::, this butterAmount::) * (|quantity|, ::howMuchButter this);
+bread isToasted:: choose (
+  isTrue::startButtering bread, quantity@ :butter bread, bread@ :toast this,
+  isFalse::startToasting toaster, :bread@: toaster
+);
+
+
+|fib| {
+  this (:n, 1) < (switch:,
+    1 ifTrue:,
+    (
+      (this:n, 1) - fib,
+      (this:n, 2) - fib
+    ) + ifFalse:
+  ) choose >> this;
+};
+core.input:number fib print:core.output;
+
+src:out >> in:dst, # disambiguated
+src:out in:dst, # equivalent^
+chp@ in:dst, # chip as signal 
+chp@ :dst, # anonymous inpoint
+src:out :dst, # non-meta version
+src: in:dst, # anonymous outpoint
+src dst, # both (also `src::dst`, `src: >> :dst`)
+src:>endpoint:>dst; # shared name
+in-> :chp: ->out; # recursive circuit
+
+this: (a, b) + (>>, 2) ** ('The squared sum is ', >>, ', dawg.') words:this,
+this:isButtered :not: (>>condition, n->) :incWhile: (->n, result>>, this:butterAmount) * (|quantity|, howMuchButter:this);
+this:loaf :slicer:breadSlice |bread|; # TODO: disambiguate anonymous endpoints and in-chip-out shorthand
+bread:isToasted (>>switch, (
+  true butter:bread, @quantity butterAmount:bread, bread@
+) >>ifTrue, (
+  startToasting:toaster, bread@ breadSlice:toaster, null
+) >>ifFalse) :choose: butteredToast:this;
 ```
 
 ## Implementation
