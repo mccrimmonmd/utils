@@ -30,8 +30,7 @@
 
 Grammar below is for JSON-compliant 'internal' syntax, rarely used directly
 
-Compiles ('assembles') to/from intermediate representation that preserves the
-structure, but loosens the syntax requirements for readability and convenience
+Compiles ('assembles') to/from intermediate representation that preserves the structure, but loosens the syntax requirements for readability and convenience
 
 ```text
 program -> '{ "core":' circuitLiteral [ ',' circuitList ] '}'
@@ -66,7 +65,7 @@ null -> 'null' | '{}'
 
 ## Syntax
 
-Comment character is '#', multiline comments with '###...###' ('//' is an empty regex literal)
+Comment character is `#`, multiline comments with `###...###` (`//` is an empty regex literal)
 
 ### TODO
 
@@ -81,24 +80,29 @@ Comment character is '#', multiline comments with '###...###' ('//' is an empty 
 - only one wire per inpoint rule?
   - Pros: makes syntax easier (e.g. no many-to-one shorthand), eliminates complexity of automatic defaults, easy to tell computationally when it's being violated
   - Cons: difficult to tell visually when it's being violated, increases complexity when defaults are needed (i.e. dedicated core circuit with unique evaluation rules)
+- variable number of inpoints
 
 ### Example
 
 ```text
-# outermost circuit (a.k.a. "program") is partly implicit
+# all .flw files are implicitly circuit literals
 # {
-spam:, # imported library of templates, referenced as spam.TemplateName
-ham: `./some/directory/Ham.flw`, # specify filepath (defaults to ./)
-bacon: beans, # import './beans.flw' as 'bacon'
-# core:
-{ # programs that don't have this 'bare' circuit (implicitly 'core') are libraries
-  eggs:, # libraries can be imported inside circuits, too, and are referenced accordingly (e.g. core.eggs.TemplateName)
-  # predefined core circuits,
-  CircuitAddress: { # TemplateName?
+spam:, # 'libraries' are just circuits, but the wires (if any) are ignored
+ham: `./some/directory/ham.flw`, # load circuit from file (defaults to `./` a.k.a. ``)
+bacon: `beans`, # load './beans.flw' as 'bacon'
+maps: { ... }, # libraries can be inlined...
+snaeb: spam.deeply.nested.library, # and aliased
+# implicit (predefined) global circuits,
+core: { # circuits with a 'core' chip are called 'programs' and can be executed (circuits without don't have an 'entry point' and are either templates, libraries, or both)
+# P.S. core is the only library that can be used without being declared, since a circuit can't be toplevel without it
+  # global circuits and libraries can be referenced 'bare' (spam) or with a leading period (.spam)
+  eggs:, # imports can be nested, and are referenced accordingly (e.g. core.eggs.TemplateName)
+  # implicit core circuits (mostly I/O),
+  TemplateName: {
     fullSyntax: {
       ref: templateOrAddressOrLiteral,
       pos: [x, y, z], # all default to 0, but must be in this order
-      vis: <???>, # visual representation, defaults to (string literal? invisible?)
+      vis: <???>, # visual representation, defaults to (string literal? (HTML?) invisible?)
       otherFields: ?,
     },
     shorthandSyntax: [ref, x, y, z, ...],
@@ -214,6 +218,12 @@ bacon: beans, # import './beans.flw' as 'bacon'
   }
 }
 # }
+```
+
+## Use
+
+```text
+# ... #
 ```
 
 ## Implementation
