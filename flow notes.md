@@ -201,10 +201,6 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
           tackle::fumble
         )
       ),
-      ( # however, this syntax is NOT supported, both because a circuit's outputs should be fairly encapsulated, (sort of like a function's multiple callers/one return value), and because I find this very difficult to read at a glance and can't think of a better syntax
-        beeQueue>>throw,
-        arcFronter>>kick
-      ) ::catch>>receiver,
       ...
     },
   },
