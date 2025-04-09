@@ -175,6 +175,48 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
       # (null is the default for all unused endpoints, so its only use in wires is for overriding another source/destination)
       giveMeLiterals >> ignored: {}, # normally, using a circuit instead of an endpoint as a destination is an error, but null is one exception (it ignores all input) (plexers are the other exception)
 
+      <>Here is an HTML literal!</> :html >> giveMeLiterals, # any non-empty tag (e.g. <p>...</p>, <br/>) also works
+      # (when written to a file, html will be automatically wrapped with the Emmet '!' expansion, unless it was explicitly created as <html> ... </html>)
+      <() {
+        const literal = require('./javaScript')
+        return literal(42)
+      }> :js >> giveMeLiterals, # javascript can also be inlined, and is equivalent to a circuit literal with one outpoint named 'return'
+      # <() { return 42 }> >> :theAnswer >> inquiringMinds
+      <(param1, param2) { ... }> :jsWithParams >> giveMeLiterals, # js literals are implicitly wrapped in an IIFE and can accept parameters as inpoints with the same names
+
+      # The special form ( a, b, c ) -- a.k.a. 'plexer' -- is syntactic sugar that makes it easier to wire up chips (including js literals) with multiple endpoints, like so:
+      ( 42, 'helf' ) >> <(param1, param2) { ... }>,
+      # or: [] = plexer, () = mini-circuit? (as in, shorthand for special case of small and/or one-off circuits) (and/or maybe 'namespace'?)
+
+      ### list of chips...
+      consoleAlias: core.console,
+      somePlexer: (),
+      ...
+      [
+        42 :0 >> somePlexer, ' is the answer!' :1 >> somePlexer, somePlexer >> :0: >> consoleAlias, somePlexer >> :1: >> consoleAlias
+      ] # non-sugared plexer
+      ###
+      ( 42 :first, ' is the answer!' :second ) >> weirdArray :> core.console # semi-sugared (necessary for named, rather than anonymous or numbered, endpoints)
+      ( 42, ' is the answer!' ) >> core.console # fully-sugared
+
+      'Hello, world!' :>> core.console, # good ol' hello world
+      core.console >> =name: ('Hello, ', name:, '!') >> core.console, # wires can be chained, chains are separated by commas
+
+      <[
+        body {
+          background-color: lightblue;
+        }
+      ]> :css >> giveMeLiterals, # css can also be inlined...
+      <{
+        js...
+      }
+      [
+        css...
+      ]>
+        html...
+      </> :markedUpHtml >> giveMeLiterals, # and both can be combined with html
+      # (when marked-up html is written to a file, the js and css will be embedded with <script></script> and <style></style> tags, respectively)
+
       this :thisVeryCircuit >> giveMeLiterals # the special literal 'this' is used to send the circuit itself to an endpoint...
       this >> outpointName::inpointName >> this, # as well as to define (and reference) the circuit's own endpoints
       >> ownInpointName::ownOutpointName >>, # 'this' can be omitted...
