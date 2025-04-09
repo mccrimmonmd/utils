@@ -107,6 +107,7 @@ CircuitAddress: { # TemplateName?
     src:out -> in:dst;
     src:out >> in:dst;
     src out::in dst,   # ? do I even need the circuit separators? Maybe only to resolve ambiguity? (src out: dst, src :in dst, src >>:in dst, src >> dst, )
+    # src@out::in@dst; chp@ :in dst; src ::in dst; src :: dst;
     src:out in:dst, # src out: dst, src :in dst, src::dst, chp >> dst, chp >> :in dst, :>in rcr out:>,
     
     src.out::in.dst,   # % easy to type, intuitive to experienced programmers, but the shorthands are difficult to read at a glance; might be better for disambiguating ancrefs
@@ -206,14 +207,8 @@ Blueprint = { ... };
 |label| { ... };
 BlueprintThatIs = |labeled| { ... };
 
-Chip :variable:,
-{ ### very
-  large
-  chip ###
-} :variable:,
-
 {::}, # identity (anonymous)
-{:endpoint:}, # identity with named endpoint(s)
+{:endpoint:}, # identity with named endpoint(s) (why?)
 ||, # also identity
 |name|, # named identity chip
 
@@ -229,7 +224,7 @@ chip:output |variable|;
 singleton |variable|;
 src:out |name| in:dst;
 
-(this.?)name: ofCircuit, # chip
+|name| ofCircuit, # chip
 circuitRef :name >> ofInpoint, # wire
 literal singleton, # wire
 literal singleton anotherSingleton, # wire chain
@@ -247,11 +242,6 @@ literal singleton anotherSingleton, # wire chain
   ('hel', 'f') munge |h, elf|
 ]
 
-src out::in dst;
-src@out::in@dst;
-chp@ :in dst;
-src ::in dst;
-src :: dst;
 this (a:, b:) + (::, 2) ** ('The squared sum is ', ::, ', dawg.') :words this;
 this isButtered:: not (::condition, n@@) incWhile (@@result, result::, this butterAmount::) * (|quantity|, ::howMuchButter this);
 bread isToasted:: choose (
@@ -271,8 +261,12 @@ bread isToasted:: choose (
 };
 core.input:number fib print:core.output;
 
+src:>out in->chp:>out in->dst
+
+src:out in:dst
 src:out >> in:dst, # disambiguated
 src:out in:dst, # equivalent^
+src:out -> in:dst; # alternative
 chp@ in:dst, # chip as signal 
 chp@ :dst, # anonymous inpoint
 src:out :dst, # non-meta version
@@ -282,8 +276,8 @@ src:>endpoint:>dst; # shared name
 in-> :chp: ->out; # recursive circuit
 
 this: (a, b) + (>>, 2) ** ('The squared sum is ', >>, ', dawg.') words:this,
-this:isButtered :not: (>>condition, n->) :incWhile: (->n, result>>, this:butterAmount) * (|quantity|, howMuchButter:this);
-this:loaf :slicer:breadSlice |bread|; # TODO: disambiguate anonymous endpoints and in-chip-out shorthand
+this:isButtered not (>> condition, n->) incWhile (->n, result >>, this:butterAmount) * (|quantity|, howMuchButter:this);
+this:loaf bread:slicer:breadSlice |bread|; # TODO: disambiguate anonymous endpoints and in-chip-out shorthand
 bread:isToasted (>>switch, (
   true butter:bread, @quantity butterAmount:bread, bread@
 ) >>ifTrue, (
