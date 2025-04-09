@@ -19,7 +19,7 @@
   sub = restore --staged
   undo = revert HEAD
   undo-soft = revert --no-commit HEAD
-  undo-hard = reset --mixed HEAD~
+  undo-hard = reset HEAD~
   undo-range = revert --no-commit
   stashl = stash list
   stashs = stash show
