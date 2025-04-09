@@ -302,18 +302,16 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
 
 ```javascript
 {
-"choose": {
-  chips: {
-    if: op("choose")
-  },
-  wires: {
-    this >> if (
+Choose: {
+  if: <() { return op("choose") }>,
+  [
+    => if (
       condition::0,
       ifTrue::1,
-      ifFalse::2
+      ifFalse::2,
     ),
-    if >> return::result >> this
-  }
+    if =>::result =>
+  ]
 }
 }
 ```
