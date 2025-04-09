@@ -1,5 +1,9 @@
 # Flow - A Visual Programming Language
 
+## TODO
+
+- Move this mess to its own repo and organize it
+
 ## First Thoughts
 
 - Only one fundamental data type: byte
@@ -20,6 +24,7 @@
     - There could be multiple 'defaults', with later ones taking priority
 - Circuit literals:
   - List of 'addresses', with arrows indicating direction (I vs. O)? (Addresses = variable names; some internal, some external.) Initialize addresses at top of circuit; each one references a 'template' that gets copied. (Create your own templates...how?)
+- [Block Protocol?](https://blockprotocol.org/)
 
 ## Formal Grammar
 
