@@ -67,7 +67,7 @@ null -> 'null' | '{}'
 
 Comment character is `#`, multiline comments with `###...###` (`//` is an empty regex literal)
 
-### TODO
+### Syntax TODO
 
 - position
 - appearance
@@ -129,7 +129,7 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
       circuit :inpoint >> dest, # circuit as output (note missing : for 'empty' outpoint)
       source >> :inpoint >> dest, # a circuit with only one endpoint can also (optionally) leave it empty
       circuit :>> dest # putting them together
-      source :> dest, # when wiring two singletons together -- can also be written '>>::>>' (see 'when endpoints share a name' below), but *not* '>> >> (that's just gross)'
+      source :> dest, # when wiring two singletons together -- can also be written '>>::>>' (see 'when endpoints share a name' below), but *not* '>> >>' (that's just gross)
       >> outpoint::inpoint >>, # implicit 'this' (?)
       enter >> outpoint::inpoint >> exit # alternative to 'this' (may be necessary, with wire chaining?)
       source >>:endpoint:>> dest, # when endpoints share a name (not sure about style yet)
@@ -183,7 +183,7 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
       giveMeLiterals >> ignored: {}, # normally, using a circuit instead of an endpoint as a destination is an error, but null is one exception (it ignores all input) (plexers are the other exception)
 
       <>Here is an HTML literal!</> :html >> giveMeLiterals, # any non-empty tag (e.g. <p>...</p>, <br/>) also works
-      # (when written to a file, html will be automatically wrapped with the Emmet '!' expansion, unless it was explicitly created as <html> ... </html>)
+      <!>This HTML literal will be deployable on write.</!> :bangHtml >> giveMeLiterals, # HTML literals with the <!></!> tag will be implicitly wrapped with the Emmet '!' expansion
       <() {
         const literal = require('./javaScript')
         return literal(42)
@@ -222,7 +222,7 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
       ]>
         html...
       </> :markedUpHtml >> giveMeLiterals, # and both can be combined with html
-      # (when marked-up html is written to a file, the js and css will be embedded with <script></script> and <style></style> tags, respectively)
+      # (with marked-up html, the js and css are embedded with <script></script> and <style></style> tags, respectively)
 
       this :thisVeryCircuit >> giveMeLiterals # the special literal 'this' is used to send the circuit itself to an endpoint...
       this >> outpointName::inpointName >> this, # as well as to define (and reference) the circuit's own endpoints
@@ -303,15 +303,19 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
 
 ```text
 # do I really need separate sections for chips and wires, or can they be differentiated syntactically?
-# maybe the chips/imports could just be a big multiplexer? so a circuit would be { ( literalOrAncRefOrSomething
+### maybe the chips/imports could just be a big multiplexer? so a circuit would be:
+{ ( literalOrAncRefOrSomething
       => localName,
     ...
 ) 
 some >> wires: >> iGuess, ... }
+###
 
+# assignment/aliasing/labeling (only chips can have labels, not wires)
 Blueprint = { ... };
 |label| { ... };
-BlueprintThatIs = |labeled| { ... };
+BlueprintThat = |isLabeled| { ... };
+archive: [ Blueprints, andNested: [ Archives, ... ], ... ] # mmmmaybe?
 
 {::}, # identity (anonymous)
 {:endpoint:}, # identity with named endpoint(s) (why?)
