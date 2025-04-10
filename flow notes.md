@@ -359,7 +359,18 @@ bread isToasted:: choose (
 };
 core.input:number fib print:core.output;
 
-src:>out in->chp:>out in->dst
+# src:>out in->chp:>out in->dst
+src->out in:>chp->out in:>dst
+
+src->out => in:>mid->out => in:>dst
+src->out := in:>mid->out := in:>dst
+src->out, in:>mid->out, in:>dst
+
+@src in:>dst
+src->out, :>dst
+src dst # src->, :>dst
+src->endpoint:>dst
+,in:> chp ->out,
 
 src:out in:dst
 src:out >> in:dst, # disambiguated
