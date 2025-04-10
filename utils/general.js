@@ -96,12 +96,20 @@ const binOp = (opType) => {
         return params.reduce(product, 1)
       }
       // return (a, b) => a / b
-    case '**':
+    case 'pow':
       return (a, b) => a ** b
     case 'or':
       return (a, b) => a || b
     case 'and':
       return (a, b) => a && b
+    case 'lt':
+      return (a, b) => a < b
+    case 'lte':
+      return (a, b) => a <= b
+    case 'gt':
+      return (a, b) => a > b
+    case 'gte':
+      return (a, b) => a >= b
     case 'eq':
       return (a, b) => a === b
     default:
