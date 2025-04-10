@@ -320,19 +320,7 @@ archive: [ Blueprints, andNested: [ Archives, ... ], ... ] # mmmmaybe?
 {::}, # identity (anonymous)
 {:endpoint:}, # identity with named endpoint(s) (why?)
 ||, # also identity
-|name|, # named identity chip
-
-# assignment/aliasing/naming (only chips can have names, not wires)
-variable<=>chip,
-variable:=:chip,
-variable:=chip,
-variable=>chip,
-variable=:chip,
-variable=chip,
-chip >> |variable|,
-chip:output |variable|;
-singleton |variable|;
-src:out |name| in:dst;
+|name|, # named identity chip (aka 'label', 'variable', 'alias', etc)
 
 |name| ofCircuit, # chip
 circuitRef :name >> ofInpoint, # wire
