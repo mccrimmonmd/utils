@@ -142,6 +142,13 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
       :>> simpleRecursion >>:, # shorterhand
 
       # comparing alternative syntaxii: ----------------------------- #
+      src:out => in:dst;
+      src:out -> in:dst;
+      src:out >> in:dst;
+      src out::in dst,   # ? do I even need the circuit separators? Maybe only to resolve ambiguity? (src out: dst, src :in dst, src >>:in dst, src >> dst, )
+      # src@out::in@dst; chp@ :in dst; src ::in dst; src :: dst;
+      src:out in:dst, # src out: dst, src :in dst, src::dst, chp >> dst, chp >> :in dst, :>in rcr out:>,
+    
       src >> out==in >> dst, # ! seems less readable than ::, but maybe that's just because I'm used to it? (src >>==>> dst, >> out==in >>, =>> crt >>=, =in >> crt >> out=)
       src => out::in => dst, # * not sure why I'm resisting the obvious. Just to be different? Tricky to type, but not for *me*, and it clearly hasn't hurt other languages. (src =>::=> dst, => out::in =>, :=> crt =>:, :in => crt =>:, :=> crt => out:)
 
@@ -161,7 +168,7 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
       # conversely, no circuit can change another's wires (i.e. all wires are private)
 
       42 :number >> giveMeLiterals, # "primitive" literals are circuits (all singletons, theoretically) that output themselves and have no inupts...
-      { chip: { ... }, ..., [ wire, ... ] } :anonymousCircuit >> giveMeLiterals # although non-primitives can also output themselves!
+      { ... } :anonymousCircuit >> giveMeLiterals # although non-primitives can also output themselves!
       "Here's a string literal." :string >> giveMeLiterals,
       'You can also "write" strings like this.' :otherString >> giveMeLiterals,
       """Here's a "raw" string literal.
@@ -295,7 +302,93 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
 ## Use
 
 ```text
-# ... #
+# do I really need separate sections for chips and wires, or can they be differentiated syntactically?
+# maybe the chips/imports could just be a big multiplexer? so a circuit would be { ( literalOrAncRefOrSomething
+      => localName,
+    ...
+) 
+some >> wires: >> iGuess, ... }
+
+Blueprint = { ... };
+|label| { ... };
+BlueprintThatIs = |labeled| { ... };
+
+{::}, # identity (anonymous)
+{:endpoint:}, # identity with named endpoint(s) (why?)
+||, # also identity
+|name|, # named identity chip
+
+# assignment/aliasing/naming (only chips can have names, not wires)
+variable<=>chip,
+variable:=:chip,
+variable:=chip,
+variable=>chip,
+variable=:chip,
+variable=chip,
+chip >> |variable|,
+chip:output |variable|;
+singleton |variable|;
+src:out |name| in:dst;
+
+|name| ofCircuit, # chip
+circuitRef :name >> ofInpoint, # wire
+literal singleton, # wire
+literal singleton anotherSingleton, # wire chain
+(plex, er) indexedCircuit # 'indexed' circuits have a variable number of endpoints that are numbered, not named (plexers themselves are indexed circuits)
+# technically it's the chip's endpoints that are indexed, not the chip itself, so there are three kinds: indexed-in, indexed-out, and bi-indexed
+[
+  'Hello, world!' core.print,
+  core.console |name|,
+  ('Hello, ', :name, '!') core.print,
+  core.console >> userString: |name|,
+  ('Hello, ', name:, '!') :>> core.console,
+  (5, 3) + :> |sum|,
+  sum core.print,
+  (sum, 2) ** :> core.print,
+  ('hel', 'f') munge |h, elf|
+]
+
+this (a:, b:) + (::, 2) ** ('The squared sum is ', ::, ', dawg.') :words this;
+this isButtered:: not (::condition, n@@) incWhile (@@result, result::, this butterAmount::) * (|quantity|, ::howMuchButter this);
+bread isToasted:: choose (
+  isTrue::startButtering bread, quantity@ :butter bread, bread@ :toast this,
+  isFalse::startToasting toaster, :bread@: toaster
+);
+
+
+|fib| {
+  this (:n, 1) < (switch:,
+    1 ifTrue:,
+    (
+      (this:n, 1) - fib,
+      (this:n, 2) - fib
+    ) + ifFalse:
+  ) choose >> this;
+};
+core.input:number fib print:core.output;
+
+src:>out in->chp:>out in->dst
+
+src:out in:dst
+src:out >> in:dst, # disambiguated
+src:out in:dst, # equivalent^
+src:out -> in:dst; # alternative
+chp@ in:dst, # chip as signal 
+chp@ :dst, # anonymous inpoint
+src:out :dst, # non-meta version
+src: in:dst, # anonymous outpoint
+src dst, # both (also `src::dst`, `src: >> :dst`)
+src:>endpoint:>dst; # shared name
+in-> :chp: ->out; # recursive circuit
+
+this: (a, b) + (>>, 2) ** ('The squared sum is ', >>, ', dawg.') words:this,
+this:isButtered not (>> condition, n->) incWhile (->n, result >>, this:butterAmount) * (|quantity|, howMuchButter:this);
+this:loaf bread:slicer:breadSlice |bread|; # TODO: disambiguate anonymous endpoints and in-chip-out shorthand
+bread:isToasted (>>switch, (
+  true butter:bread, @quantity butterAmount:bread, bread@
+) >>ifTrue, (
+  startToasting:toaster, bread@ breadSlice:toaster, null
+) >>ifFalse) :choose: butteredToast:this;
 ```
 
 ## Implementation
