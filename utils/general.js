@@ -211,7 +211,7 @@ myself.arrayify = "Converts iterables into arrays; non-iterables result in an em
 const arrayify = (thing) => isIterable(thing) ? [...thing] : []
 
 myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value."
-// TODO: doesn't handle recursion -- how to fix?
+// TODO: doesn't handle recursion -- how to fix? Proxy, maybe?
 const memoize = (func) => {
   const multiCache = new MultiCache()
   return (...params) => multiCache.cache(params, func)
@@ -266,8 +266,6 @@ const timeIt = (
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
 myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default: identity). Returns a Map by default, or an Object for when the 'bucket' names can safely be coerced to strings. (Yet another function I worked super hard on that's already in the spec, lol)"
-// <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy>
-// <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/groupBy>
 const makeGroups = (iterable, idFunc = (item) => item, strong = true) => {
   return strong ?
       Map.groupBy(iterable, idFunc)
@@ -280,18 +278,18 @@ const deDup = (
   decider = (bestSoFar, candidate) => bestSoFar
 ) => {
   return [...makeGroups(iterable, identifier).values()]
-  .map(group => group.reduce(decider))
+    .map(group => group.reduce(decider))
 }
 myself.findDupes = "The complement of deDup."
 const findDupes = (iterable, identifier) => {
   return [...makeGroups(iterable, identifier).values()]
-  .filter(group => group.length > 1)
+    .filter(group => group.length > 1)
 }
 myself.findUniques = "The complement of deDup's complement."
 const findUniques = (iterable, identifier) => {
   return [...makeGroups(iterable, identifier).values()]
-  .filter(group => group.length === 1)
-  .flat()
+    .filter(group => group.length === 1)
+    .flat()
 }
 
 myself.getSorter = "Returns a sorting function that behaves more sanely than the default (specifically: mixed-case text, text with diacritics, and numbers sort the way you would expect; Objects are sorted with util.inspect; and mixed-type arrays are sorted by type first, then value). Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties)."
