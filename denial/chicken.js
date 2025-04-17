@@ -1,4 +1,4 @@
-const dice = require('./diceStats')
+const dice = require('../utils/diceStats')
 const { range, zip, arrayOf, last } = require('/.general')
 
 const multipleNames = [
