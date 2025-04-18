@@ -25,17 +25,21 @@ const range = function* (start = 0, stop, step = 1) {
   }
 }
 
-myself.zip = "Python-style zip function: combines a list of arrays into a list of pairs/triplets/etc. Takes optional parameters for padding the results when the input arrays are different lengths; if padding is disabled, the output will be the length of the shortest input array. (Normally I would use a single parameter with a default of 'false' or similar, but because padWith can potentially be anything, including false and undefined, two separate parameters are necessary.)"
-const zip = (arrays, { padResults = false, padWith } = {}) => {
+myself.zip = "Python-style zip function: combines a list of arrays into a list of pairs/triplets/etc. Takes an optional parameter for padding the results when the input arrays are different lengths; if none is provided, the output will be the length of the shortest input array."
+const zip = (arrays, ...padding) => {
+  const padResults = padding.length
+  padding = padding[0]
+  
   const zipped = []
   if (!arrays?.length) return zipped
+
   const len = arrays
     .map(array => array.length)
     .reduce(padResults ? max : min)
   for (const i of range(len)) {
     let group = []
     for (const array of arrays) {
-      let val = i < array.length ? array[i] : padWith
+      let val = i < array.length ? array[i] : padding
       group.push(val)
     }
     zipped.push(group)
@@ -406,8 +410,8 @@ const iterEquals = (a, b, ordered = true) => {
     a = [...a]
     b = [...b]
     return (
-      a.length === b.length &&
-      a.every((value, index) => value === b[index])
+      a.length === b.length
+      && a.every((value, index) => value === b[index])
     )
   }
   else {
