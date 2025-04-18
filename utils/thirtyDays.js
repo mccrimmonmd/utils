@@ -19,28 +19,31 @@ const playGame = (rounds = 6, days = 30, options = {}) => {
     'totalScore',
     'totalDays',
   ]
-  const initObject = () => Object.fromEntries(names.map(name => [ name, [] ]))
-  const averagePerRound = initObject()
-  const variation  = initObject()
+  const stats = () => Object.fromEntries(
+    names.map(name => [ name, {
+      min: Infinity,
+      max: -Infinity,
+      avg: []
+    } ])
+  )
+  // const averagePerRound = initObject()
+  // const variation  = initObject()
   
   timeIt(() => {
     for (const _ of range(rounds)) {
       const results = playRound(days, options)
       for (const [key, value] of Object.entries(results)) {
-        averagePerRound[key].push(value)
-        variation[key][0] = Math.min(value, variation[key][0] ?? Infinity)
-        variation[key][1] = Math.max(value, variation[key][1] ?? -Infinity)
+        stats[key].avg.push(value)
+        stats[key].min = Math.min(value, stats[key].min)
+        stats[key].max = Math.max(value, stats[key].max)
       }
     }
   })
-  for (const [key, values] of Object.entries(averagePerRound)) {
-    averagePerRound[key] = roundDecimal(arithmeticMean(values), 5)
+  for (const [key, values] of Object.entries(stats)) {
+    stats[key].avg = roundDecimal(arithmeticMean(values), 5)
   }
   
-  return {
-    averagePerRound,
-    variation: rounds > 1 ? variation : 'N/A',
-  }
+  return stats
 }
 
 const playRound = (
