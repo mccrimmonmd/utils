@@ -178,6 +178,8 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
       :>> simpleRecursion >>:, # shorterhand
 
       # comparing alternative syntaxii: ----------------------------- #
+      src->out in+>mid->out in+>dst; # *
+      
       src:out => in:dst;
       src:out -> in:dst;
       src:out >> in:dst;
@@ -333,107 +335,203 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
   ...
 ]
 # }
+
+{
+  AllArchives = [ ... ]
+  AreVisible = [ ... ]
+  ToChildrenBut = [ ... ]
+  NotParents = `...`
+  
+  # Core is always imported implicitly
+  
+  AutomaticArchives= # archives that are always "available" but have to imported to be "visible"
+  HeresAnother= # e.g. Math, IO, DateTime
+  ThisArchive = IsAliased # the right side doesn't have to be imported first if it's one of these
+  
+  nowCome: { ... }
+  theBlueprints: `...`
+  
+  and->theTop level+>circuit
+  composed ofMany+>statements &akaWires
+  # the top(est)level *does not have* 'src' and 'dst' (alternatively, '*' refers to null)! Only IO and system chips can reach outside it.
+  # a .flw file with {} at the toplevel is a circuit
+  # a .flw file with [] at the toplevel is an archive
+  # as shown, they can nest inside each other arbitrarily
+  # or: archives are circuits, somehow? would be better if they were. Then, toplevel circuits with no (explicit) enclosing braces--meaning circuits whose self-reference is null--would be executable programs
+  # ^archives are just conventions--blueprints that start with a capital letter and have some syntactic sugar. Otherwise no different from a regular blueprint. 
+  # what's the desugared version, then? What does the dot syntax translate to?
+  # ... maybe it's the other way around? maybe UN-dotted syntax is the sugared version, and bare references are implicitly dotted.
+  # or, dots translate to 'nested dereferences' of circuits that output their own namespaces?
+}
 ```
 
 ## Use
 
 ```text
 # do I really need separate sections for chips and wires, or can they be differentiated syntactically?
-### maybe the chips/imports could just be a big multiplexer? so a circuit would be:
+#> maybe the chips/imports could just be a big multiplexer? so a circuit would be:
 { ( literalOrAncRefOrSomething
       => localName,
     ...
 ) 
 some >> wires: >> iGuess, ... }
-###
+>#
 
-# assignment/aliasing/labeling (only chips can have labels, not wires)
-Blueprint = { ... };
-|label| { ... };
-BlueprintThat = |isLabeled| { ... };
-archive: [ Blueprints, andNested: [ Archives, ... ], ... ] # mmmmaybe?
+Archive = [
+  list: { ... }
+  of: { ... }
+  blueprints: { ... }
+  And = NestedArchives
+]; # Archive.And === NestedArchives
+ArchiveFrom = `file.flw`
+blueprint: { ... };
+{ ... }* &deSugaredBlueprint*;
 
-{::}, # identity (anonymous)
-{:endpoint:}, # identity with named endpoint(s) (why?)
-||, # also identity
-|name|, # named identity chip (aka 'label', 'variable', 'alias', etc)
+&, # the identity chip, a singleton (within scope) primitive
+&name, # identity chip with named endpoint, aka 'label', 'variable', 'alias', etc.
 
-|name| ofCircuit, # chip
-circuitRef :name >> ofInpoint, # wire
-literal singleton, # wire
-literal singleton anotherSingleton, # wire chain
-(plex, er) indexedCircuit # 'indexed' circuits have a variable number of endpoints that are numbered, not named (plexers themselves are indexed circuits)
+blueprint: { ... } # blueprint aka (named) circuit aka (named) chip definition
+{ ... } &label # labeled chip (actually it's the chip's outpoint that gets the label, i.e. the wire goes to the identity circuit and that's how you refer to it again)
+( ... ) # transistor aka mini-chip (does not create its own scope)
+&label (
+  ...
+) # transistors can be prefaced with a destination label that would otherwise have to be placed at the end
+chip (
+  42 theAnswer+>
+  ->theQuestion askAgain+>deepMind
+) # transistors can also be prefaced with a source chip; references within the transistor to the source's endpoints don't have to specify the source (i.e. ->out and in+> instead of chip->out and in+>chip)
+chip &label (
+  ... 
+) # combining the two
+src dst (
+  ->fromSrc gimme+>someOtherChip
+  someOtherChip->here toDst+>
+  dst->here gimme+>src
+) # if the destination is a chip instead of a label, the source can be left off the outpoints and the destination can be left off the inpoints (but not vice versa)
+
+[plex, er] indexedCircuit # 'indexed' circuits have a variable number of endpoints that are numbered, not named (plexers themselves are indexed circuits)
 # technically it's the chip's endpoints that are indexed, not the chip itself, so there are three kinds: indexed-in, indexed-out, and bi-indexed
+# oh and indexed circuits can also have named endpoints, they're not mutually exclusive
+
 [
-  'Hello, world!' core.print,
-  core.console |name|,
-  ('Hello, ', :name, '!') core.print,
-  core.console >> userString: |name|,
-  ('Hello, ', name:, '!') :>> core.console,
-  (5, 3) + :> |sum|,
-  sum core.print,
-  (sum, 2) ** :> core.print,
-  ('hel', 'f') munge |h, elf|
+  'Hello, world!' log+>Core.console,
+  Core.console->string &name,
+  ['Hello, ', &name, '!'] log+>Core.console,
+  [5, 3] add &sum,
+  &sum log+>Core.console,
+  [&sum, 2] pow log+>Core.console,
+  ['hel', 'f'] munge [&h, &elf]
 ]
 
-this (a:, b:) + (::, 2) ** ('The squared sum is ', ::, ', dawg.') :words this;
-this isButtered:: not (::condition, n@@) incWhile (@@result, result::, this butterAmount::) * (|quantity|, ::howMuchButter this);
-bread isToasted:: choose (
-  isTrue::startButtering bread, quantity@ :butter bread, bread@ :toast this,
-  isFalse::startToasting toaster, :bread@: toaster
-);
+fib: {
+  &rec ([
+    [+>*, 1] sub fib,
+    [+>*, 2] sub fib
+  ] add)
+  [[+>*, 1] is,  1] @if
+  [[+>*, 0] lte, 0] @if^
+  &rec else+>if^
+  ^if *->
+}
+print: { +>* log+>Core.console }
+Core.console->number fib print
 
-
+#>
 |fib| {
-  this (:n, 1) < (switch:,
-    1 ifTrue:,
-    (
-      (this:n, 1) - fib,
-      (this:n, 2) - fib
-    ) + ifFalse:
-  ) choose >> this;
-};
-core.input:number fib print:core.output;
+  |rec| {
+    [
+      [in->n, 1] sub n+>fib,
+      [in->n, 2] sub n+>fib
+    ] add out # rec.out
+  }
+  [in->n, 1] lte switch+>choose
+  ^choose (
+    1 ifTrue+>,
+    rec ifFalse+>,
+    ->choice out # fib.out
+  )
+}
+Core.input->number fib log+>Core.output
+>#
 
-|fib| {
-  src (->n, 1) < (
-    , cond:>
-    1 ifTrue:>,
-    (
-      (src->n, 1) - fib,
-      (src->n, 2) - fib
-    ) + ifFalse:>
-  ) switch dst
-};
-core.input->number fib print:>core.output;
+#> in/out (nee "this") alternatives
+el ar
+arr ext
+arr lve # !
+arrv leav
+arr rra
+come go
+from to
+src dst # *
++> -> # **** no need for special syntax!
+# check: can ownInpoint+> be ambiguous with +>defaultInpoint or transistorEndpoint+> ?
+# possible solution: +>* *-> (* === 'this')
+/parent
+/super
+/outer
+/self # !
+>#
 
-|fib| {
-  src >> lt (n:>, 1:>)
-    >> switch (
-      :>cond,
-      1 :>ifTrue,
-      #
-    )
-    >> dst
-};
-core.input >> fib >> core.output (
-  number :> n :> print
-);
+src->out in+>mid->out in+>dst # optional ; to terminate statement
+src->out & in+>dst # the identity chip doubles as an explicit wire! (might not be necessary anymore)
+src->sharedEndpoint+>dst
+src->['out'] ['in']+>dst
+src->["this endpoint's shared"]+>dst
+src->out &labeledEndpoint+>dst # creates a label with the same name as the endpoint. If one already exists, this is an error...
+src->out [&strIn]+>dst # NOT to be confused with this...
+src->[&strOut] in+>dst # which will use the string *in* &endpoint (similar to obj[variable] in js)
+src->&sharedLabel+>dst
+src->[&sharedLookup]+>dst
 
-# src:>out in->chp:>out in->dst
+#>
+src:>out in->chp:>out in->dst
 src->out in:>chp->out in:>dst
 
 src->out => in:>mid->out => in:>dst
 src->out := in:>mid->out := in:>dst
 src->out, in:>mid->out, in:>dst
+>#
 
-@src in:>dst
-src->out, :>dst
-src dst # src->, :>dst
-src->endpoint:>dst
-in >> chp >> out
-# ,in:> chp ->out,
+src* in+>dst # chip literal as signal
+src->out &label* # turn signal back into chip (label* and &label are now both === identity/chip as signal still, label === back to chip literal)
+src->out +@dst # "push" to next empty index in dst
+src-@ in+>dst # "peek" from next nonempty index in src
+src->out +=dst # "spread" a plexer from src into dst
+src-= in+>dst # "condense" an indexed circuit into a plexer
+src-= +=dst # map each index from src to the same index in dst
+src @ dst # same
+src-@2 4+@dst # indexed input/output
+src->[2] [4]+>dst # explicit
+src->out dst # anonymous/default inpoint
+src->out _+>dst # explicit
+src dst # both; src->_+>dst, also src @ dst when unambiguous
+& ->out chp in+> & # is a dedicated recursive shorthand really necessary anymore? Maybe just use a transistor? 
+rec: (>>) # compromise? non-shorthand: rec: (:->_+>:) / |rec| (|->_+>|)
+rec (-> nonBaseCase+>) # recursive, anonymous outpoint
+rec (>> nonBaseCase); rec (result >>) # shorthand
+increment (
+  ->result number+> # shorthand: result >> number
+  untilFalse+> # inpoints automatically block on false, which is also null
+  ->result someOther+>chip
+)
+[{}, false] is log+>Core.console # prints "true"
+[&, true] is log+>Core.console # prints "true"
+is (null, {}) # more natural to read
+{ ... } (
+  [is (*, true), is (*, false)] or log+>Core.console # prints "false"
+  is (
+    [*, 4, 'a string'] asBooleans @ *, true @*
+  ) log+>Core.console # prints "true"
+  is (
+    [&labeledFalsity, 0, '', //] asBooleans @ *,
+    false @*
+  ) log+>Core.console # prints "true"
+)
 
+# 'X asYs' and 'X asY' evaluate to `X +>convert; Y targetType+>convert^; _s plexed+>convert^;`
+# 'is' and 'are' also, refer to the same blueprint; 'eq' is not as strict
+
+#>
 src:out in:dst
 src:out >> in:dst, # disambiguated
 src:out in:dst, # equivalent^
@@ -454,6 +552,65 @@ bread:isToasted (>>switch, (
 ) >>ifTrue, (
   startToasting:toaster, bread@ breadSlice:toaster, null
 ) >>ifFalse) :choose: butteredToast:this;
+>#
+
+squaredSum: {
+  [+=* add, 2] pow *->&result
+  [
+    "The squared sum of ",
+    (+=* asStrings concat; ", " separator+>concat^),
+    " is ",
+    &result,
+    "."
+  ] concat *->words
+}
+"Enter a list of numbers separated by spaces. Press Enter when finished." log+>Core.console
+split:_ (
+  Core.console->string+>split
+  " " by+>split
+  split
+) asNumbers squaredSum
+# Core.console->string+>split
+# " " by+>split^
+# ^split asNumbers squaredSum
+^squaredSum->words log+>Core.console
+"Are we there yet?" log+>Core.console
+[^squaredSum->result, 100] gt cond+>switch
+^switch (
+  "Yes." ifTrue+>
+  "We'll get there when we get there!" ifFalse+>
+  ->choice log+>Core.console
+)
+
+makinToast: {
+  isButtered+>* cond+>switch
+  [&quantity, *->howMuchButter]: (
+    [butterAmount+>*, hunger+>*] mult
+  ) *->howMuchButter
+  ^switch (
+    &quantity ifFalse+>
+  
+  loaf+>* +>Bread.slicer-> &slice*
+  slice->isToasted startButtering+>slice
+  &butterAmount+>slice
+  slice->isToasted not startToasting+>Bread.toaster
+  slice*+>Bread.toaster^
+  slice* & *->butteredToast
+  # slice* *->butteredToast
+  # slice**->butteredToast ?
+}
+# alias: someChip === someChip* &alias*
+# &alias: someChip === someChip &alias
+# alias:_ === alias* &alias*
+# &alias:_ === alias &alias
+# end->point: (blah) === blah end->point (?)
+# end+>point: (blah) === blah end+>point
+# something: (transistor) === (transistor)->_ something
+[someChipAs: asVar, anotherAsItself:] (
+  asVar->spam ham->anotherAsItself
+  ["eggs", "beans", "bacon"] sides+>asVar
+  someOutsideChip server+>asVar
+)
 ```
 
 ## Implementation
