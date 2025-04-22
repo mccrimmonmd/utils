@@ -70,7 +70,36 @@ parameters -> circuitRef [ ',' parameters ]
 
 ## Syntax
 
-Comment character is `#`, multiline comments with `###...###` (`//` is an empty regex literal)
+Comment character is `#`, multiline comments with `#>...>#` (`//` is an empty regex literal)
+
+```text
+...->... ...+>... = wire aka statement; connection between two chips
+( <sequence of wires separated by ; or newline> ) = transistor; a partial circuit
+<sequence of statements and transistors> = blueprint aka circuit
+{ <blueprint> } = blueprint 'instantiated' as anonymous chip literal
+&name: ( <blueprint> ) = named transistor
+&name: { <blueprint> } = named chip literal
+{} = empty blueprint as chip literal aka null
+* = local endpoints (aka 'this' aka current context/namespace) as chip literal
+** = current endpoints' endpoints as chip (=== itself)
+****** = same (you get the idea)
+{ * } = null's endpoints as chip literal aka empty chip aka also null
+{ <blueprint> }* chip literal as signal aka <blueprint>'s '*'
+{}* = null as signal aka null's '*' aka also null
+{*}* = same (you get the idea)
+& = add 'identity' wire to current blueprint aka 'smallest nonempty blueprint' as chip literal (OR: & = empty *transistor*, so `&*` would be * and `&: ()` or `()` would be &)
+( _+>*->_ ) = same (???)
+&* = identity's 'this' aka identity as signal (=== *, not &)
+&** = also * (makes sense, if identity's 'this' and this's 'this' are both also 'this')
+&variable = add new endpoint to identity's blueprint (i.e. variable+>&*->variable)
+&someChip* = &someChip's blueprint as chip `{ someChip's blueprint }`
+someChip* = someChip as signal aka someChip's blueprint's 'this' `{ someChip's blueprint }*`
+
+inpoint+>* = add new endpoint to * 
+*->outpoint = same
+.dottedRef = &Program.dottedRef in toplevel files, but the circuit's parent archive otherwise  ('Program' === toplevel namespace)
+dotted.ref = *.dotted.ref; any in-scope chip can be treated like an archive 
+```
 
 ### Syntax TODO
 
