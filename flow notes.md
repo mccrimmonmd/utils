@@ -86,6 +86,8 @@ Comment character is `#`, multiline comments with `###...###` (`//` is an empty 
   - Pros: makes syntax easier (e.g. no many-to-one shorthand), eliminates complexity of automatic defaults, easy to tell computationally when it's being violated
   - Cons: difficult to tell visually when it's being violated, increases complexity when defaults are needed (i.e. dedicated core circuit with unique evaluation rules)
 - variable number of inpoints
+- possibly...rethink literally everything??
+  - think in terms of wires, not chips--aside from the primitive operators, chips are just lists of wires anyway. Specify the *connection* over the source and destination. So, instead of `src->out, in:>dst`, something like `src >> dst (out:>in, and:>another, youGet:>theIdea)` ?
 
 ### Example
 
@@ -375,7 +377,8 @@ src->out, in:>mid->out, in:>dst
 src->out, :>dst
 src dst # src->, :>dst
 src->endpoint:>dst
-,in:> chp ->out,
+in >> chp >> out
+# ,in:> chp ->out,
 
 src:out in:dst
 src:out >> in:dst, # disambiguated
