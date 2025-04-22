@@ -366,6 +366,31 @@ bread isToasted:: choose (
 };
 core.input:number fib print:core.output;
 
+|fib| {
+  src (->n, 1) < (
+    , cond:>
+    1 ifTrue:>,
+    (
+      (src->n, 1) - fib,
+      (src->n, 2) - fib
+    ) + ifFalse:>
+  ) switch dst
+};
+core.input->number fib print:>core.output;
+
+|fib| {
+  src >> lt (n:>, 1:>)
+    >> switch (
+      :>cond,
+      1 :>ifTrue,
+      #
+    )
+    >> dst
+};
+core.input >> fib >> core.output (
+  number :> n :> print
+);
+
 # src:>out in->chp:>out in->dst
 src->out in:>chp->out in:>dst
 
