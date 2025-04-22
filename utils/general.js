@@ -1,5 +1,5 @@
 const myself = {} // documentation
-const { max, min, flatten } = require('./reducers')
+const { max, min, flatten, sum, product, reduceify } = require('./reducers')
 
 const backToWork = require('./BACK TO WORK')
 
@@ -61,68 +61,31 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
   return result
 }
 
-myself.op = "Turn JavaScript's native operators into proper functions."
-// const op = (a, opType, b) => {
-// const op = (opType, ...rest) => {
-const op = (opType) => {
-  switch (opType) {
-    case 'choose':
-      return opFuncs.choose
-    case 'loop':
-      return opFuncs.loop
-    case 'iter':
-      return opFuncs.iter
-    case 'match':
-      return opFuncs.match
-    default:
-      return binOp(opType)
+// TODO: document
+const boolReduce = (func, unaryCase = false, ...initialValue) => {
+  return (...params) => {
+    if (typeof unaryCase === 'function' && params.length === 1) {
+      return unaryCase(params[0])
+    }
+    return params.reduce(
+      ([unbroken, a], b) => [unbroken && func(a, b), b],
+      initialValue.length ? [true, initialValue[0]] : [true]
+    )[0]
   }
 }
-const binOp = (opType) => {
-  switch (opType) {
-    case '+':
-      return (...params) => params.reduce(sum, 0)
-      // return (a, b) => a + b
-    case '-':
-      return (...params) => {
-        if (params.length === 1) return -params[0]
-        for (const i of Object.keys(params.slice(1))) params[i] = -params[i]
-        return params.reduce(sum, 0)
-      }
-      // return (a, b) => a - b
-    case '*':
-      return (...params) => params.reduce(product, 1)
-      // return (a, b) => a * b
-    case '/':
-      return (...params) => {
-        if (params.length === 1) return 1 / params[0]
-        for (const i of Object.keys(params.slice(1))) params[i] = 1 / params[i]
-        return params.reduce(product, 1)
-      }
-      // return (a, b) => a / b
-    case 'pow':
-      return (a, b) => a ** b
-    case 'or':
-      return (a, b) => a || b
-    case 'and':
-      return (a, b) => a && b
-    case 'lt':
-      return (a, b) => a < b
-    case 'lte':
-      return (a, b) => a <= b
-    case 'gt':
-      return (a, b) => a > b
-    case 'gte':
-      return (a, b) => a >= b
-    case 'eq':
-      return (a, b) => a === b
-    default:
-      throw new TypeError(`Unsupported or invalid operator '${opType}'`)
-  }
+
+myself.op = "Turn JavaScript's native operators into proper functions."
+const op = (opType) => opFuncs[opType] ?? opFuncs.err(
+  `Unsupported or invalid operator '${opType}'`, TypeError
+)
+const binaryError = (opType) => {
+  throw new TypeError(`Operator '${opType}' requires at least 2 arguments`)
 }
 const opFuncs = {
+  // non-chaining operators
+  err: (message, errType = Error) => (() => { throw new errType(message) })(),
   choose: (cond, ifTrue, ifFalse) => cond ? ifTrue : ifFalse,
-  loop: (cond, exec, params) => {
+  loop: (cond, exec, params = []) => {
     let result
     while (cond) {
       [cond, result] = exec(...params)
@@ -152,7 +115,46 @@ const opFuncs = {
       }
     }
     return result
-  }
+  },
+  // chaining operators
+  add: reduceify(sum, 0),
+  sub: (...params) => {
+    if (params.length === 1) return -params[0]
+    for (const i of Object.keys(params.slice(1))) params[i] = -params[i]
+    return params.reduce(sum, 0)
+  },
+  mult: reduceify(product, 1),
+  div: (...params) => {
+    if (params.length === 1) return 1 / params[0]
+    for (const i of Object.keys(params.slice(1))) params[i] = 1 / params[i]
+    return params.reduce(product, 1)
+  },
+  pow: reduceify((a, b) => a** b, 1),
+  lt: boolReduce(
+    (a, b) => a < b,
+    () => binaryError('lt'),
+  ),
+  lte: boolReduce(
+    (a, b) => { return a <= b },
+    () => binaryError('lte'),
+  ),
+  gt: boolReduce(
+    (a, b) => a > b,
+    () => binaryError('gt'),
+  ),
+  gte: boolReduce(
+    (a, b) => { return a >= b },
+    () => binaryError('gte'),
+  ),
+  // short-circuiting operators
+  // (how to actually short-circuit? a function's arguments are all evaluated when it's called!)
+  eq: boolReduce(
+    (a, b) => a === b,
+    () => true,
+    true,
+  ),
+  or: reduceify((a, b) => a || b, false),
+  and: reduceify((a, b) => a && b, true),
 }
 
 myself.TypeCheckedArray = "An Array which can only contain values that are all the same type. Was supposed to be an exercise in inheritance, but ended up mostly being about Proxies instead."
