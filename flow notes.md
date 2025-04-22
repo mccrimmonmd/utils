@@ -65,7 +65,7 @@ null -> 'null' | '{}'
 
 ## Syntax
 
-Comment character is `#`, multiline comments with `###...###` (`//` is an empty regex literal)
+Comment character is `#`, multiline comments with `#>...>#` (`//` is an empty regex literal)
 
 ### Syntax TODO
 
@@ -142,6 +142,8 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
       :>> simpleRecursion >>:, # shorterhand
 
       # comparing alternative syntaxii: ----------------------------- #
+      src->out in+>mid->out in+>dst; # *
+      
       src:out => in:dst;
       src:out -> in:dst;
       src:out >> in:dst;
@@ -303,7 +305,7 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
 
 ```text
 # do I really need separate sections for chips and wires, or can they be differentiated syntactically?
-### maybe the chips/imports could just be a big multiplexer? so a circuit would be:
+#> maybe the chips/imports could just be a big multiplexer? so a circuit would be:
 { ( literalOrAncRefOrSomething
       => localName,
     ...
@@ -328,16 +330,16 @@ literal singleton, # wire
 literal singleton anotherSingleton, # wire chain
 (plex, er) indexedCircuit # 'indexed' circuits have a variable number of endpoints that are numbered, not named (plexers themselves are indexed circuits)
 # technically it's the chip's endpoints that are indexed, not the chip itself, so there are three kinds: indexed-in, indexed-out, and bi-indexed
+# oh and indexed circuits can also have named endpoints, they're not mutually exclusive
+
 [
-  'Hello, world!' core.print,
-  core.console |name|,
-  ('Hello, ', :name, '!') core.print,
-  core.console >> userString: |name|,
-  ('Hello, ', name:, '!') :>> core.console,
-  (5, 3) + :> |sum|,
-  sum core.print,
-  (sum, 2) ** :> core.print,
-  ('hel', 'f') munge |h, elf|
+  'Hello, world!' log+>Core.console,
+  Core.console->string &name,
+  ['Hello, ', &name, '!'] log+>Core.console,
+  [5, 3] add &sum,
+  &sum log+>Core.console,
+  [&sum, 2] pow log+>Core.console,
+  ['hel', 'f'] munge [&h, &elf]
 ]
 
 this (a:, b:) + (::, 2) ** ('The squared sum is ', ::, ', dawg.') :words this;
@@ -348,18 +350,55 @@ bread isToasted:: choose (
 );
 
 
+#>
 |fib| {
-  this (:n, 1) < (switch:,
-    1 ifTrue:,
-    (
-      (this:n, 1) - fib,
-      (this:n, 2) - fib
-    ) + ifFalse:
-  ) choose >> this;
-};
-core.input:number fib print:core.output;
+  |rec| {
+    [
+      [in->n, 1] sub n+>fib,
+      [in->n, 2] sub n+>fib
+    ] add out # rec.out
+  }
+  [in->n, 1] lte switch+>choose
+  ^choose (
+    1 ifTrue+>,
+    rec ifFalse+>,
+    ->choice out # fib.out
+  )
+}
+Core.input->number fib log+>Core.output
+>#
 
-# src:>out in->chp:>out in->dst
+#> in/out (nee "this") alternatives
+el ar
+arr ext
+arr lve # !
+arrv leav
+arr rra
+come go
+from to
+src dst # *
++> -> # **** no need for special syntax!
+# check: can ownInpoint+> be ambiguous with +>defaultInpoint or transistorEndpoint+> ?
+# possible solution: +>* *-> (* === 'this')
+/parent
+/super
+/outer
+/self # !
+>#
+
+src->out in+>mid->out in+>dst # optional ; to terminate statement
+src->out & in+>dst # the identity chip doubles as an explicit wire! (might not be necessary anymore)
+src->sharedEndpoint+>dst
+src->['out'] ['in']+>dst
+src->["this endpoint's shared"]+>dst
+src->out &labeledEndpoint+>dst # creates a label with the same name as the endpoint. If one already exists, this is an error...
+src->out [&strIn]+>dst # NOT to be confused with this...
+src->[&strOut] in+>dst # which will use the string *in* &endpoint (similar to obj[variable] in js)
+src->&sharedLabel+>dst
+src->[&sharedLookup]+>dst
+
+#>
+src:>out in->chp:>out in->dst
 src->out in:>chp->out in:>dst
 
 src->out => in:>mid->out => in:>dst
