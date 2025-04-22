@@ -33,12 +33,13 @@ Grammar below is for JSON-compliant 'internal' syntax, rarely used directly
 Compiles ('assembles') to/from intermediate representation that preserves the structure, but loosens the syntax requirements for readability and convenience
 
 ```text
-program -> '{ "core":' circuitLiteral [ ',' circuitList ] '}'
+program -> '{' [ circuitList ] '}'
 circuitList -> variable ':' circuit [ ',' circuitList ]
 
-circuit -> templateRef | circuitLiteral
-templateRef -> '"' templatePath '"'
-templatePath -> varChars [ '.' templatePath ]
+circuit -> circuitRef | circuitLiteral
+circuitRef -> '"' circuitId '"'
+circuitId -> '*' [ path ]
+path -> '.' varChars [ path ]
 
 variable -> '"' varChars '"'
 varChars -> alpha [ alphaNumeric ]
@@ -46,21 +47,25 @@ alpha -> /[a-zA-Z_]/
 numeric -> /[0-9]/
 alphaNumeric -> ( alpha | numeric ) [ alphaNumeric ]
 
-circuitLiteral -> '{' circuitList ',' connections '}' | null
-connections -> '"wires": {' [ pairList ] '}'
+circuitLiteral -> '{' pairList '}' | primitive
+pairList -> inpoint ':' source [ ',' pairList ]
+inpoint -> '"' varChars ' +> ' circuitId '"'
+source -> primitive | circuitRef | outpoint
+outpoint -> '"' circuitId ' -> ' varChars '"'
 
-pairList -> input ':' output [ ',' pairList ]
-input -> primitive | templateRef | endpoint
-output -> endpoint | null
-endpoint -> '"' varChars '>>' varChars '"'
-primitive -> '"&' number | boolean | regex | string | null '"'
-number -> numeric [ '.' numeric ]
-boolean -> 'true' | 'false'
-regex -> '/' string '/'
-string -> escapedChar [ string ]
-escapedChar -> notAQuoteOrSlash | '\' ( '\' | '/' | '"' )
+primitive -> flowPrimitive | jsonPrimitive
+jsonPrimitive -> JSON number, boolean, or string
+flowPrimitive -> '[' type ',' value ']' | null | identity | operator
 
-null -> 'null' | '{}'
+type -> '"' ( 'regex' | 'html' | 'js' | 'css' | 'file' ) '"'
+value -> JSON string
+null -> 'null'
+identity -> '{}'
+
+operator -> '[' opname [ parameters ] ']'
+opname -> op list from utils, more or less
+parameters -> circuitRef [ ',' parameters ]
+
 ```
 
 ## Syntax
