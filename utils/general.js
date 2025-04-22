@@ -217,35 +217,58 @@ myself.arrayify = "Converts iterables into arrays; non-iterables result in an em
 const arrayify = (thing) => isIterable(thing) ? [...thing] : []
 
 myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value."
-// TODO: doesn't handle recursion -- how to fix? Proxy, maybe?
+// TODO: test
 const memoize = (func) => {
-  const multiCache = new MultiCache()
-  return (...params) => multiCache.cache(params, func)
+  const cache = new MultiMap()
+  return new Proxy(func, {
+    apply(target, thisArg, argumentsList) {
+      const { hasKey, value } = cache.search(argumentsList)
+      if (hasKey) return value 
+      const result = Reflect.apply(target, thisArg, argumentsList)
+      cache.set(argumentsList, result)
+      return result
+    }
+  })
+  // return (...params) => multiCache.cache(params, func)
 }
-const MultiCache = class {
-  constructor () {
-    this.nestedCache = new Map()
-    this.simpleCache = new Map()
-    this.leafKey = Symbol()
+const MultiMap = class extends Map {
+  #leafKey
+  
+  constructor (...params) {
+    super(...params)
+    this.#leafKey = Symbol()
   }
 
-  cache (params, wrappedFunc) {
-    const getOrSet = (map, key, func) => {
-      if (!map.has(key)) {
-        map.set(key, func(...params))
+  _traverse(argumentsList, mutating, value) {
+    let innerMap = this
+    for (const key of argumentsList) {
+      if (!innerMap.has(key)) {
+        innerMap.set(key, new Map())
       }
-      return map.get(key)
+      innerMap = innerMap.get(key)
     }
-    if (params.length <= 1) {
-      return getOrSet(this.simpleCache, params?.[0], wrappedFunc)
+    if (mutating) innerMap.set(this.#leafKey, value)
+    return {
+      hasKey: innerMap.has(this.#leafKey),
+      value: innerMap.get(this.#leafKey)
     }
-    else {
-      let innerCache = this.nestedCache
-      for (const key of params) {
-        innerCache = getOrSet(innerCache, key, () => new Map())
-      }
-      return getOrSet(innerCache, this.leafKey, wrappedFunc)
-    }
+  }
+
+  search (argumentsList) {
+    return this._traverse(argumentsList)
+  }
+
+  has (argumentsList) {
+    return this._traverse(argumentsList).hasKey
+  }
+
+  get (argumentsList) {
+    return this._traverse(argumentsList).value
+  }
+
+  set (argumentsList, value) {
+    this._traverse(argumentsList, true, value)
+    return this
   }
 }
 
