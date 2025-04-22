@@ -299,6 +299,34 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
   ...
 ]
 # }
+
+{
+  AllArchives = [ ... ]
+  AreVisible = [ ... ]
+  ToChildrenBut = [ ... ]
+  NotParents = `...`
+  
+  # Core is always imported implicitly
+  
+  AutomaticArchives= # archives that are always "available" but have to imported to be "visible"
+  HeresAnother= # e.g. Math, IO, DateTime
+  ThisArchive = IsAliased # the right side doesn't have to be imported first if it's one of these
+  
+  nowCome: { ... }
+  theBlueprints: `...`
+  
+  and->theTop level+>circuit
+  composed ofMany+>statements &akaWires
+  # the top(est)level *does not have* 'src' and 'dst' (alternatively, '*' refers to null)! Only IO and system chips can reach outside it.
+  # a .flw file with {} at the toplevel is a circuit
+  # a .flw file with [] at the toplevel is an archive
+  # as shown, they can nest inside each other arbitrarily
+  # or: archives are circuits, somehow? would be better if they were. Then, toplevel circuits with no (explicit) enclosing braces--meaning circuits whose self-reference is null--would be executable programs
+  # ^archives are just conventions--blueprints that start with a capital letter and have some syntactic sugar. Otherwise no different from a regular blueprint. 
+  # what's the desugared version, then? What does the dot syntax translate to?
+  # ... maybe it's the other way around? maybe UN-dotted syntax is the sugared version, and bare references are implicitly dotted.
+  # or, dots translate to 'nested dereferences' of circuits that output their own namespaces?
+}
 ```
 
 ## Use
@@ -311,24 +339,41 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
     ...
 ) 
 some >> wires: >> iGuess, ... }
-###
+>#
 
-# assignment/aliasing/labeling (only chips can have labels, not wires)
-Blueprint = { ... };
-|label| { ... };
-BlueprintThat = |isLabeled| { ... };
-archive: [ Blueprints, andNested: [ Archives, ... ], ... ] # mmmmaybe?
+Archive = [
+  list: { ... }
+  of: { ... }
+  blueprints: { ... }
+  And = NestedArchives
+]; # Archive.And === NestedArchives
+ArchiveFrom = `file.flw`
+blueprint: { ... };
+{ ... }* &deSugaredBlueprint*;
 
-{::}, # identity (anonymous)
-{:endpoint:}, # identity with named endpoint(s) (why?)
-||, # also identity
-|name|, # named identity chip (aka 'label', 'variable', 'alias', etc)
+&, # the identity chip, a singleton (within scope) primitive
+&name, # identity chip with named endpoint, aka 'label', 'variable', 'alias', etc.
 
-|name| ofCircuit, # chip
-circuitRef :name >> ofInpoint, # wire
-literal singleton, # wire
-literal singleton anotherSingleton, # wire chain
-(plex, er) indexedCircuit # 'indexed' circuits have a variable number of endpoints that are numbered, not named (plexers themselves are indexed circuits)
+blueprint: { ... } # blueprint aka (named) circuit aka (named) chip definition
+{ ... } &label # labeled chip (actually it's the chip's outpoint that gets the label, i.e. the wire goes to the identity circuit and that's how you refer to it again)
+( ... ) # transistor aka mini-chip (does not create its own scope)
+&label (
+  ...
+) # transistors can be prefaced with a destination label that would otherwise have to be placed at the end
+chip (
+  42 theAnswer+>
+  ->theQuestion askAgain+>deepMind
+) # transistors can also be prefaced with a source chip; references within the transistor to the source's endpoints don't have to specify the source (i.e. ->out and in+> instead of chip->out and in+>chip)
+chip &label (
+  ... 
+) # combining the two
+src dst (
+  ->fromSrc gimme+>someOtherChip
+  someOtherChip->here toDst+>
+  dst->here gimme+>src
+) # if the destination is a chip instead of a label, the source can be left off the outpoints and the destination can be left off the inpoints (but not vice versa)
+
+[plex, er] indexedCircuit # 'indexed' circuits have a variable number of endpoints that are numbered, not named (plexers themselves are indexed circuits)
 # technically it's the chip's endpoints that are indexed, not the chip itself, so there are three kinds: indexed-in, indexed-out, and bi-indexed
 # oh and indexed circuits can also have named endpoints, they're not mutually exclusive
 
@@ -404,13 +449,48 @@ src->out in:>chp->out in:>dst
 src->out => in:>mid->out => in:>dst
 src->out := in:>mid->out := in:>dst
 src->out, in:>mid->out, in:>dst
+>#
 
-@src in:>dst
-src->out, :>dst
-src dst # src->, :>dst
-src->endpoint:>dst
-,in:> chp ->out,
+src* in+>dst # chip literal as signal
+src->out &label* # turn signal back into chip (label* and &label are now both === identity/chip as signal still, label === back to chip literal)
+src->out +@dst # "push" to next empty index in dst
+src-@ in+>dst # "peek" from next nonempty index in src
+src->out +=dst # "spread" a plexer from src into dst
+src-= in+>dst # "condense" an indexed circuit into a plexer
+src-= +=dst # map each index from src to the same index in dst
+src @ dst # same
+src-@2 4+@dst # indexed input/output
+src->[2] [4]+>dst # explicit
+src->out dst # anonymous/default inpoint
+src->out _+>dst # explicit
+src dst # both; src->_+>dst, also src @ dst when unambiguous
+& ->out chp in+> & # is a dedicated recursive shorthand really necessary anymore? Maybe just use a transistor? 
+rec: (>>) # compromise? non-shorthand: rec: (:->_+>:) / |rec| (|->_+>|)
+rec (-> nonBaseCase+>) # recursive, anonymous outpoint
+rec (>> nonBaseCase); rec (result >>) # shorthand
+increment (
+  ->result number+> # shorthand: result >> number
+  untilFalse+> # inpoints automatically block on false, which is also null
+  ->result someOther+>chip
+)
+[{}, false] is log+>Core.console # prints "true"
+[&, true] is log+>Core.console # prints "true"
+is (null, {}) # more natural to read
+{ ... } (
+  [is (*, true), is (*, false)] or log+>Core.console # prints "false"
+  is (
+    [*, 4, 'a string'] asBooleans @ *, true @*
+  ) log+>Core.console # prints "true"
+  is (
+    [&labeledFalsity, 0, '', //] asBooleans @ *,
+    false @*
+  ) log+>Core.console # prints "true"
+)
 
+# 'X asYs' and 'X asY' evaluate to `X +>convert; Y targetType+>convert^; _s plexed+>convert^;`
+# 'is' and 'are' also, refer to the same blueprint; 'eq' is not as strict
+
+#>
 src:out in:dst
 src:out >> in:dst, # disambiguated
 src:out in:dst, # equivalent^
