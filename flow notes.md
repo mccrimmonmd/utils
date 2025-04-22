@@ -387,13 +387,18 @@ src dst (
   ['hel', 'f'] munge [&h, &elf]
 ]
 
-this (a:, b:) + (::, 2) ** ('The squared sum is ', ::, ', dawg.') :words this;
-this isButtered:: not (::condition, n@@) incWhile (@@result, result::, this butterAmount::) * (|quantity|, ::howMuchButter this);
-bread isToasted:: choose (
-  isTrue::startButtering bread, quantity@ :butter bread, bread@ :toast this,
-  isFalse::startToasting toaster, :bread@: toaster
-);
-
+fib: {
+  &rec ([
+    [+>*, 1] sub fib,
+    [+>*, 2] sub fib
+  ] add)
+  [[+>*, 1] is,  1] @if
+  [[+>*, 0] lte, 0] @if^
+  &rec else+>if^
+  ^if *->
+}
+print: { +>* log+>Core.console }
+Core.console->number fib print
 
 #>
 |fib| {
@@ -511,6 +516,65 @@ bread:isToasted (>>switch, (
 ) >>ifTrue, (
   startToasting:toaster, bread@ breadSlice:toaster, null
 ) >>ifFalse) :choose: butteredToast:this;
+>#
+
+squaredSum: {
+  [+=* add, 2] pow *->&result
+  [
+    "The squared sum of ",
+    (+=* asStrings concat; ", " separator+>concat^),
+    " is ",
+    &result,
+    "."
+  ] concat *->words
+}
+"Enter a list of numbers separated by spaces. Press Enter when finished." log+>Core.console
+split:_ (
+  Core.console->string+>split
+  " " by+>split
+  split
+) asNumbers squaredSum
+# Core.console->string+>split
+# " " by+>split^
+# ^split asNumbers squaredSum
+^squaredSum->words log+>Core.console
+"Are we there yet?" log+>Core.console
+[^squaredSum->result, 100] gt cond+>switch
+^switch (
+  "Yes." ifTrue+>
+  "We'll get there when we get there!" ifFalse+>
+  ->choice log+>Core.console
+)
+
+makinToast: {
+  isButtered+>* cond+>switch
+  [&quantity, *->howMuchButter]: (
+    [butterAmount+>*, hunger+>*] mult
+  ) *->howMuchButter
+  ^switch (
+    &quantity ifFalse+>
+  
+  loaf+>* +>Bread.slicer-> &slice*
+  slice->isToasted startButtering+>slice
+  &butterAmount+>slice
+  slice->isToasted not startToasting+>Bread.toaster
+  slice*+>Bread.toaster^
+  slice* & *->butteredToast
+  # slice* *->butteredToast
+  # slice**->butteredToast ?
+}
+# alias: someChip === someChip* &alias*
+# &alias: someChip === someChip &alias
+# alias:_ === alias* &alias*
+# &alias:_ === alias &alias
+# end->point: (blah) === blah end->point (?)
+# end+>point: (blah) === blah end+>point
+# something: (transistor) === (transistor)->_ something
+[someChipAs: asVar, anotherAsItself:] (
+  asVar->spam ham->anotherAsItself
+  ["eggs", "beans", "bacon"] sides+>asVar
+  someOutsideChip server+>asVar
+)
 ```
 
 ## Implementation
