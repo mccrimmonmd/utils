@@ -89,6 +89,7 @@ Comment character is `#`, multiline comments with `#>...>#` (`//` is an empty re
 {*}* = same (you get the idea)
 & = add 'identity' wire to current blueprint aka 'smallest nonempty blueprint' as chip literal (OR: & = empty *transistor*, so `&*` would be * and `&: ()` or `()` would be &)
 ( _+>*->_ ) = same (???)
+Each identity chip is globally unique, like Symbols--that's why they aren't inherited and don't have their own namespaces
 &* = identity's 'this' aka identity as signal (=== *, not &)
 &** = also * (makes sense, if identity's 'this' and this's 'this' are both also 'this')
 &variable = add new endpoint to identity's blueprint (i.e. variable+>&*->variable)
