@@ -1,6 +1,26 @@
 const myself = {} // documentation
-const { print, op } = require('./general')
+const { print, op, arrayOf, range } = require('./general')
 const { sum, product, diffsCalculator } = require('./reducers')
+
+myself.sieve = "Sieve of Eratosthenes. Just for funsies. Might refactor into a bignum generator later."
+const sieve = (n) => {
+  if (n < 0) n = -n
+  const isPrime = arrayOf(n + 1, true)
+  isPrime[0] = false
+  isPrime[1] = false
+  let candidate = 2
+  while (candidate ** 2 <= n) {
+    while (!isPrime[candidate]) candidate += 1
+    for (const i of range(candidate * 2, n + 1, candidate)) {
+      isPrime[i] = false
+    }
+    candidate += 1
+  }
+  return isPrime
+}
+
+myself.isPrime = "Also just for funsies. Will replace with fancier test (e.g. Miller-Rabin) later."
+const isPrime = (n) => sieve(n + 1)[n]
 
 myself.roundDecimal = "Rounds (towards zero) to a given number of decimal places."
 const roundDecimal = (value, places = 2) => {
@@ -50,6 +70,8 @@ const msConverter = (time, rawUnits, fromMs = true) => {
 
 module.exports = {
   docs: () => print(myself),
+  sieve,
+  // isPrime,
   roundDecimal,
   arithmeticMean,
   diffsCalculator,
