@@ -6,6 +6,7 @@ source $VIMRUNTIME/defaults.vim
 set relativenumber
 
 inoremap jj <ESC>
+nnoremap <silent> <C-l> :nohlsearch<CR><C-l>
 
 " these don't work?
 " nnoremap ; :
@@ -19,3 +20,4 @@ set smartcase
 set shiftwidth=2 smarttab
 set expandtab
 set tabstop=8 softtabstop=0
+
