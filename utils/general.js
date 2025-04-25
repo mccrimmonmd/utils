@@ -216,8 +216,8 @@ const iterify = (thing) => isIterable(thing) ? thing : [thing]
 myself.arrayify = "Converts iterables into arrays; non-iterables result in an empty array. For when you want to ensure Array methods and properties like length, reduce, slice, etc. are available. (If you want non-iterables to also be converted instead of ignored, you should probably use `[].concat(thing)` instead.)"
 const arrayify = (thing) => isIterable(thing) ? [...thing] : []
 
-myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value."
-// TODO: test
+myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value. NOTE: if the original function is recursive, it must be saved to the same variable (`someFunc = memoize(someFunc)`) or wrapped in a closure first to be memoized properly."
+// TODO: fix 'new name must be old name' thing...somehow?
 const memoize = (func) => {
   const cache = new MultiMap()
   return new Proxy(func, {
@@ -229,7 +229,6 @@ const memoize = (func) => {
       return result
     }
   })
-  // return (...params) => multiCache.cache(params, func)
 }
 const MultiMap = class extends Map {
   #leafKey
@@ -239,36 +238,43 @@ const MultiMap = class extends Map {
     this.#leafKey = Symbol()
   }
 
-  _traverse(argumentsList, mutating, value) {
-    let innerMap = this
-    for (const key of argumentsList) {
-      if (!innerMap.has(key)) {
+  _traverse (argumentsList, mutating, value) {
+    const single = !argumentsList.length
+    const first = single ? argumentsList : argumentsList[0]
+    let hasKey = super.has(first)
+    if (single) {
+      if (mutating) super.set(first, value)
+      return { hasKey, value: super.get(first) }
+    }
+
+    if (!hasKey) super.set(first, new Map())
+    let innerMap = super.get(first)
+    for (const key of argumentsList.slice(1)) {
+      hasKey = innerMap.has(key)
+      if (!hasKey) {
         innerMap.set(key, new Map())
       }
       innerMap = innerMap.get(key)
     }
+    hasKey = innerMap.has(this.#leafKey)
     if (mutating) innerMap.set(this.#leafKey, value)
-    return {
-      hasKey: innerMap.has(this.#leafKey),
-      value: innerMap.get(this.#leafKey)
-    }
+    return { hasKey, value: innerMap.get(this.#leafKey) }
   }
 
-  search (argumentsList) {
-    return this._traverse(argumentsList)
+  search (args) {
+    return this._traverse(args)
   }
 
-  has (argumentsList) {
-    return this._traverse(argumentsList).hasKey
+  has (args) {
+    return this._traverse(args).hasKey
   }
 
-  get (argumentsList) {
-    return this._traverse(argumentsList).value
+  get (args) {
+    return this._traverse(args).value
   }
 
-  set (argumentsList, value) {
-    this._traverse(argumentsList, true, value)
-    return this
+  set (key, value) {
+    return this._traverse(key, true, value)
   }
 }
 
