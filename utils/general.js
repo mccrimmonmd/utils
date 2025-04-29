@@ -88,6 +88,8 @@ const binaryError = (opType) => {
 const opFuncs = {
   // non-chaining operators
   err: (message, errType = Error) => (() => { throw new errType(message) })(),
+  // choose can be short-circuited by passing functions and calling the result:
+  // `op('choose')(isSpam(x), () => doSpamThing(x), () => doHamThing(x))()`
   choose: (cond, ifTrue, ifFalse) => cond ? ifTrue : ifFalse,
   loop: (cond, exec, params = []) => {
     let result
@@ -96,9 +98,9 @@ const opFuncs = {
     }
     return result
   },
-  iter: (exec, arr) => {
+  iter: (exec, iterable) => {
     let result
-    for (const i of arr) {
+    for (const i of iterable) {
       result = exec(i)
     }
     return result
@@ -133,32 +135,36 @@ const opFuncs = {
     for (const i of Object.keys(params.slice(1))) params[i] = 1 / params[i]
     return params.reduce(product, 1)
   },
-  pow: reduceify((a, b) => a** b, 1),
+  pow: reduceify((a, b) => a ** b, 1),
+  // these are kind of already covered by the Array methods 'some' and 'every'
+  // any: reduceify((a, b) => a || b, false),
+  // all: reduceify((a, b) => a && b, true),
   lt: boolReduce(
-    (a, b) => a < b,
+    (a, b) => (a < b),
     () => binaryError('lt'),
+    -Infinity,
   ),
   lte: boolReduce(
-    (a, b) => { return a <= b },
+    (a, b) => (a <= b),
     () => binaryError('lte'),
+    -Infinity,
   ),
   gt: boolReduce(
-    (a, b) => a > b,
+    (a, b) => (a > b),
     () => binaryError('gt'),
+    Infinity,
   ),
   gte: boolReduce(
-    (a, b) => { return a >= b },
+    (a, b) => (a >= b),
     () => binaryError('gte'),
+    Infinity,
   ),
   // short-circuiting operators
   // (how to actually short-circuit? a function's arguments are all evaluated when it's called!)
   eq: boolReduce(
     (a, b) => a === b,
     () => true,
-    true,
   ),
-  or: reduceify((a, b) => a || b, false),
-  and: reduceify((a, b) => a && b, true),
 }
 
 myself.TypeCheckedArray = "An Array which can only contain values that are all the same type. Was supposed to be an exercise in inheritance, but ended up mostly being about Proxies instead."
