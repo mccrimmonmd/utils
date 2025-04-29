@@ -105,9 +105,13 @@ const opFuncs = {
     }
     return result
   },
-  match: (testAgainst, ...tasks) => {
-    // TODO: can this support a default case?
-    let result
+  match: ({
+    test,
+    tasks = [],
+    defaultTask,
+  }) => {
+    let none = Symbol()
+    let result = none
     for (const {
       tests,
       task,
@@ -115,12 +119,16 @@ const opFuncs = {
       me = this,
       stop = false
     } of tasks) {
-      if (tests.includes(testAgainst)) {
+      if (tests.includes(test)) {
         result = task.apply(me, params)
         if (stop) break
       }
     }
-    return result
+    if (result === none && defaultTask != null) {
+      const { task, params = [], me = this } = defaultTask
+      result = task.apply(me, params)
+    }
+    return result === none ? null : result
   },
   // chaining operators
   add: reduceify(sum, 0),
