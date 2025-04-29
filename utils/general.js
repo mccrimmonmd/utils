@@ -1,3 +1,6 @@
+// TODO: pull some of these functions out into new submodule--perhaps
+// something to do with iterables?
+
 const myself = {} // documentation
 const { max, min, flatten, sum, product, reduceify } = require('./reducers')
 
