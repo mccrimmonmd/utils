@@ -283,13 +283,12 @@ const memoize = (func) => {
 }
 const MultiMap = class extends Map {
   #leafKey
-  
   constructor (...params) {
     super(...params)
     this.#leafKey = Symbol()
   }
 
-  _traverse (argumentsList, mutating, value) {
+  #traverse (argumentsList, mutating = false, value) {
     const single = !argumentsList.length
     const first = single ? argumentsList : argumentsList[0]
     let hasKey = super.has(first)
@@ -301,8 +300,7 @@ const MultiMap = class extends Map {
     if (!hasKey) super.set(first, new Map())
     let innerMap = super.get(first)
     for (const key of argumentsList.slice(1)) {
-      hasKey = innerMap.has(key)
-      if (!hasKey) {
+      if (!innerMap.has(key)) {
         innerMap.set(key, new Map())
       }
       innerMap = innerMap.get(key)
@@ -313,19 +311,19 @@ const MultiMap = class extends Map {
   }
 
   search (args) {
-    return this._traverse(args)
+    return this.#traverse(args)
   }
 
   has (args) {
-    return this._traverse(args).hasKey
+    return this.#traverse(args).hasKey
   }
 
   get (args) {
-    return this._traverse(args).value
+    return this.#traverse(args).value
   }
 
   set (key, value) {
-    return this._traverse(key, true, value)
+    return this.#traverse(key, true, value)
   }
 }
 
