@@ -408,8 +408,8 @@ const getSorter = (sortOn, descending = false) => {
     if (a === b) return [ a, b ]
 
     // sort null to the end of the list, just before undefined
-    if (a == null) return b === undefined ? [ 0, 1 ] : [ 1, 0 ]
-    if (b == null) return a === undefined ? [ 1, 0 ] : [ 0, 1 ]
+    if (a === null) return b === undefined ? [ 0, 1 ] : [ 1, 0 ]
+    if (b === null) return a === undefined ? [ 1, 0 ] : [ 0, 1 ]
 
     const [ aType, bType ] = [ typeof a, typeof b ]
     if (aType !== bType) return [ aType, bType ]
