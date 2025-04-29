@@ -505,13 +505,13 @@ const iterEquals = (a, b, ordered = true) => {
 
 // TODO: document, export
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#set_composition>
+const compareItersBy = (type) => (a, b) => [...new Set(a)[type](new Set(b))]
 const getIter = {
   diff: compareItersBy('difference'),
   intersection: compareItersBy('intersection'),
   union: compareItersBy('union'),
   biDiff: compareItersBy('symmetricDifference'),
 }
-const compareItersBy = (type) => (a, b) => [...new Set(a)[type](new Set(b))]
 
 myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be commented)."
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
