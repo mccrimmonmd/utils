@@ -167,12 +167,42 @@ const opFuncs = {
     () => binaryError('gte'),
     Infinity,
   ),
-  // short-circuiting operators
-  // (how to actually short-circuit? a function's arguments are all evaluated when it's called!)
   eq: boolReduce(
     (a, b) => a === b,
     () => true,
   ),
+  // short-circuiting operators
+  pairwiseComp: (paramIter, comp = (a, b) => a === b) => {
+    let none = true
+    let one = true
+    let prev
+    for (const param of paramIter) {
+      if (none) {
+        none = false
+        prev = param
+        continue
+      }
+      one = false
+      if (!comp(prev, param)) return false
+      prev = param
+    }
+    if (one || none) return binaryError('pairwiseComp')
+    return true
+  },
+  any: (paramIter, test = (a) => a) => {
+    for (const param of paramIter) {
+      if (test(param)) return true
+    }
+    return false
+  },
+  all: (paramIter, test = (a) => a) => {
+    for (const param of paramIter) {
+      if (!test(param)) return false
+    }
+    return true
+  },
+  // short-circuiting versions of lt, etc.?
+  // (no short-circuiting version of choose; see comment above)
 }
 
 myself.TypeCheckedArray = "An Array which can only contain values that are all the same type. Was supposed to be an exercise in inheritance, but ended up mostly being about Proxies instead."
