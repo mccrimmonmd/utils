@@ -71,7 +71,7 @@ const msConverter = (time, rawUnits, fromMs = true) => {
 module.exports = {
   docs: () => print(myself),
   sieve,
-  // isPrime,
+  isPrime,
   roundDecimal,
   arithmeticMean,
   diffsCalculator,
