@@ -67,10 +67,14 @@ const boolReduce = (func, unaryCase = false, ...initialValue) => {
     if (typeof unaryCase === 'function' && params.length === 1) {
       return unaryCase(params[0])
     }
+    let unbroken = true
     return params.reduce(
-      ([unbroken, a], b) => [unbroken && func(a, b), b],
-      initialValue.length ? [true, initialValue[0]] : [true]
-    )[0]
+      (a, b) => {
+        unbroken = unbroken && func(a, b)
+        return b
+      },
+      ...initialValue
+    )
   }
 }
 
