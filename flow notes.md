@@ -608,7 +608,7 @@ makinToast: {
 # end+>point: (blah) === blah end+>point
 # something: (transistor) === (transistor)->_ something
 [someChipAs: asVar, anotherAsItself:] (
-  asVar->spam ham->anotherAsItself
+  asVar->spam ham+>anotherAsItself
   ["eggs", "beans", "bacon"] sides+>asVar
   someOutsideChip server+>asVar
 )
