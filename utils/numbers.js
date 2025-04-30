@@ -63,9 +63,9 @@ const msConverter = (time, rawUnits, fromMs = true) => {
       throw new TypeError(`Time unit '${units}' invalid or unimplemented`)
   }
 
-  const divOrMul = fromMs ? '/' : '*'
+  const divOrMul = fromMs ? 'div' : 'mult'
   const factor = factors.reduce(product, 1)
-  return op(time, divOrMul, factor)
+  return op(fromMs ? 'div' : 'mult')(time, ...factors)
 }
 
 
