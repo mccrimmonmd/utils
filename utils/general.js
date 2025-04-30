@@ -137,14 +137,16 @@ const opFuncs = {
   add: reduceify(sum, 0),
   sub: (...params) => {
     if (params.length === 1) return -params[0]
-    for (const i of Object.keys(params.slice(1))) params[i] = -params[i]
-    return params.reduce(sum, 0)
+    return params
+      .map((n, i) => i === 0 ? n : -n)
+      .reduce(sum, 0)
   },
   mult: reduceify(product, 1),
   div: (...params) => {
     if (params.length === 1) return 1 / params[0]
-    for (const i of Object.keys(params.slice(1))) params[i] = 1 / params[i]
-    return params.reduce(product, 1)
+    return params
+      .map((n, i) => i === 0 ? n : 1 / n)
+      .reduce(product, 1)
   },
   pow: reduceify((a, b) => a ** b, 1),
   lt: boolReduce(
