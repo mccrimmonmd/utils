@@ -71,8 +71,7 @@ const boolReduce = (func, unaryCase = false, ...initialValue) => {
       return unaryCase(params[0])
     }
     let unbroken = true
-    return params.reduce(
-      (a, b) => {
+    return params.reduce((a, b) => {
         unbroken = unbroken && func(a, b)
         return b
       },
@@ -92,7 +91,7 @@ const opFuncs = {
   // non-chaining operators
   err: (message, errType = Error) => (() => { throw new errType(message) })(),
   // choose can be short-circuited by passing functions and calling the result:
-  // `op('choose')(isSpam(x), () => doSpamThing(x), () => doHamThing(x))()`
+  // `op('choose')(isSpam(x), () => doSpamThing(x), () => doEggsThing(x))()`
   choose: (cond, ifTrue, ifFalse) => cond ? ifTrue : ifFalse,
   loop: (cond, exec, params = []) => {
     let result
@@ -113,8 +112,8 @@ const opFuncs = {
     tasks = [],
     defaultTask,
   }) => {
-    let none = Symbol()
-    let result = none
+    let none = true
+    let result
     for (const {
       tests,
       task,
@@ -123,15 +122,16 @@ const opFuncs = {
       stop = false
     } of tasks) {
       if (tests.includes(test)) {
+        none = false
         result = task.apply(me, params)
         if (stop) break
       }
     }
-    if (result === none && defaultTask != null) {
+    if (none && defaultTask != null) {
       const { task, params = [], me = this } = defaultTask
       result = task.apply(me, params)
     }
-    return result === none ? null : result
+    return result
   },
   // chaining operators
   add: reduceify(sum, 0),
@@ -147,9 +147,6 @@ const opFuncs = {
     return params.reduce(product, 1)
   },
   pow: reduceify((a, b) => a ** b, 1),
-  // these are kind of already covered by the Array methods 'some' and 'every'
-  // any: reduceify((a, b) => a || b, false),
-  // all: reduceify((a, b) => a && b, true),
   lt: boolReduce(
     (a, b) => (a < b),
     () => binaryError('lt'),

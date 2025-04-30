@@ -1,11 +1,8 @@
 const myself = {} // documentation
 
 // TODO: document
-const reduceify = (func, ...initialValue) => {
-  return (...params) => initialValue.length ?
-      params.reduce(func, initialValue[0])
-    : params.reduce(func)
-}
+const reduceify = (func, ...initialValue) =>
+  (...params) => params.reduce(func, ...initialValue)
 
 myself.flatten = "Concatenates two items that may or may not be arrays, using push instead of concat for speed. You should probably just use Array.prototype.flat instead."
 const flatten = (flattened, bump, i) => {
