@@ -4,8 +4,8 @@ const { sum, product, diffsCalculator } = require('./reducers')
 
 myself.sieve = "Sieve of Eratosthenes. Just for funsies. Might refactor into a bignum generator later."
 const sieve = (n) => {
-  if (n < 0) n = -n
-  const isPrime = arrayOf(n + 1, true)
+  n = Math.abs(n)
+  const isPrime = Array(n + 1).fill(true)
   isPrime[0] = false
   isPrime[1] = false
   let candidate = 2
@@ -20,7 +20,7 @@ const sieve = (n) => {
 }
 
 myself.isPrime = "Also just for funsies. Will replace with fancier test (e.g. Miller-Rabin) later."
-const isPrime = (n) => sieve(n + 1)[n]
+const isPrime = (n) => sieve(n)[n]
 
 myself.roundDecimal = "Rounds (towards zero) to a given number of decimal places."
 const roundDecimal = (value, places = 2) => {
@@ -46,7 +46,7 @@ const stdDeviation = (values, isSample = true) => {
 myself.msConverter = "Converts milliseconds into other common units, or vice versa."
 const msConverter = (time, rawUnits, fromMs = true) => {
   rawUnits = rawUnits.toLowerCase()
-  const units = rawUnits + rawUnits.endsWith('s') ? '' : 's'
+  const units = rawUnits.endsWith('s') ? rawUnits : rawUnits + 's'
   const factors = []
 
   switch (units) {
