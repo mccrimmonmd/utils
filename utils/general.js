@@ -229,7 +229,7 @@ myself.isIterable = "A more concise test for iterability."
 const isIterable = (thing) => typeof thing?.[Symbol.iterator] === 'function'
 
 myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge."
-const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
+const isEmpty = (value, alwaysEmpty = [], neverEmpty = [ 0, 0n ]) => {
   if (alwaysEmpty.includes(value)) return true
   if (neverEmpty.includes(value)) return false
   
@@ -238,12 +238,12 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = []) => {
   if (typeof value === 'function') {
     // this will probably never be useful, but it was a fun regex exercise
     const arrowRegex = multilineRegex([
-      /^\(\)=>({;*)?/,               // () => [{[;]]
-      /(return)?(undefined)?;*}?$/   // [return][undefined][;][}]
+      /^\(\)=>({;*)?/,               // () => [ { [ ; ] ]
+      /(return)?(undefined)?;*}?$/   // [ return ][ undefined ][ ; ][ } ]
     ])
     const funcRegex = multilineRegex([
-      /^function([\w]*)\(\){/,       // function[ name] () {
-      /;*(return(undefined)?;*)?/,   // [;][return [undefined][;]]
+      /^function([\w]*)\(\){/,       // function [ name ] () {
+      /;*(return(undefined)?;*)?/,   // [ ; ][ return [ undefined ][ ; ] ]
       /}$/                           // }
     ])
     const valueString = value.toString().replaceAll(/\s/g, '')
