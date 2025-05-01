@@ -19,7 +19,7 @@ const range = function* (start = 0, stop, step = 1) {
   }
   if (stop === undefined) {
     stop = start
-    start = (start - start)
+    start = typeof step === 'bigint' ? 0n : 0
   }
   if (start < stop && step <= 0) return
   if (start > stop && step >= 0) return
