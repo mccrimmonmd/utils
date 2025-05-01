@@ -263,7 +263,7 @@ const isEmpty = (value, alwaysEmpty = [], neverEmpty = [ 0, 0n ]) => {
 myself.iterify = "Wraps the given parameter in an array, unless it's already iterable. (In case you want to preserve the original type and/or avoid making a copy--otherwise, `[].concat(thing)` is probably a better choice.)"
 const iterify = (thing) => isIterable(thing) ? thing : [thing]
 
-myself.arrayify = "Converts iterables into arrays; non-iterables result in an empty array. For when you want to ensure Array methods and properties like length, reduce, slice, etc. are available. (If you want non-iterables to also be converted instead of ignored, you should probably use `[].concat(thing)` instead.)"
+myself.arrayify = "Copies iterables into a new array; non-iterables result in an empty array. For when you want to ensure Array properties like length, reduce, slice, etc. are available. (If you want non-iterables to also be copied instead of ignored, you should probably use `[].concat(thing)` instead.)"
 const arrayify = (thing) => isIterable(thing) ? [...thing] : []
 
 myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value. NOTE: if the original function is recursive, it must be saved to the same variable (`someFunc = memoize(someFunc)`) or wrapped in a closure first to be memoized properly."
