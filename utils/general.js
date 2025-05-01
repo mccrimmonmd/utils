@@ -291,9 +291,10 @@ const MultiMap = class extends Map {
     const single = !argumentsList.length
     const first = single ? argumentsList : argumentsList[0]
     let hasKey = super.has(first)
+    let oldValue = super.get(first)
     if (single) {
       if (mutating) super.set(first, value)
-      return { hasKey, value: super.get(first) }
+      return { hasKey, value: oldValue }
     }
 
     if (!hasKey) super.set(first, new Map())
@@ -305,8 +306,9 @@ const MultiMap = class extends Map {
       innerMap = innerMap.get(key)
     }
     hasKey = innerMap.has(this.#leafKey)
+    oldValue = innerMap.get(this.#leafKey)
     if (mutating) innerMap.set(this.#leafKey, value)
-    return { hasKey, value: innerMap.get(this.#leafKey) }
+    return { hasKey, value: oldValue }
   }
 
   search (args) {
@@ -321,8 +323,8 @@ const MultiMap = class extends Map {
     return this.#traverse(args).value
   }
 
-  set (key, value) {
-    return this.#traverse(key, true, value)
+  set (args, value) {
+    return this.#traverse(args, true, value)
   }
 }
 
