@@ -7,7 +7,7 @@ const {
   isEmpty,
   isIterable,
   getSorter,
-  compareItersBy,
+  getIter,
 } = require('./general')
 const { sum, product } = require('./reducers')
 
@@ -100,7 +100,7 @@ const filterObject = (
 const compareBy = (type) => (a, b, options = {}) => {
   const filterOn = options.filterOn ?? 'keys'
   const diffOn = filterOn === 'keys' ? Object.keys : Object.values
-  const diffs = compareItersBy(type)(diffOn(a), diffOn(b))
+  const diffs = getIter[type](diffOn(a), diffOn(b))
   a = filterObject(a, diffs, options)
   b = filterObject(b, diffs, options)
   return {
@@ -110,10 +110,10 @@ const compareBy = (type) => (a, b, options = {}) => {
 }
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#set_composition>
 // myself.compareBy = 'diff, both, either, xor: ...'
-const compareDiff   = compareBy('difference')
+const compareDiff   = compareBy('diff')
 const compareBoth   = compareBy('intersection')
 const compareEither = compareBy('union')
-const compareXor    = compareBy('symmetricDifference')
+const compareXor    = compareBy('biDiff')
 
 myself.extractNested = "Flattens (by one) the given object, returning the flattened values and, separately, any remaining nested values."
 const extractNested = (obj) => {
