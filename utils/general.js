@@ -6,6 +6,12 @@ const { max, min, flatten, sum, product, reduceify } = require('./reducers')
 
 const backToWork = require('./BACK TO WORK')
 
+myself.len = "Python-style function for getting the length of an iterable in a null-safe way, because I'm tired of writing `!arr?.length` over and over."
+const len = (thing) => {
+  if (thing == null || !isIterable(thing)) return 0
+  return Array.isArray(thing) ? thing.length : [...thing].length
+}
+
 myself.range = "Python-style range function. Generator."
 // Alternate version (source: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#sequence_generator_range>)
 // const range = (start, stop, step = 1) =>
@@ -30,16 +36,16 @@ const range = function* (start = 0, stop, step = 1) {
 
 myself.zip = "Python-style zip function: combines a list of arrays into a list of pairs/triplets/etc. Takes an optional parameter for padding the results when the input arrays are different lengths; if none is provided, the output will be the length of the shortest input array."
 const zip = (arrays, ...padding) => {
-  const padResults = padding.length
+  const padResults = Boolean(padding.length)
   padding = padding[0]
   
   const zipped = []
-  if (!arrays?.length) return zipped
+  if (!len(arrays)) return zipped
 
-  const len = arrays
+  const zippedLen = arrays
     .map(array => array.length)
     .reduce(padResults ? max : min)
-  for (const i of range(len)) {
+  for (const i of range(zippedLen)) {
     let group = []
     for (const array of arrays) {
       let val = i < array.length ? array[i] : padding
