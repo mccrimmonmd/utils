@@ -59,7 +59,7 @@ const stats = (totalStats, value) => {
 }
 ;`statsInit: Helper function for 'stats' that allows it to be used incrementally:
 
-  var consolidatedStats
+  let consolidatedStats
   while (collectingData) {
     let newData = collectMoreData()
     consolidatedStats = newData.reduce(stats, consolidatedStats)
@@ -67,7 +67,7 @@ const stats = (totalStats, value) => {
 
 or in a single pass:
 
-  var consolidatedStats = allTheRawData.reduce(stats)
+  let consolidatedStats = allTheRawData.reduce(stats)
 `
 const statsInit = (value) => {
   return {
