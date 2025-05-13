@@ -62,7 +62,7 @@ const print = (obj, depth = null, repl = true) => {
   return repl ? undefined : obj
 }
 
-myself.logVar = "A debugging function that logs the name, location, and value of a variable in a structured way"
+myself.logVar = "A debugging function that logs the name, location, and value of a variable in a structured way."
 const logVar = (value, name = '<anonymous>', loc) => {
   if (loc == null) {
     loc = new Error().stack.split('\n').slice(1).join('\n')
@@ -109,7 +109,7 @@ const binaryError = (opType) => {
 const opFuncs = {
   // non-chaining operators
   err: (message, errType = Error) => (() => { throw new errType(message) })(),
-  // choose can be short-circuited by passing functions and calling the result:
+  // choose can short-circuit if you pass functions and call the result:
   // `op('choose')(isSpam(x), () => doSpamThing(x), () => doEggsThing(x))()`
   choose: (cond, ifTrue, ifFalse) => cond ? ifTrue : ifFalse,
   loop: (cond, exec, params = []) => {
@@ -223,7 +223,7 @@ const opFuncs = {
     return true
   },
   // short-circuiting versions of lt, etc.?
-  // (no short-circuiting version of choose; see comment above)
+  // (no short-circuiting version of choose needed; see comment above)
 }
 
 myself.TypeCheckedArray = "An Array which can only contain values that are all the same type. Was supposed to be an exercise in inheritance, but ended up mostly being about Proxies instead."
@@ -398,6 +398,9 @@ const findUniques = (iterable, identifier) => {
 
 myself.getSorter = "Returns a sorting function that behaves more sanely than the default (specifically: mixed-case text, text with diacritics, and numbers sort the way you would expect; Objects are sorted with util.inspect; and mixed-type arrays are sorted by type first, then value). Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties)."
 const getSorter = (sortOn, descending = false) => {
+  // NB: I chose `descending = false` instead of the more natural `ascending
+  // = true` so it can be called as e.g. `getSorter(sortThing, 'descending')`
+
   // In addition to a saner sort order, this function has a secondary goal of
   // sorting arbitrary permutations *unambiguously.* That is, for any given
   // Array arr, `shuffle(arr).sort(getSorter())` should always result in a
