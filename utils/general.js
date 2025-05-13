@@ -191,6 +191,7 @@ const opFuncs = {
   eq: boolReduce(
     (a, b) => a === b,
     () => true,
+    false, // because Boolean() returns false, implying that's the default
   ),
   // short-circuiting operators
   pairwiseComp: (paramIter, comp = (a, b) => a === b) => {
