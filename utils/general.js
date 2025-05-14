@@ -527,20 +527,20 @@ const iterEquals = (a, b, ordered = true) => {
   // a = ordered ? [...a] : makeGroups(a)
   // let i = 0
   // for (const val of b) {
-    // if (ordered) {
-      // if (a[i] !== val) return false
-    // }
-    // else {
-      // if (!a.has(val)) return false
-      // let aGroup = a.get(val)
-      // if (aGroup.length === 0) return false
-      // aGroup.pop()
-    // }
-    // i += 1
+  //   if (ordered) {
+  //     if (a[i] !== val) return false
+  //   }
+  //   else {
+  //     if (!a.has(val)) return false
+  //     let aGroup = a.get(val)
+  //     if (aGroup.length === 0) return false
+  //     aGroup.pop()
+  //   }
+  //   i += 1
   // }
   // return ordered ?
-      // i === a.length
-    // : i === a.size && [...a.values()].every(group => group.length === 0)
+  //     i === a.length
+  //   : i === a.size && [...a.values()].every(group => group.length === 0)
 }
 
 // TODO: document, export
