@@ -424,7 +424,7 @@ src dst (
 ]
 
 fib: {
-  &rec ([
+  &rec: ([
     [+>*, 1] sub fib,
     [+>*, 2] sub fib
   ] add)
@@ -473,13 +473,13 @@ src dst # *
 >#
 
 src->out in+>mid->out in+>dst # optional ; to terminate statement
-src->out & in+>dst # the identity chip doubles as an explicit wire! (might not be necessary anymore)
+src->out & in+>dst # the identity chip doubles as an explicit wire
 src->sharedEndpoint+>dst
 src->['out'] ['in']+>dst
 src->["this endpoint's shared"]+>dst
 src->out &labeledEndpoint+>dst # creates a label with the same name as the endpoint. If one already exists, this is an error...
-src->out [&strIn]+>dst # NOT to be confused with this...
-src->[&strOut] in+>dst # which will use the string *in* &endpoint (similar to obj[variable] in js)
+src->out [&str]+>dst # NOT to be confused with this...
+src->[&str] in+>dst # which will use the string *in* &str (similar to obj[variable] in js)
 src->&sharedLabel+>dst
 src->[&sharedLookup]+>dst
 
@@ -496,7 +496,7 @@ src* in+>dst # chip literal as signal
 src->out &label* # turn signal back into chip (label* and &label are now both === identity/chip as signal still, label === back to chip literal)
 src->out +@dst # "push" to next empty index in dst
 src-@ in+>dst # "peek" from next nonempty index in src
-src->out +=dst # "spread" a plexer from src into dst
+src->out +=dst # "spread" a plexer from src into dst (src->out +<dst)
 src-= in+>dst # "condense" an indexed circuit into a plexer
 src-= +=dst # map each index from src to the same index in dst
 src @ dst # same
@@ -616,17 +616,7 @@ makinToast: {
 ## Implementation
 
 ```javascript
-{
-Choose: {
-  if: <() { return op("choose") }>,
-  [
-    => if (
-      condition::0,
-      ifTrue::1,
-      ifFalse::2,
-    ),
-    if =>::result =>
-  ]
-}
-}
+
+const topLevelInputs = magicallyParsedProgram.inputs
+
 ```
