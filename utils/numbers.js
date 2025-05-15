@@ -45,11 +45,17 @@ const stdDeviation = (values, isSample = true) => {
 
 myself.msConverter = "Converts milliseconds into other common units, or vice versa."
 const msConverter = (time, rawUnits, fromMs = true) => {
-  rawUnits = rawUnits.toLowerCase()
-  const units = rawUnits.endsWith('s') ? rawUnits : rawUnits + 's'
+  let units = rawUnits.toLowerCase()
+  if (!units.endsWith('s')) units += 's'
   const factors = []
 
+  if (units === 'years') {
+    factors.push(365.25)
+    units = 'days'
+  }
   switch (units) {
+    case 'weeks':
+      factors.push(7)
     case 'days':
       factors.push(24)
     case 'hours':
