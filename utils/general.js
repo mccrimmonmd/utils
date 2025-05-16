@@ -62,6 +62,14 @@ const print = (obj, depth = null, repl = true) => {
   return repl ? undefined : obj
 }
 
+myself.pluralize = "Returns the plural version of the given word if the given number is more or less than 1. Makes a token attempt to be grammatical, but no guarantees."
+const pluralize = (word, n) => {
+  if (n === 1) return word
+  if (word.endsWith('s')) return word + 'es'
+  if (word.endsWith('y')) return word.slice(0, -1) + 'ies'
+  return word + 's'
+}
+
 myself.logVar = "A debugging function that logs the name, location, and value of a variable in a structured way."
 const logVar = (value, name = '<anonymous>', loc) => {
   if (loc == null) {
@@ -103,8 +111,10 @@ myself.op = "Turn JavaScript's native operators into proper functions."
 const op = (opType) => opFuncs[opType] ?? opFuncs.err(
   `Unsupported or invalid operator '${opType}'`, TypeError
 )
-const binaryError = (opType) => {
-  throw new TypeError(`Operator '${opType}' requires at least 2 arguments`)
+const binaryError = (opType, n = 2) => {
+  throw new TypeError(
+    `Operator '${opType}' requires at least ${n} ${pluralize('argument', n)}`
+  )
 }
 const opFuncs = {
   // non-chaining operators
@@ -567,6 +577,7 @@ module.exports = {
   range,
   zip,
   print,
+  pluralize,
   logVar,
   ifFunc,
   op,
