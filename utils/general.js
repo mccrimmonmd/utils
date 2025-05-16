@@ -92,19 +92,15 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
 }
 
 // TODO: document
-const boolReduce = (func, unaryCase = false, ...initialValue) => {
-  return (...params) => {
-    if (typeof unaryCase === 'function' && params.length === 1) {
-      return unaryCase(params[0])
-    }
-    let unbroken = true
-    return params.reduce((a, b) => {
-        unbroken = unbroken && func(a, b)
-        return b
-      },
-      ...initialValue
-    )
-  }
+const boolReduce = (params, func, ...initialValue) => {
+  let unbroken = true
+  params.reduce((a, b) => {
+      unbroken = unbroken && func(a, b)
+      return b
+    },
+    ...initialValue
+  )
+  return unbroken
 }
 
 myself.op = "Turn JavaScript's native operators into proper functions."
@@ -178,31 +174,27 @@ const opFuncs = {
       .reduce(product, 1)
   },
   pow: (...params) => params.reduce((a, b) => a ** b),
-  lt: boolReduce(
-    (a, b) => (a < b),
-    () => parityError('lt'),
-    -Infinity,
-  ),
-  lte: boolReduce(
-    (a, b) => (a <= b),
-    () => parityError('lte'),
-    -Infinity,
-  ),
-  gt: boolReduce(
-    (a, b) => (a > b),
-    () => parityError('gt'),
-    Infinity,
-  ),
-  gte: boolReduce(
-    (a, b) => (a >= b),
-    () => parityError('gte'),
-    Infinity,
-  ),
-  eq: boolReduce(
-    (a, b) => a === b,
-    () => true,
-    false, // because Boolean() returns false, implying that's the default
-  ),
+  lt: (...params) => {
+    if (params.length <= 1) return parityError('lt')
+    return boolReduce(params, (a, b) => (a < b), -Infinity)
+  },
+  lte: (...params) => {
+    if (params.length <= 1) return parityError('lte')
+    return boolReduce(params, (a, b) => (a <= b), -Infinity)
+  },
+  gt: (...params) => {
+    if (params.length <= 1) return parityError('gt')
+    return boolReduce(params, (a, b) => (a > b), Infinity)
+  },
+  gte: (...params) => {
+    if (params.length <= 1) return parityError('gte')
+    return boolReduce(params, (a, b) => (a >= b), Infinity)
+  },
+  eq: (...params) => {
+    if (params.length < 1) return parityError('eq', 1)
+    if (params.length === 1) return true
+    return boolReduce(params, (a, b) => a === b)
+  },
   // short-circuiting operators
   pairwiseComp: (paramIter, comp = (a, b) => a === b) => {
     let none = true
