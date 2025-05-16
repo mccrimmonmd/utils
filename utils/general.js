@@ -111,7 +111,7 @@ myself.op = "Turn JavaScript's native operators into proper functions."
 const op = (opType) => opFuncs[opType] ?? opFuncs.err(
   `Unsupported or invalid operator '${opType}'`, TypeError
 )
-const binaryError = (opType, n = 2) => {
+const parityError = (opType, n = 2) => {
   throw new TypeError(
     `Operator '${opType}' requires at least ${n} ${pluralize('argument', n)}`
   )
@@ -180,22 +180,22 @@ const opFuncs = {
   pow: reduceify((a, b) => a ** b, 1),
   lt: boolReduce(
     (a, b) => (a < b),
-    () => binaryError('lt'),
+    () => parityError('lt'),
     -Infinity,
   ),
   lte: boolReduce(
     (a, b) => (a <= b),
-    () => binaryError('lte'),
+    () => parityError('lte'),
     -Infinity,
   ),
   gt: boolReduce(
     (a, b) => (a > b),
-    () => binaryError('gt'),
+    () => parityError('gt'),
     Infinity,
   ),
   gte: boolReduce(
     (a, b) => (a >= b),
-    () => binaryError('gte'),
+    () => parityError('gte'),
     Infinity,
   ),
   eq: boolReduce(
@@ -218,7 +218,7 @@ const opFuncs = {
       if (!comp(prev, param)) return false
       prev = param
     }
-    if (one || none) return binaryError('pairwiseComp')
+    if (one || none) return parityError('pairwiseComp')
     return true
   },
   any: (paramIter, test = (a) => a) => {
