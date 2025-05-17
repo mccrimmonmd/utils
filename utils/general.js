@@ -72,15 +72,13 @@ const pluralize = (word, n) => {
 
 myself.logVar = "A debugging function that logs the name, location, and value of a variable in a structured way."
 const logVar = (value, name = '<anonymous>', loc) => {
-  if (loc == null) {
-    loc = new Error().stack.split('\n').slice(1).join('\n')
-  }
-  console.log('='.repeat(60))
+  loc = loc ?? new Error().stack.split('\n').slice(1).join('\n')
+  console.log('=*='.repeat(20))
   console.log(`'${name}' at:`)
   console.log(loc)
-  console.log('-'.repeat(60))
+  console.log('-**-'.repeat(15))
   console.dir(value)
-  console.log('='.repeat(60))
+  console.log('=*='.repeat(20))
 }
 
 myself.ifFunc = "Pure-ish 'if' function with short-circuiting. Just because. (Only 'ish' because, without the side effect of assignment, the return value of the executed branch would be lost, making the function useless unless the branches themselves had side effects.)"
