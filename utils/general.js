@@ -66,9 +66,10 @@ myself.pluralize = "Returns the plural version of the given word if the given nu
 const pluralize = (word, n = 2) => {
   if (n === 1 || !word.length) return word
   const lower = word.toLowerCase()
-  if (word.length > 1 && /y$/.test(lower)) return word.slice(0, -1) + 'ies'
-  if (word.length > 1 && /[^ef]f$/.test(lower)) return word.slice(0, -1) + 'ves'
+  if (lower.endsWith('ife')) return word.slice(0, -2) + 'ves'
+  if (lower.length > 1 && lower.endsWith('y')) return word.slice(0, -1) + 'ies'
   if (/(?:s|x|ch|sh)$/.test(lower)) return word + 'es'
+  if (/(?:ar|a|l)f$/.test(lower)) return word.slice(0, -1) + 'ves'
   return word + 's'
 }
 
