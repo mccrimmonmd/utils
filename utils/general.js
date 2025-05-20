@@ -74,9 +74,9 @@ const pluralize = (word, n = 2) => {
 
 myself.logVar = "A debugging function that logs the name, location, and value of a variable in a structured way."
 const logVar = (value, name = '<anonymous>', loc) => {
-  loc = loc ?? new Error().stack.split('\n').slice(1).join('\n')
+  loc = loc ?? new Error().stack.split('\n').slice(2).join('\n')
   console.log('=*='.repeat(20))
-  console.log(`'${name}' at:`)
+  console.log(`value of '${name}' at:`)
   console.log(loc)
   console.log('-**-'.repeat(15))
   console.dir(value)
