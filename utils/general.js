@@ -73,14 +73,17 @@ const pluralize = (word, n = 2) => {
   return word + 's'
 }
 
-myself.logVar = "A debugging function that logs the name, location, and value of a variable in a structured way."
-const logVar = (value, name = '<anonymous>', loc) => {
-  loc = loc ?? new Error().stack.split('\n').slice(2).join('\n')
-  console.log('=*='.repeat(20))
-  console.log(`value of '${name}' at:`)
-  console.log(loc)
-  console.log('-**-'.repeat(15))
-  console.dir(value)
+myself.logVar = "A debugging function that logs the name, location, and value of a variable (or variables) in a structured way."
+const logVar = (...variables) => {
+  const defaultName = '<anonymous>'
+  const defaultLoc = new Error().stack.split('\n').slice(2).join('\n')
+  for (const [value, name = defaultName, loc = defaultLoc] of variables) {
+    console.log('=*='.repeat(20))
+    console.log(`value of '${name}' at:`)
+    console.log(loc)
+    console.log('-**-'.repeat(15))
+    console.dir(value)
+  }
   console.log('=*='.repeat(20))
 }
 
