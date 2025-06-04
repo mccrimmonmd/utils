@@ -81,7 +81,7 @@ const logVar = (...variables) => {
     console.log('=*='.repeat(20))
     console.log(`value of '${name}' at:`)
     console.log(loc)
-    console.log('-**-'.repeat(15))
+    console.log('-*-'.repeat(20))
     console.dir(value)
   }
   console.log('=*='.repeat(20))
