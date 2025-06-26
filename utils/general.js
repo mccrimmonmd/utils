@@ -1,5 +1,6 @@
 // TODO: pull some of these functions out into new submodule--perhaps
 // something to do with iterables?
+// "collections" or "iters"
 
 const myself = {} // documentation
 const { max, min, flatten, sum, product, reduceify } = require('./reducers')
@@ -254,7 +255,7 @@ const isTruthy = (thing) => thing ? 'yes' : 'no'
 myself.isIterable = "A more concise test for iterability."
 const isIterable = (thing) => typeof thing?.[Symbol.iterator] === 'function'
 
-myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge."
+myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge. By default, 0 and NaN are *not* considered empty. (Defaults can be overridden by supplying an array of exceptions.)"
 const isEmpty = (value, alwaysEmpty = [], neverEmpty = [ 0, 0n ]) => {
   if (alwaysEmpty.includes(value)) return true
   if (neverEmpty.includes(value)) return false
@@ -530,6 +531,9 @@ const iterEquals = (a, b, ordered = true) => {
         ([key, aGroup]) => b.has(key) && b.get(key).length === aGroup.length
       )
   }
+  // // premature optimization: traverses each iterable at most once for 
+  // // ordered tests and twice for unordered, instead of traversing `a` 2/4 
+  // // times as in the above methods
   // a = ordered ? [...a] : makeGroups(a)
   // let i = 0
   // for (const val of b) {
@@ -544,9 +548,12 @@ const iterEquals = (a, b, ordered = true) => {
   //   }
   //   i += 1
   // }
-  // return ordered ?
-  //     i === a.length
-  //   : i === a.size && [...a.values()].every(group => group.length === 0)
+  // const sizeMatch = ordered ? i === a.length : i === a.size
+  // if (!sizeMatch || ordered) return !!sizeMatch
+  // for (const [ key, group ]  of a) {
+  //   if (group.length !== 0) return false
+  // }
+  // return true     
 }
 
 // TODO: document, export

@@ -1,7 +1,5 @@
 const myself = {} // documentation
 
-// TODO: document
-
 myself.flatten = "Concatenates two items that may or may not be arrays, using push instead of concat for speed. You should probably just use Array.prototype.flat instead."
 const flatten = (flattened, bump, i) => {
   if (!Array.isArray(flattened)) flattened = [flattened]
