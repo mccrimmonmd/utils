@@ -1,4 +1,4 @@
-REM TODO: set up Linux-on-Win thing
+REM TODO: set up WSL
 
 REM If WinGet isn't already installed:
 REM Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
