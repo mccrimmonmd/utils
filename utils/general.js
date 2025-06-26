@@ -200,8 +200,7 @@ const opFuncs = {
   },
   eq: (...params) => {
     if (params.length < 1) return parityError('eq', 1)
-    if (params.length === 1) return true
-    return boolReduce(params, (a, b) => a === b)
+    return boolReduce(params, (a, b) => a === b, params[0])
   },
   // short-circuiting operators
   pairwiseComp: (paramIter, comp = (a, b) => a === b) => {
