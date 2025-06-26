@@ -258,7 +258,10 @@ myself.isIterable = "A more concise test for iterability."
 const isIterable = (thing) => typeof thing?.[Symbol.iterator] === 'function'
 
 myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge. By default, 0 and NaN are *not* considered empty. (Defaults can be overridden by supplying an array of exceptions.)"
-const isEmpty = (value, alwaysEmpty = [], neverEmpty = [ 0, 0n ]) => {
+const isEmpty = (
+  value,
+  { alwaysEmpty = [], neverEmpty = [ 0, 0n, NaN ] } = {}
+) => {
   if (alwaysEmpty.includes(value)) return true
   if (neverEmpty.includes(value)) return false
   
