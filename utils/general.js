@@ -220,13 +220,13 @@ const opFuncs = {
     if (one || none) return parityError('pairwiseComp')
     return true
   },
-  any: (paramIter, test = (a) => a) => {
+  any: (paramIter, test = (a) => !!a) => {
     for (const param of paramIter) {
       if (test(param)) return true
     }
     return false
   },
-  all: (paramIter, test = (a) => a) => {
+  all: (paramIter, test = (a) => !!a) => {
     for (const param of paramIter) {
       if (!test(param)) return false
     }
