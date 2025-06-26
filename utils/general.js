@@ -141,20 +141,23 @@ const opFuncs = {
     test,
     tasks = [],
     defaultTask,
+    matchAll = true,
+    fallthrough = false
   }) => {
     let none = true
+    let fellthrough = false
     let result
     for (const {
       tests,
       task,
       params = [],
-      me = this,
-      stop = false
+      me = this
     } of tasks) {
-      if (tests.includes(test)) {
+      if (tests.includes(test) || fellthrough) {
         none = false
+        fellthrough = fallthrough && true
         result = task.apply(me, params)
-        if (stop) break
+        if (!matchAll) break
       }
     }
     if (none && defaultTask != null) {
