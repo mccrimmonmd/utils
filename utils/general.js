@@ -65,7 +65,7 @@ const print = (obj, depth = null, repl = true) => {
 
 myself.pluralize = "Returns the plural version of the given word if the given number is more or less than 1. Makes a token attempt to be grammatical, but no guarantees."
 const pluralize = (word, n = 2) => {
-  if (n === 1 || !word.length) return word
+  if (Math.abs(n) === 1 || !word.length) return word
   const lower = word.toLowerCase()
   if (lower.endsWith('ife')) return word.slice(0, -2) + 'ves'
   if (lower.length > 1 && lower.endsWith('y')) return word.slice(0, -1) + 'ies'
