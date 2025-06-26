@@ -588,6 +588,8 @@ module.exports = {
   pluralize,
   logVar,
   ifFunc,
+  boolReduce,
+  parityError,
   op,
   TypeCheckedArray,
   isTruthy,
