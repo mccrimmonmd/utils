@@ -304,10 +304,15 @@ const memoize = (func) => {
   const cache = new MultiMap()
   return new Proxy(func, {
     apply(target, thisArg, argumentsList) {
-      const { hasKey, value } = cache.search(argumentsList)
+      let args
+      if      (argumentsList.length === 0) args = Symbol.for('no args')
+      else if (argumentsList.length === 1) args = argumentsList[0]
+      else if (argumentsList.length > 1) args = argumentsList
+      else throw new TypeError("'argumentsList' is not a list (???)")
+      const { hasKey, value } = cache.search(args)
       if (hasKey) return value 
       const result = Reflect.apply(target, thisArg, argumentsList)
-      cache.set(argumentsList, result)
+      cache.set(args, result)
       return result
     }
   })
