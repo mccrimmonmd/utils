@@ -416,9 +416,8 @@ const getSorter = (sortOn, descending = false) => {
 
   // In addition to a saner sort order, this function has a secondary goal of
   // sorting arbitrary permutations *unambiguously.* That is, for any given
-  // Array arr, `shuffle(arr).sort(getSorter())` should always result in a
-  // permutation indistinguishable from `arr.sort(getSorter())` (this may or
-  // may not be possible).
+  // Array arr, `shuffle(arr).sort(getSorter())` should result in the same
+  // permutation every time it's called (this may or may not be possible).
   const sorters = iterify(sortOn)
   const [ifLess, ifMore] = descending ? [1, -1] : [-1, 1]
   
@@ -555,7 +554,7 @@ const iterEquals = (a, b, ordered = true) => {
   // }
   // const sizeMatch = ordered ? i === a.length : i === a.size
   // if (!sizeMatch || ordered) return !!sizeMatch
-  // for (const [ key, group ]  of a) {
+  // for (const [ key, group ] of a) {
   //   if (group.length !== 0) return false
   // }
   // return true     
