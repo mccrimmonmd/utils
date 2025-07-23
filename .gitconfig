@@ -47,7 +47,7 @@
   low = log -5
   loo = log --oneline
   ool = log --oneline --reverse
-  lo = log --oneline -20
+  lo = log --oneline -16
   gloo = log --oneline --graph
   glo = log --oneline --graph -20
   lop = log --patch
