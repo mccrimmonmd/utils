@@ -97,15 +97,14 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
 }
 
 myself.boolReduce = "TODO"
-const boolReduce = (params, func, ...initialValue) => {
-  params = arrayify(params)
-  return params.every((param, i, arr) => {
+const boolReduce = (params, func, ...initialValue) => arrayify(params).every(
+  (param, i, arr) => {
     if (i === 0) {
       return initialValue.length ? func(initialValue[0], param) : true
     }
     return func(arr[i - 1], param)
-  })
-}
+  }
+)
 
 myself.op = "Turn JavaScript's native operators into proper functions."
 const op = (opType) => opFuncs[opType] ?? opFuncs.err(
