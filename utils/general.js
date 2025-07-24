@@ -98,13 +98,26 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
 
 myself.boolReduce = "TODO"
 const boolReduce = (params, func, ...initialValue) => {
-  let unbroken = true
-  params.reduce((a, b) => {
-      unbroken = unbroken && func(a, b)
-      return b
-    },
-    ...initialValue
-  )
+  params = arrayify(params)
+  return params.every((param, i, arr) => {
+    if (i === 0) {
+      return initialValue.length ? func(initialValue[0], param) : true
+    }
+    return func(arr[i - 1], param)
+  })
+
+  // let unbroken = true
+  // let first = !initialValue.length
+  // let a = initialValue.length ? initialValue[0] : params[0]
+  // for (const b of params) {
+  //   if (first) {
+  //     first = false
+  //     continue
+  //   }
+  //   unbroken = unbroken && func(a, b)
+  //   a = b
+  // }
+  
   return unbroken
 }
 
