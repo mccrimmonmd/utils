@@ -105,20 +105,6 @@ const boolReduce = (params, func, ...initialValue) => {
     }
     return func(arr[i - 1], param)
   })
-
-  // let unbroken = true
-  // let first = !initialValue.length
-  // let a = initialValue.length ? initialValue[0] : params[0]
-  // for (const b of params) {
-  //   if (first) {
-  //     first = false
-  //     continue
-  //   }
-  //   unbroken = unbroken && func(a, b)
-  //   a = b
-  // }
-  
-  return unbroken
 }
 
 myself.op = "Turn JavaScript's native operators into proper functions."
