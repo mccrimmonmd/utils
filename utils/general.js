@@ -96,7 +96,7 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
   return result
 }
 
-// TODO: document
+myself.boolReduce = "TODO"
 const boolReduce = (params, func, ...initialValue) => {
   let unbroken = true
   params.reduce((a, b) => {
@@ -583,7 +583,7 @@ const multilineRegex = (parts, flags = '') =>
 
 myself.backToWork = backToWork
 
-// TODO: new array/iterable submodule
+// TODO: new array/iterable submodule 'iters'
 // array object { swap, last, etc. } *and* iterable submodule?
 module.exports = {
   docs: () => print(myself),
