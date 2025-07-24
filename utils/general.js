@@ -155,7 +155,7 @@ const opFuncs = {
     } of tasks) {
       if (tests.includes(test) || fellthrough) {
         none = false
-        fellthrough = fallthrough && true
+        fellthrough = fallthrough
         result = task.apply(me, params)
         if (!matchAll) break
       }
