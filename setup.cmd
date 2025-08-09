@@ -12,6 +12,7 @@ winget install chocolatey
 REM ...
 
 REM For PowerShell, use ~ instead--no variable that works in both :'(
+mkdir %USERPROFILE%\Documents\Git
 cd %USERPROFILE%\Documents\Git
 git clone https://github.com/mccrimmonmd/utils.git
 cd utils
