@@ -250,6 +250,48 @@ const timeIt = (
   }
 }
 
+;`
+myself.dateFilter = "TODO: use with upcoming Temporal object to make utils for searching and filtering dates."
+// TODO: parse dates/get 'today' with Temporal instead of moment
+// TODO: export all
+const inRange = (things, startDate, endDate, dateify = op('id')) => {
+  things = [].concat(things)
+  dateify = typeof dateify === 'function' ? dateify : (thing) => thing[dateify]
+  startDate = moment(startDate)
+  endDate = moment(endDate)
+  return things.filter(thing => {
+    const date = moment(dateify(thing))
+    if (!date.isValid()) {
+      return false
+    }
+    return op('lte')(startDate, date, endDate)
+  })
+}
+const daysAway = (things, days, from, dateify = op('id')) => {
+  things = [].concat(things)
+  from = from == null ? moment() : moment(from)
+  dateify = typeof dateify === 'function' ? dateify : (thing) => thing[dateify]
+  return things.filter(thing => {
+    const date = moment(dateify(thing))
+    if (!date.isValid()) {
+      return false
+    }
+    let diff = date.diff(from, 'days')
+    if (days >= 0) {
+      return diff >= 0 && diff <= days // from ==days_after==>
+    }
+    else {
+      return diff < 0 && diff >= days // <==days_before== from
+    }
+  })
+}
+const afterDate = (things, date, dateify) => {
+  return daysAway(things, Infinity, date, dateify)
+}
+const beforeDate = (things, date, dateify) => {
+  return daysAway(things, -Infinity, date, dateify)
+}`
+
 "Not exported or used, just here as a reminder."
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
