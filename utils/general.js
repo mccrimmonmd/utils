@@ -3,9 +3,13 @@
 // "collections" or "iters"
 
 const myself = {} // documentation
-const { max, min, flatten, sum, product, reduceify } = require('./reducers')
+const { max, min, flatten } = require('./reducers')
 
 const backToWork = require('./BACK TO WORK')
+myself.backToWork = backToWork
+
+const op = require('./operators')
+myself.op = "Functional equivalents of JavaScript's native operators."
 
 myself.len = "Python-style function for getting the length of an iterable in a null-safe way, because I'm tired of writing `!arr?.length` over and over."
 const len = (thing) => {
@@ -94,144 +98,6 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
   let result
   ;( condition && forceTrue(result = onTrue()) ) || ( result = onFalse() )
   return result
-}
-
-myself.boolReduce = "TODO"
-const boolReduce = (params, func, ...initialValue) => arrayify(params).every(
-  (param, i, arr) => {
-    if (i === 0) {
-      return initialValue.length ? func(initialValue[0], param) : true
-    }
-    return func(arr[i - 1], param)
-  }
-)
-
-myself.op = "Turn JavaScript's native operators into proper functions."
-const op = (opType) => opFuncs[opType] ?? opFuncs.err(
-  `Unsupported or invalid operator '${opType}'`, TypeError
-)
-const parityError = (opType, n = 2) => {
-  throw new TypeError(
-    `Operator '${opType}' requires at least ${n} ${pluralize('argument', n)}`
-  )
-}
-const opFuncs = {
-  // non-chaining operators
-  err: (message, errType = Error) => (() => { throw new errType(message) })(),
-  // choose can short-circuit if you pass functions and call the result:
-  // `op('choose')(isSpam(x), () => doSpamThing(x), () => doEggsThing(x))()`
-  choose: (cond, ifTrue, ifFalse) => cond ? ifTrue : ifFalse,
-  loop: (cond, exec, params = []) => {
-    let result
-    while (cond) {
-      [cond, result] = exec(...params)
-    }
-    return result
-  },
-  iter: (exec, iterable) => {
-    let result
-    for (const i of iterable) {
-      result = exec(i)
-    }
-    return result
-  },
-  match: ({
-    test,
-    tasks = [],
-    defaultTask,
-    matchAll = true,
-    fallthrough = false
-  }) => {
-    let none = true
-    let fellthrough = false
-    let result
-    for (const {
-      tests,
-      task,
-      params = [],
-      me = this
-    } of tasks) {
-      if (tests.includes(test) || fellthrough) {
-        none = false
-        fellthrough = fallthrough
-        result = task.apply(me, params)
-        if (!matchAll) break
-      }
-    }
-    if (none && defaultTask != null) {
-      const { task, params = [], me = this } = defaultTask
-      result = task.apply(me, params)
-    }
-    return result
-  },
-  // chaining operators
-  add: (...params) => params.reduce(sum, 0),
-  sub: (...params) => {
-    if (params.length === 1) return -params[0]
-    return params
-      .map((n, i) => i === 0 ? n : -n)
-      .reduce(sum, 0)
-  },
-  mult: (...params) => params.reduce(product, 1),
-  div: (...params) => {
-    if (params.length === 1) return 1 / params[0]
-    return params
-      .map((n, i) => i === 0 ? n : 1 / n)
-      .reduce(product, 1)
-  },
-  pow: (...params) => params.reduce((a, b) => a ** b),
-  lt: (...params) => {
-    if (params.length <= 1) return parityError('lt')
-    return boolReduce(params, (a, b) => (a < b), -Infinity)
-  },
-  lte: (...params) => {
-    if (params.length <= 1) return parityError('lte')
-    return boolReduce(params, (a, b) => (a <= b), -Infinity)
-  },
-  gt: (...params) => {
-    if (params.length <= 1) return parityError('gt')
-    return boolReduce(params, (a, b) => (a > b), Infinity)
-  },
-  gte: (...params) => {
-    if (params.length <= 1) return parityError('gte')
-    return boolReduce(params, (a, b) => (a >= b), Infinity)
-  },
-  eq: (...params) => {
-    if (params.length < 1) return parityError('eq', 1)
-    return boolReduce(params, (a, b) => a === b, params[0])
-  },
-  // short-circuiting operators
-  pairwiseComp: (paramIter, comp = (a, b) => a === b) => {
-    let none = true
-    let one = true
-    let prev
-    for (const param of paramIter) {
-      if (none) {
-        none = false
-        prev = param
-        continue
-      }
-      one = false
-      if (!comp(prev, param)) return false
-      prev = param
-    }
-    if (one || none) return parityError('pairwiseComp')
-    return true
-  },
-  any: (paramIter, test = (a) => !!a) => {
-    for (const param of paramIter) {
-      if (test(param)) return true
-    }
-    return false
-  },
-  all: (paramIter, test = (a) => !!a) => {
-    for (const param of paramIter) {
-      if (!test(param)) return false
-    }
-    return true
-  },
-  // short-circuiting versions of lt, etc.?
-  // (no short-circuiting version of choose needed; see comment above)
 }
 
 myself.TypeCheckedArray = "An Array which can only contain values that are all the same type. Was supposed to be an exercise in inheritance, but ended up mostly being about Proxies instead."
@@ -387,7 +253,7 @@ const timeIt = (
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
 myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default: identity). Returns a Map by default, or an Object for when the 'bucket' names can safely be coerced to strings. (Yet another function I worked super hard on that's already in the spec, lol)"
-const makeGroups = (iterable, idFunc = (item) => item, strong = true) => {
+const makeGroups = (iterable, idFunc = op('id'), strong = true) => {
   return strong ?
       Map.groupBy(iterable, idFunc)
     : Object.groupBy(iterable, idFunc)
@@ -579,21 +445,19 @@ myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be 
 const multilineRegex = (parts, flags = '') =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
 
-myself.backToWork = backToWork
-
 // TODO: new array/iterable submodule 'iters'
 // array object { swap, last, etc. } *and* iterable submodule?
 module.exports = {
   docs: () => print(myself),
+  backToWork,
+  op,
+  len,
   range,
   zip,
   print,
   pluralize,
   logVar,
   ifFunc,
-  boolReduce,
-  parityError,
-  op,
   TypeCheckedArray,
   isTruthy,
   isIterable,
@@ -614,7 +478,6 @@ module.exports = {
   iterEquals,
   getIter,
   multilineRegex,
-  backToWork,
 } // = require('./general')
 
 // for organization? (future):

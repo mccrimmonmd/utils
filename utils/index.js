@@ -1,6 +1,6 @@
 const numbers = require('./numbers')
-const random = require('./random')
 const reducers = require('./reducers')
+const random = require('./random')
 const diceStats = require('./diceStats')
 const drawing = require('./drawing')
 const objects = require('./objects')

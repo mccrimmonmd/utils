@@ -1,6 +1,7 @@
 const myself = {} // documentation
-const { print, op, arrayOf, range } = require('./general')
+const { print, arrayOf, range } = require('./general')
 const { sum, product, diffsCalculator } = require('./reducers')
+const op = require('./operators')
 
 myself.sieve = "Sieve of Eratosthenes. Just for funsies. Might refactor into a bignum generator later."
 const sieve = (n) => {

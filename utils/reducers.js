@@ -1,4 +1,5 @@
 const myself = {} // documentation
+const { arrayify } = require('./general')
 
 myself.flatten = "Concatenates two items that may or may not be arrays, using push instead of concat for speed. You should probably just use Array.prototype.flat instead."
 const flatten = (flattened, bump, i) => {
@@ -15,6 +16,26 @@ const flatten = (flattened, bump, i) => {
   else flattened.push(bump)
   return flattened
 }
+
+myself.andReduce = "Takes an iterable and a function that compares two objects to yield a boolean. Returns true iff the function returns true for each adjacent pair in the iterable. Used in operators.js for chaining."
+const andReduce = (things, func, ...initialValue) => arrayify(things).every(
+  (param, i, arr) => {
+    if (i === 0) {
+      return initialValue.length ? func(initialValue[0], param) : true
+    }
+    return func(arr[i - 1], param)
+  }
+)
+
+myself.orReduce = "Identical to andReduce, except it returns true iff the function returns true for *any* adjacent pair in the iterable."
+const orReduce = (things, func, ...initialValue) => arrayify(things).some(
+  (param, i, arr) => {
+    if (i === 0) {
+      return initialValue.length ? func(initialValue[0], param) : false
+    }
+    return func(arr[i - 1], param)
+  }
+)
 
 myself.diffsCalculator = "Intended as a helper function for numbers.stdDeviation, but can also be used by itself. The function it returns is the callback for Array.prototype.reduce."
 const diffsCalculator = (mean) => 
@@ -77,6 +98,8 @@ const statsInit = (value) => {
 module.exports = {
   docs: () => print(myself),
   flatten,
+  andReduce,
+  orReduce,
   diffsCalculator,
   sum,
   product,
