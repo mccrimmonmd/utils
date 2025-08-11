@@ -36,16 +36,16 @@ Compiles ('assembles') to/from intermediate representation that preserves the st
 program -> '{' [ circuitList ] '}'
 circuitList -> variable ':' circuit [ ',' circuitList ]
 
+variable -> '"' varChars '"'
+varChars -> alpha [ alphaNumeric ]
+alphaNumeric -> ( alpha | numeric ) [ alphaNumeric ]
+alpha -> /[a-zA-Z_]/
+numeric -> /[0-9]/
+
 circuit -> circuitRef | circuitLiteral
 circuitRef -> '"' circuitId '"'
 circuitId -> '*' [ path ]
 path -> '.' varChars [ path ]
-
-variable -> '"' varChars '"'
-varChars -> alpha [ alphaNumeric ]
-alpha -> /[a-zA-Z_]/
-numeric -> /[0-9]/
-alphaNumeric -> ( alpha | numeric ) [ alphaNumeric ]
 
 circuitLiteral -> '{' pairList '}' | primitive
 pairList -> inpoint ':' source [ ',' pairList ]
@@ -399,7 +399,7 @@ blueprint: { ... } # blueprint aka (named) circuit aka (named) chip definition
 ) # transistors can be prefaced with a destination label that would otherwise have to be placed at the end
 chip (
   42 theAnswer+>
-  ->theQuestion askAgain+>deepMind
+  ->theQuestion askAgain+>deepThought
 ) # transistors can also be prefaced with a source chip; references within the transistor to the source's endpoints don't have to specify the source (i.e. ->out and in+> instead of chip->out and in+>chip)
 chip &label (
   ... 
@@ -559,22 +559,21 @@ squaredSum: {
   [+=* add, 2] pow *->&result
   [
     "The squared sum of ",
-    (+=* asStrings concat; ", " separator+>concat^),
+    concat (+=* asStrings +>, ", " separator+>),
     " is ",
     &result,
     "."
   ] concat *->words
 }
 "Enter a list of numbers separated by spaces. Press Enter when finished." log+>Core.console
-split:_ (
-  Core.console->string+>split
-  " " by+>split
-  split
+:split (
+  Core.console->string+>
+  " " by+>
 ) asNumbers squaredSum
-# Core.console->string+>split
+# Core.console split
 # " " by+>split^
 # ^split asNumbers squaredSum
-^squaredSum->words log+>Core.console
+^squaredSum asString log+>Core.console
 "Are we there yet?" log+>Core.console
 [^squaredSum->result, 100] gt cond+>switch
 ^switch (
@@ -583,13 +582,22 @@ split:_ (
   ->choice log+>Core.console
 )
 
+# [plexed, input] chip (named+>, inputs+> ->and, ->outputs) # ?
+
+# TODO: switch back to '*->' meaning 'self's inpoint' and '+>*' meaning 'self's outpoint.
+# it preserves the symmetry better and IMO will be less confusing in the long run.
+# (think of '*' less as 'self/this' and more as 'outside/up a level' (which is why
+# it's null at the toplevel!) (so should e.g. '*.*' refer to the parent's outside?))
+
 makinToast: {
   isButtered+>* cond+>switch
   [&quantity, *->howMuchButter]: (
     [butterAmount+>*, hunger+>*] mult
   ) *->howMuchButter
   ^switch (
-    &quantity ifFalse+>
+    # (unfinished...)
+    # &quantity ifFalse+>
+  )
   
   loaf+>* +>Bread.slicer-> &slice*
   slice->isToasted startButtering+>slice
@@ -597,6 +605,7 @@ makinToast: {
   slice->isToasted not startToasting+>Bread.toaster
   slice*+>Bread.toaster^
   slice* & *->butteredToast
+  # slice* butteredToast+>*
   # slice* *->butteredToast
   # slice**->butteredToast ?
 }
