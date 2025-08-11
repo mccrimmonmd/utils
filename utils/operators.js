@@ -109,7 +109,7 @@ const opFuncs = {
   },
 
   // short-circuiting operators //
-  
+
   pairwiseComp: (paramIter, comp = (a, b) => a === b) => {
     let none = true
     let one = true
@@ -128,19 +128,17 @@ const opFuncs = {
     return true
   },
 
-  any: (paramIter, test = (a) => !!a) => {
-    for (const param of paramIter) {
-      if (test(param)) return true
-    }
-    return false
-  },
+  any: (paramIter, test = (a) => !!a) => orReduce(
+    paramIter,
+    (_, thing) => test(thing),
+    null
+  ),
 
-  all: (paramIter, test = (a) => !!a) => {
-    for (const param of paramIter) {
-      if (!test(param)) return false
-    }
-    return true
-  },
+  all: (paramIter, test = (a) => !!a) => andReduce(
+    paramIter,
+    (_, b) => test(b),
+    null
+  ),
   // short-circuiting versions of lt, etc.?
   // (no short-circuiting version of choose needed; see comment above)
 }
