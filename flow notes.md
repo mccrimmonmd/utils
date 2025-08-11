@@ -74,7 +74,7 @@ Comment character is `#`, multiline comments with `#>...>#` (`//` is an empty re
 
 ```text
 ...->... ...+>... = wire aka statement; connection between two chips
-( <sequence of wires separated by ; or newline> ) = transistor; a partial circuit
+( <sequence of wires separated by ; or newline> ) = transistor; a partial circuit (has implicit endpoints that default to identity--see & below)
 <sequence of statements and transistors> = blueprint aka circuit
 { <blueprint> } = blueprint 'instantiated' as anonymous chip literal
 &name: ( <blueprint> ) = named transistor
@@ -88,7 +88,8 @@ Comment character is `#`, multiline comments with `#>...>#` (`//` is an empty re
 {}* = null as signal aka null's '*' aka also null
 {*}* = same (you get the idea)
 & = add 'identity' wire to current blueprint aka 'smallest nonempty blueprint' as chip literal (OR: & = empty *transistor*, so `&*` would be * and `&: ()` or `()` would be &)
-( _+>*->_ ) = same (???)
+( _+>*->_ ) = same
+Each identity chip is globally unique, like Symbols--that's why they aren't inherited and don't have their own namespaces
 &* = identity's 'this' aka identity as signal (=== *, not &)
 &** = also * (makes sense, if identity's 'this' and this's 'this' are both also 'this')
 &variable = add new endpoint to identity's blueprint (i.e. variable+>&*->variable)
@@ -392,7 +393,7 @@ blueprint: { ... };
 
 blueprint: { ... } # blueprint aka (named) circuit aka (named) chip definition
 { ... } &label # labeled chip (actually it's the chip's outpoint that gets the label, i.e. the wire goes to the identity circuit and that's how you refer to it again)
-( ... ) # transistor aka mini-chip (does not create its own scope)
+( ... ) # transistor aka mini-chip (implicit endpoints, does not create its own scope, empty transistor === &)
 &label (
   ...
 ) # transistors can be prefaced with a destination label that would otherwise have to be placed at the end
@@ -475,7 +476,7 @@ src dst # *
 src->out in+>mid->out in+>dst # optional ; to terminate statement
 src->out & in+>dst # the identity chip doubles as an explicit wire
 src->sharedEndpoint+>dst
-src->['out'] ['in']+>dst
+src->['out'] ['in']+>dst # desugared (useful for endpoint names that have reserved characters/keywords/spaces)
 src->["this endpoint's shared"]+>dst
 src->out &labeledEndpoint+>dst # creates a label with the same name as the endpoint. If one already exists, this is an error...
 src->out [&str]+>dst # NOT to be confused with this...
@@ -607,7 +608,7 @@ makinToast: {
 # end+>point: (blah) === blah end+>point
 # something: (transistor) === (transistor)->_ something
 [someChipAs: asVar, anotherAsItself:] (
-  asVar->spam ham->anotherAsItself
+  asVar->spam ham+>anotherAsItself
   ["eggs", "beans", "bacon"] sides+>asVar
   someOutsideChip server+>asVar
 )

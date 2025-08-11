@@ -71,6 +71,16 @@ POST /sev_incidents/_doc/xxxxxxxx/_update
   "script": "ctx._source.remove('unwanted_field')"
 }
 
+POST /sev_users/_create/xxxxxx
+{
+    "name": "Rodolfo Enriquez",
+    "email": "rodolfo.enriquez@dish.com",
+    "employee_id": "xxxxxx",
+    "groups": ["#IT-Incident-Manager", "#slingcommandcenter"],
+    "service_now_id": "fd31...0ea8",
+    "phone": ""
+}
+
 GET /logs/_search
 {
   "from" : 0, "size" : 50,

@@ -1,4 +1,4 @@
-REM TODO: set up Winux thing
+REM TODO: set up WSL
 
 REM If WinGet isn't already installed (PowerShell):
 REM Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
@@ -7,16 +7,18 @@ REM Use cmd.exe instead of PowerShell to have apps added to Path automatically:
 winget install git.git
 winget install vim.vim
 winget install node.js
-winget install python.python
+winget install python.python.3.13
 winget install chocolatey
 REM ...
 
-cd ~\Documents\Git
+REM For PowerShell, use ~ instead--no variable that works in both :'(
+mkdir %USERPROFILE%\Documents\Git
+cd %USERPROFILE%\Documents\Git
 git clone https://github.com/mccrimmonmd/utils.git
 cd utils
-copy .gitconfig ~\
-copy _vimrc ~\
-REM copy <.ps config file> ~\
+copy .gitconfig %USERPROFILE%\
+copy _vimrc %USERPROFILE%\
+REM copy <.ps config file> %USERPROFILE%\
 
 REM clone any other repos?
 

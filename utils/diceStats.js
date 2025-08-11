@@ -20,7 +20,7 @@ const countSides = (dice = 4, sides, rStyle = false) => {
     sides = sides ?? Math.max(...dice)
   }
   const multiples = arrayOf(sides, 0)
-  dice = dice.toReversed()
+  dice.reverse()
   for (const result of dice) {
     if (rStyle && result !== dice[0]) break
     multiples[result - 1] += 1

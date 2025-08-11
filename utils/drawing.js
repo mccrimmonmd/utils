@@ -1,5 +1,5 @@
 const myself = {} // documentation
-const { print, arrayOf } = require('./general')
+const { len, print, arrayOf } = require('./general')
 
 myself.draw = "Prints the given string or string array to the console as ASCII art."
 const draw = (picture) => {
@@ -42,7 +42,7 @@ const makeRectangular = (picture) => {
 myself.animate = "Animates a sequence of ASCII images or image arrays with the given delay. Multiple sequences with different delays can be given as [{ frames, delay }, ...]."
 const animate = (sequence, defaultDelay = 1000) => {
   console.log()
-  if (!sequence?.length) return process.stdout.write('> ')
+  if (!len(sequence)) return process.stdout.write('> ')
   if (sequence[0].length != null) {
     sequence = [{ frames: sequence, delay: defaultDelay }]
   }

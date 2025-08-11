@@ -27,7 +27,11 @@ db.getCollection('locations')
 db.getCollection('interfaces')
   .find({circuitId: {$ne: null}})
 
-// search for records with null *or* missing values
+// search for records with non-empty values (NOT the same as above!)
+db.getCollection('cyclone.certs')
+  .find({requestor: {$exists: true}})
+
+// search for records with null *or* missing values (really!)
 db.getCollection('cyclone.certs')
   .find({requestor: null})
 
@@ -35,6 +39,13 @@ db.getCollection('cyclone.certs')
 db.getCollection('logViewer.log')
   .find({level: {$ne: 'error'}, appName: {$ne: 'slingmetrics'}})
   .count()
+
+// combine multiple conditions (should be implicit, but sometimes isn't?)
+db.getCollection('userSession')
+  .find({ $and: [
+    {role: {$ne: 10}},
+    {role: {$exists: true}}
+  ]})
 
 // middleware query for loading paged data
 models.Cert.find({ active: true })

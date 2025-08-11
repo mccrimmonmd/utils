@@ -3,6 +3,8 @@
   name = Malcolm Maes-McCrimmon
 [pull]
   ff = only
+[core]
+  autocrlf = true
 [alias]
   cg = config --global
   mig = remote set-url origin
@@ -24,6 +26,7 @@
   stashl = stash list
   stashs = stash show
   stashd = stash show --patch
+  stashst = stash --staged
   unstash = stash pop
   unst = stash pop
   br = branch
@@ -37,13 +40,14 @@
   ap = add --patch
   fe = fetch --all
   pr = fetch --prune
+  prt = fetch --prune --prune-tags
   delete-local = branch -d
   delete-remote = push -d origin
   gol = log --reverse
   low = log -5
   loo = log --oneline
   ool = log --oneline --reverse
-  lo = log --oneline -20
+  lo = log --oneline -16
   gloo = log --oneline --graph
   glo = log --oneline --graph -20
   lop = log --patch
