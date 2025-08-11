@@ -11,7 +11,7 @@ myself.backToWork = backToWork
 const op = require('./operators')
 myself.op = "Functional equivalents of JavaScript's native operators."
 
-myself.len = "Python-style function for getting the length of an iterable in a null-safe way, because I'm tired of writing `!arr?.length` over and over."
+myself.len = "Python-style function for getting the length of an iterable in a null-safe way (because I'm tired of writing `!arr?.length` over and over)."
 const len = (thing) => {
   if (thing == null || !isIterable(thing)) return 0
   return Array.isArray(thing) ? thing.length : [...thing].length
