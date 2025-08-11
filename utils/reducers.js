@@ -18,24 +18,38 @@ const flatten = (flattened, bump, i) => {
 }
 
 myself.andReduce = "Takes an iterable and a function that compares two objects to yield a boolean. Returns true iff the function returns true for each adjacent pair in the iterable. Used in operators.js for chaining."
-const andReduce = (things, func, ...initialValue) => arrayify(things).every(
-  (param, i, arr) => {
-    if (i === 0) {
-      return initialValue.length ? func(initialValue[0], param) : true
+const andReduce = (things, func, ...initialValue) => {
+  let firstIter = true
+  let prev = null
+  for (const thing of things) {
+    if (firstIter) {
+      firstIter = false
+      if (initialValue.length && !func(initialValue[0], thing)) return false
+      prev = thing
+      continue
     }
-    return func(arr[i - 1], param)
+    if (!func(prev, thing)) return false
+    prev = thing
   }
-)
+  return true
+}
 
 myself.orReduce = "Identical to andReduce, except it returns true iff the function returns true for *any* adjacent pair in the iterable."
-const orReduce = (things, func, ...initialValue) => arrayify(things).some(
-  (param, i, arr) => {
-    if (i === 0) {
-      return initialValue.length ? func(initialValue[0], param) : false
+const orReduce = (things, func, ...initialValue) => {
+  let firstIter = true
+  let prev
+  for (const thing of things) {
+    if (firstIter) {
+      firstIter = false
+      if (initialValue.length && func(initialValue[0], thing)) return true
+      prev = thing
+      continue
     }
-    return func(arr[i - 1], param)
+    if (func(prev, thing)) return true
+    prev = thing
   }
-)
+  return false
+}
 
 myself.diffsCalculator = "Intended as a helper function for numbers.stdDeviation, but can also be used by itself. The function it returns is the callback for Array.prototype.reduce."
 const diffsCalculator = (mean) => 
