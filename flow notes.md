@@ -36,16 +36,16 @@ Compiles ('assembles') to/from intermediate representation that preserves the st
 program -> '{' [ circuitList ] '}'
 circuitList -> variable ':' circuit [ ',' circuitList ]
 
+variable -> '"' varChars '"'
+varChars -> alpha [ alphaNumeric ]
+alphaNumeric -> ( alpha | numeric ) [ alphaNumeric ]
+alpha -> /[a-zA-Z_]/
+numeric -> /[0-9]/
+
 circuit -> circuitRef | circuitLiteral
 circuitRef -> '"' circuitId '"'
 circuitId -> '*' [ path ]
 path -> '.' varChars [ path ]
-
-variable -> '"' varChars '"'
-varChars -> alpha [ alphaNumeric ]
-alpha -> /[a-zA-Z_]/
-numeric -> /[0-9]/
-alphaNumeric -> ( alpha | numeric ) [ alphaNumeric ]
 
 circuitLiteral -> '{' pairList '}' | primitive
 pairList -> inpoint ':' source [ ',' pairList ]
@@ -74,7 +74,7 @@ Comment character is `#`, multiline comments with `#>...>#` (`//` is an empty re
 
 ```text
 ...->... ...+>... = wire aka statement; connection between two chips
-( <sequence of wires separated by ; or newline> ) = transistor; a partial circuit
+( <sequence of wires separated by ; or newline> ) = transistor; a partial circuit (has implicit endpoints that default to identity--see & below)
 <sequence of statements and transistors> = blueprint aka circuit
 { <blueprint> } = blueprint 'instantiated' as anonymous chip literal
 &name: ( <blueprint> ) = named transistor
@@ -88,7 +88,8 @@ Comment character is `#`, multiline comments with `#>...>#` (`//` is an empty re
 {}* = null as signal aka null's '*' aka also null
 {*}* = same (you get the idea)
 & = add 'identity' wire to current blueprint aka 'smallest nonempty blueprint' as chip literal (OR: & = empty *transistor*, so `&*` would be * and `&: ()` or `()` would be &)
-( _+>*->_ ) = same (???)
+( _+>*->_ ) = same
+Each identity chip is globally unique, like Symbols--that's why they aren't inherited and don't have their own namespaces
 &* = identity's 'this' aka identity as signal (=== *, not &)
 &** = also * (makes sense, if identity's 'this' and this's 'this' are both also 'this')
 &variable = add new endpoint to identity's blueprint (i.e. variable+>&*->variable)
@@ -392,13 +393,13 @@ blueprint: { ... };
 
 blueprint: { ... } # blueprint aka (named) circuit aka (named) chip definition
 { ... } &label # labeled chip (actually it's the chip's outpoint that gets the label, i.e. the wire goes to the identity circuit and that's how you refer to it again)
-( ... ) # transistor aka mini-chip (does not create its own scope)
+( ... ) # transistor aka mini-chip (implicit endpoints, does not create its own scope, empty transistor === &)
 &label (
   ...
 ) # transistors can be prefaced with a destination label that would otherwise have to be placed at the end
 chip (
   42 theAnswer+>
-  ->theQuestion askAgain+>deepMind
+  ->theQuestion askAgain+>deepThought
 ) # transistors can also be prefaced with a source chip; references within the transistor to the source's endpoints don't have to specify the source (i.e. ->out and in+> instead of chip->out and in+>chip)
 chip &label (
   ... 
@@ -475,7 +476,7 @@ src dst # *
 src->out in+>mid->out in+>dst # optional ; to terminate statement
 src->out & in+>dst # the identity chip doubles as an explicit wire
 src->sharedEndpoint+>dst
-src->['out'] ['in']+>dst
+src->['out'] ['in']+>dst # desugared (useful for endpoint names that have reserved characters/keywords/spaces)
 src->["this endpoint's shared"]+>dst
 src->out &labeledEndpoint+>dst # creates a label with the same name as the endpoint. If one already exists, this is an error...
 src->out [&str]+>dst # NOT to be confused with this...
@@ -558,22 +559,21 @@ squaredSum: {
   [+=* add, 2] pow *->&result
   [
     "The squared sum of ",
-    (+=* asStrings concat; ", " separator+>concat^),
+    concat (+=* asStrings +>, ", " separator+>),
     " is ",
     &result,
     "."
   ] concat *->words
 }
 "Enter a list of numbers separated by spaces. Press Enter when finished." log+>Core.console
-split:_ (
-  Core.console->string+>split
-  " " by+>split
-  split
+:split (
+  Core.console->string+>
+  " " by+>
 ) asNumbers squaredSum
-# Core.console->string+>split
+# Core.console split
 # " " by+>split^
 # ^split asNumbers squaredSum
-^squaredSum->words log+>Core.console
+^squaredSum asString log+>Core.console
 "Are we there yet?" log+>Core.console
 [^squaredSum->result, 100] gt cond+>switch
 ^switch (
@@ -582,13 +582,22 @@ split:_ (
   ->choice log+>Core.console
 )
 
+# [plexed, input] chip (named+>, inputs+> ->and, ->outputs) # ?
+
+# TODO: switch back to '*->' meaning 'self's inpoint' and '+>*' meaning 'self's outpoint.
+# it preserves the symmetry better and IMO will be less confusing in the long run.
+# (think of '*' less as 'self/this' and more as 'outside/up a level' (which is why
+# it's null at the toplevel!) (so should e.g. '*.*' refer to the parent's outside?))
+
 makinToast: {
   isButtered+>* cond+>switch
   [&quantity, *->howMuchButter]: (
     [butterAmount+>*, hunger+>*] mult
   ) *->howMuchButter
   ^switch (
-    &quantity ifFalse+>
+    # (unfinished...)
+    # &quantity ifFalse+>
+  )
   
   loaf+>* +>Bread.slicer-> &slice*
   slice->isToasted startButtering+>slice
@@ -596,6 +605,7 @@ makinToast: {
   slice->isToasted not startToasting+>Bread.toaster
   slice*+>Bread.toaster^
   slice* & *->butteredToast
+  # slice* butteredToast+>*
   # slice* *->butteredToast
   # slice**->butteredToast ?
 }
@@ -607,7 +617,7 @@ makinToast: {
 # end+>point: (blah) === blah end+>point
 # something: (transistor) === (transistor)->_ something
 [someChipAs: asVar, anotherAsItself:] (
-  asVar->spam ham->anotherAsItself
+  asVar->spam ham+>anotherAsItself
   ["eggs", "beans", "bacon"] sides+>asVar
   someOutsideChip server+>asVar
 )
