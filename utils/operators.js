@@ -13,13 +13,8 @@ const opFuncs = {
 
   // non-chaining operators //
 
+  id: (thing) => thing, // the identity function
   err: (message, errType = Error) => (() => { throw new errType(message) })(),
-
-  id: (thing) => thing,
-
-  // choose can short-circuit if you pass functions and call the result:
-  // `op('choose')(isSpam(x), () => doSpamThing(x), () => doEggsThing(x))()`
-  choose: (cond, ifTrue, ifFalse) => cond ? ifTrue : ifFalse,
 
   loop: (cond, exec, params = []) => {
     let result
@@ -37,30 +32,25 @@ const opFuncs = {
     return result
   },
 
-  match: ({
-    test,
+  switcher: ({
+    switchOn,
     tasks = [],
     defaultTask,
     matchAll = true,
     fallthrough = false
   }) => {
-    let none = true
+    let noMatch = true
     let fellthrough = false
     let result
-    for (const {
-      tests,
-      task,
-      params = [],
-      me = this
-    } of tasks) {
-      if (tests.includes(test) || fellthrough) {
-        none = false
+    for (const { cases, task, params = [], me = this } of tasks) {
+      if (cases.includes(switchOn) || fellthrough) {
+        noMatch = false
         fellthrough = fallthrough
         result = task.apply(me, params)
         if (!matchAll) break
       }
     }
-    if (none && defaultTask != null) {
+    if (noMatch && defaultTask != null) {
       const { task, params = [], me = this } = defaultTask
       result = task.apply(me, params)
     }
@@ -87,6 +77,14 @@ const opFuncs = {
 
   pow: (...params) => params.reduce((a, b) => a ** b),
 
+  // logical operators (all short-circuiting) //
+  // (actually not short-circuiting, since parameters are evaluated at call time?)
+
+  // 'choose' does not short-circuit by default, but it's easy to implement:
+  // just pass functions and call the result 👇
+  // `op('choose')(isSpam(x), () => doSpamThing(x), () => doEggsThing(x))()`
+  choose: (cond, ifTrue, ifFalse) => cond ? ifTrue : ifFalse,
+
   lt: (...params) => {
     if (params.length <= 1) return parityError('lt')
     return andReduce(params, (a, b) => (a < b))
@@ -103,29 +101,10 @@ const opFuncs = {
     if (params.length <= 1) return parityError('gte')
     return andReduce(params, (a, b) => (a >= b))
   },
+  
   eq: (...params) => {
     if (params.length < 1) return parityError('eq', 1)
     return andReduce(params, (a, b) => a === b, params[0])
-  },
-
-  // short-circuiting operators //
-
-  pairwiseComp: (paramIter, comp = (a, b) => a === b) => {
-    let none = true
-    let one = true
-    let prev
-    for (const param of paramIter) {
-      if (none) {
-        none = false
-        prev = param
-        continue
-      }
-      one = false
-      if (!comp(prev, param)) return false
-      prev = param
-    }
-    if (one || none) return parityError('pairwiseComp')
-    return true
   },
 
   any: (paramIter, test = (a) => !!a) => orReduce(
@@ -139,8 +118,6 @@ const opFuncs = {
     (_, b) => test(b),
     null
   ),
-  // short-circuiting versions of lt, etc.?
-  // (no short-circuiting version of choose needed; see comment above)
 }
 
 module.exports = op
