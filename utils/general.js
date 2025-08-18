@@ -8,9 +8,6 @@ const { max, min, flatten } = require('./reducers')
 const backToWork = require('./BACK TO WORK')
 myself.backToWork = backToWork
 
-const op = require('./operators')
-myself.op = "Functional equivalents of JavaScript's native operators."
-
 myself.len = "Python-style function for getting the length of an iterable in a null-safe way (because I'm tired of writing `!arr?.length` over and over)."
 const len = (thing) => {
   if (thing == null || !isIterable(thing)) return 0
@@ -296,7 +293,7 @@ const beforeDate = (things, date, dateify) => {
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
 myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default: identity). Returns a Map by default, or an Object for when the 'bucket' names can safely be coerced to strings. (Yet another function I worked super hard on that's already in the spec, lol)"
-const makeGroups = (iterable, idFunc = op('id'), strong = true) => {
+const makeGroups = (iterable, idFunc = (thing) => thing, strong = true) => {
   return strong ?
       Map.groupBy(iterable, idFunc)
     : Object.groupBy(iterable, idFunc)
@@ -493,7 +490,6 @@ const multilineRegex = (parts, flags = '') =>
 module.exports = {
   docs: () => print(myself),
   backToWork,
-  op,
   len,
   range,
   zip,
