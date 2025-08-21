@@ -45,7 +45,12 @@ const stdDeviation = (values, isSample = true) => {
 }
 
 myself.msConverter = "Converts milliseconds into other common units, or vice versa."
-const msConverter = (time, rawUnits, fromMs = true) => {
+const msConverter = (
+  time,
+  rawUnits = 'seconds',
+  fromMs = true,
+  verbose = true,
+) => {
   let units = rawUnits.toLowerCase()
   if (!units.endsWith('s')) units += 's'
   const factors = []
@@ -70,7 +75,12 @@ const msConverter = (time, rawUnits, fromMs = true) => {
       throw new TypeError(`Time unit '${units}' invalid or unimplemented`)
   }
 
-  return op(fromMs ? 'div' : 'mult')(time, ...factors)
+  const result = op(fromMs ? 'div' : 'mult')(time, ...factors)
+  if (verbose) {
+    const [ fromUnit, toUnit ] = fromMs ? [ 'ms', units ] : [ units, 'ms' ]
+    console.log(`msConverter: ${time} ${fromUnit} -> ${result} ${toUnit`)
+  }
+  return result 
 }
 
 module.exports = {
