@@ -480,6 +480,54 @@ const getIter = {
   biDiff: compareItersBy('symmetricDifference'),
 }
 
+myself.stringConverter = "Like msConverter in the numbers module, but for strings (not yet exported)"
+const stringConverter = (thing) => {
+  if (typeof thing !== 'string') {
+    if (typeof thing === 'object') return util.inspect(thing, {depth: null})
+    else return `${thing}`
+  }
+  switch (thing) {
+    case '':
+      return ''
+    case 'null':
+      return null
+    case 'undefined':
+      return undefined
+    case 'true':
+      return true
+    case 'false':
+      return false
+    case 'NaN':
+      return NaN
+    case 'Infinity':
+      return Infinity
+    case '-Infinity':
+      return -Infinity
+    default: {
+      if ( /function.*{.*}/.test(thing)
+        || /=>/.test(thing)
+        || /\[.*\]/.test(thing)
+        || /{.*}/.test(thing)
+      ) { // TODO: some kind of JSON test so non-dangerous objects can be parsed
+        console.log(`Warning: I can't let you convert ${thing}, Dave. Returning as-is.`
+        return thing
+      }
+      if (/^[+-]?\d+n?$/.test(thing)) {
+        const smallInt = Number(thing)
+        return
+            !Number.isInteger(smallInt) || thing.endsWith('n') ?
+              BigInt(thing)
+            : smallInt
+      }
+      if (/^[+-]?(?:\d*\.?\d+)|(?:\d+\.\d*)(?:e[+-]?\d+)?$/.test(thing)) {
+        return Number.parseFloat(thing)
+      }
+    }
+  }
+  console.log(`Warning: could not infer type of string ${thing}; returning as-is.`)
+  return thing
+}
+
 myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be commented)."
 // Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
 const multilineRegex = (parts, flags = '') =>
