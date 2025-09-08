@@ -58,10 +58,11 @@ const zip = (arrays, ...padding) => {
   return zipped
 }
 
-myself.print = "console.dir optimized for the Node.js REPL."
-const print = (obj, depth = null, repl = true) => {
-  console.dir(obj, { depth })
-  return repl ? undefined : obj
+myself.print = "console.dir shorthand. 'print.fn' is a functional variant that returns the printed object."
+const print = (obj, depth = null) => console.dir(obj, { depth })
+print.fn = (obj, depth = null) => {
+  print(obj, depth)
+  return obj
 }
 
 myself.pluralize = "Returns the plural version of the given word if the given number is more or less than 1. Makes a token attempt to be grammatical, but no guarantees."
@@ -293,12 +294,13 @@ const beforeDate = (things, date, dateify) => {
 "Not exported or used, just here as a reminder."
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
-myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default: identity). Returns a Map by default, or an Object for when the 'bucket' names can safely be coerced to strings. (Yet another function I worked super hard on that's already in the spec, lol)"
-const makeGroups = (iterable, idFunc = (thing) => thing, strong = true) => {
-  return strong ?
-      Map.groupBy(iterable, idFunc)
-    : Object.groupBy(iterable, idFunc)
-}
+const id = (thing) => thing
+myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default: identity). Returns a Map. (Yet another function I worked super hard on that's already in the spec, lol)"
+const makeGroups = (iterable, idFunc = id) => Map.groupBy(iterable, idFunc)
+
+myself.makeWeakGroups = "Same as makeGroups, except it returns an Object instead of a map. For when the 'bucket' names can safely be coerced to strings."
+const makeWeakGroups = (iterable, idFunc = id) => Object.groupBy(iterable, idFunc)
+
 myself.deDup = "Removes duplicates. Caller determines what counts as a dupe, and which duplicate to keep (default: first). Uses Map.groupBy but returns an Array. If you're using identity to determine dupes, you should probably just do `[...new Set(iterable)]` instead."
 const deDup = (
   iterable, 
@@ -428,47 +430,24 @@ const flattener = (array, depth = 1) => {
   return array
 }
 
-myself.iterEquals = "Tests two iterables to see if they are equal. Takes an optional parameter to ignore ordering."
+myself.iterEquals = "Tests two iterables to see if they are equal. Different permutations of the same elements are considered unequal; to ignore ordering use iterEqualsUnordered."
 // Generalized from <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
-const iterEquals = (a, b, ordered = true) => {
-  if (ordered) {
-    a = [...a]
-    b = [...b]
-    return (
-      a.length === b.length
-      && a.every((value, index) => value === b[index])
+const iterEquals = (a, b) => {
+  a = [...a]
+  b = [...b]
+  return (
+    a.length === b.length
+    && a.every((value, index) => value === b[index])
+  )
+}
+
+myself.iterEqualsUnordered = "Tests two iterables to see if they are equal. Ignores ordering (different permutations of the same elements are considered equal)."
+const iterEqualsUnordered = (a, b) => {
+  a = makeGroups(a)
+  b = makeGroups(b)
+  return (a.size === b.size) && [...a.entries()].every(
+      ([key, aGroup]) => b.has(key) && b.get(key).length === aGroup.length
     )
-  }
-  else {
-    a = makeGroups(a)
-    b = makeGroups(b)
-    return (a.size === b.size) && [...a.entries()].every(
-        ([key, aGroup]) => b.has(key) && b.get(key).length === aGroup.length
-      )
-  }
-  // // premature optimization: traverses each iterable at most once for 
-  // // ordered tests and twice for unordered, instead of traversing `a` 2/4 
-  // // times as in the above methods
-  // a = ordered ? [...a] : makeGroups(a)
-  // let i = 0
-  // for (const val of b) {
-  //   if (ordered) {
-  //     if (a[i] !== val) return false
-  //   }
-  //   else {
-  //     if (!a.has(val)) return false
-  //     let aGroup = a.get(val)
-  //     if (aGroup.length === 0) return false
-  //     aGroup.pop()
-  //   }
-  //   i += 1
-  // }
-  // const sizeMatch = ordered ? i === a.length : i === a.size
-  // if (!sizeMatch || ordered) return !!sizeMatch
-  // for (const [ key, group ] of a) {
-  //   if (group.length !== 0) return false
-  // }
-  // return true     
 }
 
 // TODO: document, export
@@ -558,6 +537,7 @@ module.exports = {
   memoize,
   timeIt,
   makeGroups,
+  makeWeakGroups,
   deDup,
   findDupes,
   findUniques,
@@ -567,6 +547,7 @@ module.exports = {
   swap,
   flattener,
   iterEquals,
+  iterEqualsUnordered,
   getIter,
   multilineRegex,
 } // = require('./general')

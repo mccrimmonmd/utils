@@ -1,4 +1,4 @@
-const { isIterable, iterEquals } = require('./general')
+const { isIterable, iterEqualsUnordered } = require('./general')
 
 module.exports = (
   objA,
@@ -53,7 +53,7 @@ module.exports = (
     }
     
     if (isIterable(objA)) {
-      return iterEquals(objA, objB, false) // move down, make recursive
+      return iterEqualsUnordered(objA, objB) // move down, make recursive
     }
    
     if (maxDepth === Infinity) {
