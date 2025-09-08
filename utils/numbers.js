@@ -78,7 +78,7 @@ const msConverter = (
   const result = op(fromMs ? 'div' : 'mult')(time, ...factors)
   if (verbose) {
     const [ fromUnit, toUnit ] = fromMs ? [ 'ms', units ] : [ units, 'ms' ]
-    console.log(`msConverter: ${time} ${fromUnit} -> ${result} ${toUnit`)
+    console.log(`msConverter: ${time} ${fromUnit} -> ${result} ${toUnit}`)
   }
   return result 
 }
