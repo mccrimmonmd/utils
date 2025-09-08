@@ -208,6 +208,16 @@ core: { # circuits with a 'core' chip are called 'programs' and can be executed 
 
       42 :number >> giveMeLiterals, # "primitive" literals are circuits (all singletons, theoretically) that output themselves and have no inupts...
       { ... } :anonymousCircuit >> giveMeLiterals # although non-primitives can also output themselves!
+      #>
+      - Primitive numbers are all rationals
+      - Different bases can be specified like so:
+      0x = hex
+      0b = binary
+      0c = octal
+      0d = decimal (default)
+      0s = sixty-four
+      0r<integer>n = base/radix <integer>
+      >#
       "Here's a string literal." :string >> giveMeLiterals,
       'You can also "write" strings like this.' :otherString >> giveMeLiterals,
       """Here's a "raw" string literal.
