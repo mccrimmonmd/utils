@@ -7,6 +7,9 @@ const objects = require('./objects')
 const general = require('./general')
 const op = require('./operators')
 
+// general.docs.numbers = numbers.doc
+// ...
+
 general.docs.numbers = "Functions for working with numbers, especially lists of numbers."
 general.docs.reducers = "Functions for passing to Array.prototype.reduce as the callback."
 general.docs.random = "Functions for generating and using random numbers."

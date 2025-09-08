@@ -8,13 +8,13 @@ const { max, min, flatten } = require('./reducers')
 const backToWork = require('./BACK TO WORK')
 myself.backToWork = backToWork
 
-myself.len = "Python-style function for getting the length of an iterable in a null-safe way (because I'm tired of writing `!arr?.length` over and over)."
+myself.len = "Python-style function for getting the length of an iterable in a null- and type-safe way (because I'm tired of writing `!arr?.length` over and over)."
 const len = (thing) => {
   if (thing == null || !isIterable(thing)) return 0
   return Array.isArray(thing) ? thing.length : [...thing].length
 }
 
-myself.range = "Python-style range function. Generator."
+myself.range = "Python-style range function (generator)."
 // Alternate version (source: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#sequence_generator_range>)
 // const range = (start, stop, step = 1) =>
 //   Array.from({ length: (stop - start) / step }, (_, i) => start + i * step)
@@ -158,7 +158,7 @@ const isEmpty = (
 myself.iterify = "Wraps the given parameter in an array, unless it's already iterable. (In case you want to preserve the original type and/or avoid making a copy--otherwise, `[].concat(thing)` is probably a better choice.)"
 const iterify = (thing) => isIterable(thing) ? thing : [thing]
 
-myself.arrayify = "Copies iterables into a new array; non-iterables result in an empty array. For when you want to ensure Array properties like length, reduce, slice, etc. are available. (If you want non-iterables to also be copied instead of ignored, you should probably use `[].concat(thing)` instead.)"
+myself.arrayify = "Copies iterables into a new array; non-iterables result in an empty array. For when you want to ensure Array properties like length, reduce, slice, etc. are available. (If you want non-iterables to also be arrayified instead of ignored, you should probably use `[].concat(thing)` instead.)"
 const arrayify = (thing) => isIterable(thing) ? [...thing] : []
 
 myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value. NOTE: if the original function is recursive, it must be saved to the same variable (`someFunc = memoize(someFunc)`) or wrapped in a closure first to be memoized properly."
@@ -287,7 +287,8 @@ const afterDate = (things, date, dateify) => {
 }
 const beforeDate = (things, date, dateify) => {
   return daysAway(things, -Infinity, date, dateify)
-}`
+}
+;`
 
 "Not exported or used, just here as a reminder."
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
@@ -480,7 +481,7 @@ const getIter = {
   biDiff: compareItersBy('symmetricDifference'),
 }
 
-myself.stringConverter = "Like msConverter in the numbers module, but for strings (not yet exported)"
+myself.stringConverter = "Like msConverter in the numbers module, but for strings (not yet exported). 95% sure this will never be useful."
 const stringConverter = (thing) => {
   if (typeof thing !== 'string') {
     if (typeof thing === 'object') return util.inspect(thing, {depth: null})
@@ -504,14 +505,16 @@ const stringConverter = (thing) => {
     case '-Infinity':
       return -Infinity
     default: {
+      // object test
       if ( /function.*{.*}/.test(thing)
         || /=>/.test(thing)
         || /\[.*\]/.test(thing)
         || /{.*}/.test(thing)
       ) { // TODO: some kind of JSON test so non-dangerous objects can be parsed
-        console.log(`Warning: I can't let you convert ${thing}, Dave. Returning as-is.`
+        console.log(`Warning: I can't let you convert objects, Dave. Returning ${thing} as-is.`)
         return thing
       }
+      // integer test
       if (/^[+-]?\d+n?$/.test(thing)) {
         const smallInt = Number(thing)
         return
@@ -519,6 +522,7 @@ const stringConverter = (thing) => {
               BigInt(thing)
             : smallInt
       }
+      // float test
       if (/^[+-]?(?:\d*\.?\d+)|(?:\d+\.\d*)(?:e[+-]?\d+)?$/.test(thing)) {
         return Number.parseFloat(thing)
       }
@@ -535,6 +539,7 @@ const multilineRegex = (parts, flags = '') =>
 
 // TODO: new array/iterable submodule 'iters'
 // array object { swap, last, etc. } *and* iterable submodule?
+// also include getSorter
 module.exports = {
   docs: () => print(myself),
   backToWork,
