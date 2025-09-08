@@ -517,10 +517,9 @@ const stringConverter = (thing) => {
       // integer test
       if (/^[+-]?\d+n?$/.test(thing)) {
         const smallInt = Number(thing)
-        return
-            !Number.isInteger(smallInt) || thing.endsWith('n') ?
-              BigInt(thing)
-            : smallInt
+        return !Number.isInteger(smallInt) || thing.endsWith('n') ?
+            BigInt(thing)
+          : smallInt
       }
       // float test
       if (/^[+-]?(?:\d*\.?\d+)|(?:\d+\.\d*)(?:e[+-]?\d+)?$/.test(thing)) {
