@@ -23,6 +23,12 @@ const sieve = (n) => {
 myself.isPrime = "Also just for funsies. Will replace with fancier test (e.g. Miller-Rabin) later."
 const isPrime = (n) => sieve(n)[n]
 
+myself.isNum = "Checks the type of the given value against both 'number' and 'bigint'"
+const isNum = (thing) => ['number', 'bigint'].includes(typeof thing)
+
+myself.isInt = "Checks if the given value is a bigint OR regular integer."
+const isInt = (thing) => typeof thing === 'bigint' || Number.isInteger(thing)
+
 myself.roundDecimal = "Rounds (towards zero) to a given number of decimal places."
 const roundDecimal = (value, places = 2) => {
   if (typeof value !== 'number' || Number.isInteger(value)) return value
@@ -87,6 +93,8 @@ module.exports = {
   docs: () => print(myself),
   sieve,
   isPrime,
+  isNum,
+  isInt,
   roundDecimal,
   arithmeticMean,
   diffsCalculator,

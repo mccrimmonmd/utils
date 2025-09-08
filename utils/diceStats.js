@@ -1,6 +1,6 @@
 const myself = {} // documentation
 const { print, arrayify, arrayOf } = require('./general')
-const { roundDecimal } = require('./numbers')
+const { roundDecimal, isInt } = require('./numbers')
 const { rollDie, rollDice } = require('./random')
 const { allKeys } = require('./objects')
 
@@ -11,7 +11,7 @@ myself.countSides = "Generates (or takes as a parameter) a list of dice rolls an
 const countSides = (dice = 4, sides, rStyle = false) => {
   // 'sides' is optional, but it can't be a default parameter because the
   // default is different depending on whether 'dice' is a number or an array
-  if (['number', 'bigint'].includes(typeof dice)) {
+  if (isInt(dice)) {
     sides = sides ?? 6
     dice = rollDice(dice, sides)
   }
