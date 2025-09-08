@@ -58,6 +58,19 @@ const zip = (arrays, ...padding) => {
   return zipped
 }
 
+myself.entries = "A generic function that makes any iterable behave as though it had an Array-like entries() method."
+const entries = function* (iterable) {
+  if (typeof iterable.entries === 'function') yield* iterable.entries()
+  let i = 0
+  const iterator = iterable[Symbol.iterator]()
+  let entry = iterator.next()
+  while (!entry.done) {
+    yield [i, entry.value]
+    i += 1
+    entry = iterator.next()
+  }
+}
+
 myself.print = "console.dir shorthand. 'print.fn' is a functional variant that returns the printed object."
 const print = (obj, depth = null) => console.dir(obj, { depth })
 print.fn = (obj, depth = null) => {
@@ -528,6 +541,7 @@ module.exports = {
   len,
   range,
   zip,
+  entries,
   print,
   pluralize,
   logVar,
