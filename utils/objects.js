@@ -40,20 +40,20 @@ myself.recombine = "Sort of like Python's 'zip' function, generalized for Object
 [{ id: xid, xKey: [xVal1, xVal2, ...], xKey2: [xVal3, ...] }, { id: yid, yKey: [yVal1, ...] }, ...]
 ;`
 const recombine = (listOfObjects, getKey, showDuplicates = true) => {
-  const mapped = listOfObjects.reduce((masterObj, obj) => {
-    const masterKey = getKey(obj)
-    const combinedObj = masterObj[masterKey] ?? {}
+  const mapped = listOfObjects.reduce((allGroups, obj) => {
+    const groupKey = getKey(obj)
+    const group = allGroups[groupKey] ?? {}
     for (const [key, val] of Object.entries(obj)) {
-      if (val === masterKey) {
-        combinedObj[key] = val
+      if (val === groupKey) {
+        group[key] = val
         continue
       }
-      let bucket = combinedObj[key] ?? []
+      let bucket = group[key] ?? []
       if (showDuplicates || !bucket.includes(val)) bucket.push(val)
-      combinedObj[key] = bucket
+      group[key] = bucket
     }
-    masterObj[masterKey] = combinedObj
-    return masterObj
+    allGroups[groupKey] = group
+    return allGroups
   }, {})
   return Object.values(mapped)
 }
