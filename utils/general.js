@@ -373,8 +373,10 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
     // change it to 'null > everything except undefined'
     // You could also make a case for 'null < everything', but IMO
     // it's nicer if the 'clutter' is at the end of the sort
-    if (a === null) return b === undefined ? [ 0, 1 ] : [ 1, 0 ]
-    if (b === null) return a === undefined ? [ 1, 0 ] : [ 0, 1 ]
+
+    // null = 1; undefined = 2; other = 0
+    if (a === null) return [ 1, b === undefined ? 2 : 0 ]
+    if (b === null) return [ a === undefined ? 2 : 0, 1 ]
 
     const [ aType, bType ] = [ typeof a, typeof b ]
     if (aType !== bType) return [ aType, bType ]
