@@ -174,9 +174,6 @@ const isEmpty = (
 myself.ensureIterable = "Wraps the given parameter in an array, unless it's already iterable. (In case you want to preserve the original type and/or avoid making a copy--otherwise, `[].concat(thing)` is probably a better choice.)"
 const ensureIterable = (thing) => isIterable(thing) ? thing : [thing]
 
-myself.arrayify = "Copies iterables into a new array; non-iterables result in an empty array. For when you want to ensure Array properties like length, reduce, slice, etc. are available. (If you want non-iterables to also be arrayified instead of ignored, you should probably use `[].concat(thing)` instead.)"
-const arrayify = (thing) => isIterable(thing) ? [...thing] : []
-
 myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value. NOTE: if the original function is recursive, it must be saved to the same variable (`someFunc = memoize(someFunc)`) or wrapped in a closure first to be memoized properly."
 // TODO: fix 'new name must be old name' thing...somehow?
 const memoize = (func) => {
@@ -405,17 +402,17 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
   }
 }
 
-myself.arrayOf = "Returns 'length' copies of 'item' (which can be a generator function). If 'item' is copy-by-value (e.g. a primitive), this is equivalent to `Array(length).fill(item)`"
-const arrayOf = (length, item) => Array.from({ length }, (_, i) => {
+myself.arrayify = "Returns 'howMany' copies of 'item' (which can be a generator function). If 'item' is copy-by-value (e.g. a primitive), this is equivalent to Array(howMany).fill(item)"
+const arrayify = (item, howMany = 1) => Array.from({ length: howMany }, (_, i) => {
   if (typeof item === 'function') return item(i)
   else if (typeof item === 'object') return structuredClone(item)
   else return item
 })
-myself.stringOf = "arrayOf but for Strings."
-const stringOf = (n, snippet = ' ', joinWith = '') => {
+myself.stringify = "arrayify but for Strings."
+const stringify = (snippet = ' ', n = 1, joinWith = '') => {
   return String(joinWith) === '' ?
       String(snippet).repeat(n)
-    : arrayOf(n, String(snippet)).join(joinWith)
+    : arrayify(String(snippet), n).join(joinWith)
 }
 
 myself.swap = "Swaps two elements of an Array (in-place)."
@@ -557,7 +554,6 @@ module.exports = {
   isIterable,
   isEmpty,
   ensureIterable,
-  arrayify,
   memoize,
   timeIt,
   makeGroups,
@@ -566,8 +562,8 @@ module.exports = {
   findDupes,
   findUniques,
   getSorter,
-  arrayOf,
-  stringOf,
+  arrayify,
+  stringify,
   swap,
   flattener,
   iterEquals,

@@ -1,5 +1,5 @@
 const myself = {} // documentation
-const { print, arrayify, arrayOf } = require('./general')
+const { print, arrayify } = require('./general')
 const { roundDecimal, isInt } = require('./numbers')
 const { rollDie, rollDice } = require('./random')
 const { allKeys } = require('./objects')
@@ -16,10 +16,10 @@ const countSides = (dice = 4, sides, rStyle = false) => {
     dice = rollDice(dice, sides)
   }
   else {
-    dice = arrayify(dice)
+    dice = [...dice]
     sides = sides ?? Math.max(...dice)
   }
-  const multiples = arrayOf(sides, 0)
+  const multiples = arrayify(0, sides)
   dice.reverse()
   for (const result of dice) {
     if (rStyle && result !== dice[0]) break
@@ -80,7 +80,7 @@ const generateMultiples = (
   dice = 4,
   sides = 6,
   rStyle = false,
-) => arrayOf(amount, () => countSides(dice, sides, rStyle))
+) => arrayify(() => countSides(dice, sides, rStyle), amount)
 
 myself.printMultiples = "Takes a result from countSides and prints it to the console."
 const printMultiples = (multiples) =>

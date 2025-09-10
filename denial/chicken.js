@@ -1,5 +1,5 @@
 const dice = require('../utils/diceStats')
-const { range, zip, arrayOf, last } = require('/.general')
+const { range, zip, arrayify, last } = require('/.general')
 
 const multipleNames = [
   'dubs',
@@ -49,8 +49,8 @@ const applyModifiers = (rolls, modifiers) => {
 }
 
 const stats = {}
-const play = (maxRounds = Infinity, totalScore = 0, modifiers = arrayOf(5, 0)) => {
-  let locked = arrayOf(5, false)
+const play = (maxRounds = Infinity, totalScore = 0, modifiers = arrayify(0, 5)) => {
+  let locked = arrayify(false, 5)
   let firstTen = true
   let firstTwelve = true
   let lockTwelves = false
