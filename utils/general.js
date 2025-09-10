@@ -102,7 +102,7 @@ const logVar = (
   console.dir(value)
 }
 const logVars = (...variables) => {
-  for (const variable of variables) logVar(...iterify(variable))
+  for (const variable of variables) logVar(...ensureIterable(variable))
   console.log('=*='.repeat(20))
 }
 
@@ -171,8 +171,8 @@ const isEmpty = (
   return !value
 }
 
-myself.iterify = "Wraps the given parameter in an array, unless it's already iterable. (In case you want to preserve the original type and/or avoid making a copy--otherwise, `[].concat(thing)` is probably a better choice.)"
-const iterify = (thing) => isIterable(thing) ? thing : [thing]
+myself.ensureIterable = "Wraps the given parameter in an array, unless it's already iterable. (In case you want to preserve the original type and/or avoid making a copy--otherwise, `[].concat(thing)` is probably a better choice.)"
+const ensureIterable = (thing) => isIterable(thing) ? thing : [thing]
 
 myself.arrayify = "Copies iterables into a new array; non-iterables result in an empty array. For when you want to ensure Array properties like length, reduce, slice, etc. are available. (If you want non-iterables to also be arrayified instead of ignored, you should probably use `[].concat(thing)` instead.)"
 const arrayify = (thing) => isIterable(thing) ? [...thing] : []
@@ -348,7 +348,7 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
     || (['number', 'bigint'].includes(typeof sortOrder) && sortOrder < 0)
     
   const [ifLess, ifMore] = descending ? [1, -1] : [-1, 1]
-  const sorters = iterify(sortOn)
+  const sorters = ensureIterable(sortOn)
   
   const resolve = (aObj, bObj, sorter) => {
     switch (typeof sorter) {
@@ -556,7 +556,7 @@ module.exports = {
   isTruthy,
   isIterable,
   isEmpty,
-  iterify,
+  ensureIterable,
   arrayify,
   memoize,
   timeIt,
