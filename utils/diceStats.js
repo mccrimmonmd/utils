@@ -96,7 +96,7 @@ const initializeNames = (results) => {
     twoPair: 0,
     quads: 0,
   }
-  if (shortNames.includes('5s')) {
+  if (shortNames.includes('5s') || shortNames.includes('6s')) {
     fullNames = {
       fullHouse: 0,
       quints: 0,
