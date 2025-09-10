@@ -7,7 +7,10 @@ const objects = require('./objects')
 const general = require('./general')
 const op = require('./operators')
 
-// general.docs.numbers = numbers.doc
+// const myself = {}
+// myself.utils = general.aboutMe()
+// ...
+// myself.random = random.aboutMe()
 // ...
 
 general.docs.numbers = "Functions for working with numbers, especially lists of numbers."
@@ -20,6 +23,7 @@ general.docs.op = "Functional equivalents of JavaScript's native operators."
 
 module.exports = {
   ...general,
+  // aboutMe: () => myself,
   op,
   numbers,
   reducers,
@@ -27,6 +31,7 @@ module.exports = {
   diceStats,
   drawing,
   objects,
+  // iterable,
 }
 
 /*

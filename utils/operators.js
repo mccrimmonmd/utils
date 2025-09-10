@@ -115,7 +115,7 @@ const opFuncs = {
 
   all: (paramIter, test = (a) => !!a) => andReduce(
     paramIter,
-    (_, b) => test(b),
+    (_, thing) => test(thing),
     null
   ),
 }

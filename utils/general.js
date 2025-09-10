@@ -1,9 +1,8 @@
-// TODO: pull some of these functions out into new submodule--perhaps
-// something to do with iterables?
-// "collections" or "iters"
+// TODO: pull some of these functions out into new submodule "iterable"
 
 const myself = {} // documentation
 const { max, min, flatten } = require('./reducers')
+// const { range, entries, isIterable, ensureIterable } = require('./iterable') // for re-export
 
 const backToWork = require('./BACK TO WORK')
 myself.backToWork = backToWork
@@ -340,16 +339,16 @@ const findUniques = (iterable, identifier) => {
 
 myself.getSorter = "Returns a sorting function that behaves more sanely than the default (specifically: mixed-case text, text with diacritics, and numbers sort the way you would expect; Objects are sorted with util.inspect; and mixed-type arrays are sorted by type first, then value). Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties)."
 const getSorter = (sortOn, sortOrder = 'ascending') => {
-  const descending =
-    ['descending', 'desc', '-', false].includes(sortOrder)
-    || (['number', 'bigint'].includes(typeof sortOrder) && sortOrder < 0)
-
   // In addition to a saner sort order, this function has a secondary goal of
   // sorting arbitrary permutations *unambiguously.* That is, for any given
   // Array arr, `shuffle(arr).sort(getSorter())` should result in the same
   // permutation every time it's called (this may or may not be possible).
-  const sorters = iterify(sortOn)
+  const descending =
+    ['descending', 'desc', '-', false].includes(sortOrder)
+    || (['number', 'bigint'].includes(typeof sortOrder) && sortOrder < 0)
+    
   const [ifLess, ifMore] = descending ? [1, -1] : [-1, 1]
+  const sorters = iterify(sortOn)
   
   const resolve = (aObj, bObj, sorter) => {
     switch (typeof sorter) {
@@ -370,7 +369,10 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
     let [ a, b ] = resolve(aObj, bObj, sortBy)
     if (a === b) return [ a, b ]
 
-    // sort null to the end of the list, just before undefined
+    // null's default sort order is especially dumb -- I opted to 
+    // change it to 'null > everything except undefined'
+    // You could also make a case for 'null < everything', but IMO
+    // it's nicer if the 'clutter' is at the end of the sort
     if (a === null) return b === undefined ? [ 0, 1 ] : [ 1, 0 ]
     if (b === null) return a === undefined ? [ 1, 0 ] : [ 0, 1 ]
 
@@ -434,6 +436,7 @@ myself.flattener = "Flattens the given array to the specified depth. Depth must 
 // (I wonder if I could get the best of both worlds by combining a plain loop 
 // with a call to Array.prototype.flat?)
 const flattener = (array, depth = 1) => {
+  // if (!isNum(depth) || depth === Infinity) {
   if (!['number', 'bigint'].includes(typeof depth) || depth === Infinity) {
     throw new RangeError('Depth must be finite')
   }

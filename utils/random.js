@@ -1,4 +1,6 @@
-const myself = {} // documentation
+const myself = {
+  // module: "Functions for generating and using random numbers."
+}
 const { print, swap, arrayOf } = require('./general')
 
 myself.coinFlip = "Returns a boolean with a 50-50 chance of being true."
@@ -36,6 +38,7 @@ const shuffle = (arr) => {
   }
   return arr
 }
+
 myself.shuffled = "Returns a shuffled copy of the given array."
 const shuffled = (arr) => shuffle([...arr])
 // Alternate implementation - slower, but more intuitive
@@ -54,6 +57,8 @@ const shuffled = (arr) => shuffle([...arr])
 
 module.exports = {
   docs: () => print(myself),
+  // aboutMe: () => myself.module,
+  // allAboutMe: () => myself
   coinFlip,
   randNum,
   randInt,

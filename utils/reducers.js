@@ -16,10 +16,10 @@ const flatten = (flattened, bump, i) => {
   return flattened
 }
 
-myself.andReduce = "Takes an iterable and a function that compares two objects to yield a boolean. Returns true iff the function returns true for each adjacent pair in the iterable. Used in operators.js for chaining."
+myself.andReduce = "Takes an iterable and a function that compares two objects to yield a boolean. Returns true iff the function returns true for every adjacent pair in the iterable. Used in operators.js for chaining."
 const andReduce = (things, func, ...initialValue) => {
   let firstIter = true
-  let prev = null
+  let prev
   for (const thing of things) {
     if (firstIter) {
       firstIter = false
@@ -98,7 +98,7 @@ const stats = (totalStats, value) => {
 or in a single pass:
 
   let consolidatedStats = allTheRawData.reduce(stats)
-`
+;`
 const statsInit = (value) => {
   return {
     max: value,

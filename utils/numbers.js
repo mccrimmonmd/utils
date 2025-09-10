@@ -26,7 +26,7 @@ const isPrime = (n) => sieve(n)[n]
 myself.isNum = "Checks the type of the given value against both 'number' and 'bigint'"
 const isNum = (thing) => ['number', 'bigint'].includes(typeof thing)
 
-myself.isInt = "Checks if the given value is a bigint OR regular integer."
+myself.isInt = "Checks if the given value is an integer (bigint OR number)."
 const isInt = (thing) => typeof thing === 'bigint' || Number.isInteger(thing)
 
 myself.roundDecimal = "Rounds (towards zero) to a given number of decimal places."
