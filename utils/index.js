@@ -6,7 +6,7 @@ const general = require('./general')
 //   op: op('aboutMe'),
 // }
 
-// const allModules = [
+// const moduleNames = [
 //   diceStats,
 //   drawing,
 //   // iterable,
@@ -16,8 +16,8 @@ const general = require('./general')
 //   reducers,
 // ]
 
-// const asEntries = allModules.map(name => [ name, require(`./${name}`) ])
-// for (const [ name, module ] of asEntries) {
+// const moduleEntries = moduleNames.map(name => [ name, require(`./${name}`) ])
+// for (const [ name, module ] of moduleEntries) {
 //   myself[name] = module.aboutMe()
 // }
 
@@ -25,7 +25,7 @@ const general = require('./general')
 //   ...general,
 //   aboutMe: () => myself,
 //   op,
-//   ...Object.fromEntries(asEntries)
+//   ...Object.fromEntries(moduleEntries)
 // }
 
 const diceStats = require('./diceStats')
