@@ -1,11 +1,12 @@
-const numbers = require('./numbers')
-const reducers = require('./reducers')
-const random = require('./random')
+const general = require('./general')
+
 const diceStats = require('./diceStats')
 const drawing = require('./drawing')
+const numbers = require('./numbers')
 const objects = require('./objects')
-const general = require('./general')
 const op = require('./operators')
+const random = require('./random')
+const reducers = require('./reducers')
 
 // const myself = {}
 // myself.utils = general.aboutMe()
@@ -13,25 +14,23 @@ const op = require('./operators')
 // myself.random = random.aboutMe()
 // ...
 
-general.docs.numbers = "Functions for working with numbers, especially lists of numbers."
-general.docs.reducers = "Functions for passing to Array.prototype.reduce as the callback."
-general.docs.random = random.aboutMe()
 general.docs.diceStats = "Functions for analyzing dice rolls."
 general.docs.drawing = "Functions for drawing and animating ASCII art."
+general.docs.numbers = "Functions for working with numbers, especially lists of numbers."
 general.docs.objects = "Functions for working with objects, especially JSON."
 general.docs.op = "Functional equivalents of JavaScript's native operators."
+general.docs.random = random.aboutMe()
+general.docs.reducers = "Functions for passing to Array.prototype.reduce as the callback."
 
 module.exports = {
   ...general,
-  // aboutMe: () => myself,
-  op,
-  numbers,
-  reducers,
-  random,
   diceStats,
   drawing,
+  numbers,
   objects,
-  // iterable,
+  op,
+  random,
+  reducers,
 }
 
 /*
