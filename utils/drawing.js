@@ -1,4 +1,6 @@
-const myself = {} // documentation
+const myself = {
+  aboutMe: "Functions for drawing and animating ASCII art."
+}
 const { len, print, arrayify } = require('./general')
 
 myself.draw = "Prints the given string or string array to the console as ASCII art."
@@ -63,7 +65,9 @@ const animate = (sequence, defaultDelay = 1000) => {
 }
 
 module.exports = {
-  docs: () => print(myself),
+  // docs: () => print(myself),
+  aboutMe: () => myself.aboutMe,
+  allAboutMe: () => myself,
   draw,
   drawRow,
   animate,

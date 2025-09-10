@@ -1,7 +1,9 @@
 const fs = require('fs')
 const path = require('path')
 
-const myself = {} // documentation
+const myself = {
+  aboutMe: "Functions for working with objects, especially JSON."
+}
 const {
   print,
   isEmpty,
@@ -202,7 +204,9 @@ const excludeOpts = { includeOnMatch: false }
 const excludeValOpts = { filterOn: 'values', includeOnMatch: false }
 
 module.exports = {
-  docs: () => print(myself),
+  // docs: () => print(myself),
+  aboutMe: () => myself.aboutMe,
+  allAboutMe: () => myself,
   merge,
   recombine,
   allValues,

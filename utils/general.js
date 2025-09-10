@@ -1,6 +1,7 @@
 // TODO: pull some of these functions out into new submodule "iterable"
-
-const myself = {} // documentation
+const myself = {
+  aboutMe: "General 'utils' documentation goes here."
+}
 const { max, min, flatten } = require('./reducers')
 // const { range, entries, isIterable, ensureIterable } = require('./iterable') // for re-export
 
@@ -538,7 +539,9 @@ const multilineRegex = (parts, flags = '') =>
 // array object { swap, last, etc. } *and* iterable submodule?
 // also include getSorter
 module.exports = {
-  docs: () => print(myself),
+  // docs: () => print(myself),
+  aboutMe: () => myself.aboutMe,
+  allAboutMe: () => myself,
   backToWork,
   len,
   range,
@@ -575,7 +578,7 @@ module.exports = {
 // for organization? (future):
 // module.exports = {
   // ...textStuff,
-  // ...arrayStuff,
+  // ...someOtherGroupOfStuffNotBigEnoughToBeAModule,
   // other,
   // miscellaneous,
   // functions,

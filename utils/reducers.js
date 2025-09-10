@@ -1,4 +1,6 @@
-const myself = {} // documentation
+const myself = {
+  aboutMe: "Functions intended as the callback to Array.prototype.reduce."
+}
 
 myself.flatten = "Concatenates two items that may or may not be arrays, using push instead of concat for speed. You should probably just use Array.prototype.flat instead."
 const flatten = (flattened, bump, i) => {
@@ -109,7 +111,9 @@ const statsInit = (value) => {
 }
 
 module.exports = {
-  docs: () => print(myself),
+  // docs: () => print(myself), 
+  aboutMe: () => myself.aboutMe,
+  allAboutMe: () => myself,
   flatten,
   andReduce,
   orReduce,
@@ -121,4 +125,3 @@ module.exports = {
   min,
   stats,
 }
-

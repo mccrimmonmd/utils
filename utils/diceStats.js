@@ -1,4 +1,6 @@
-const myself = {} // documentation
+const myself = {
+  aboutMe: "Functions for analyzing dice rolls."
+}
 const { print, arrayify } = require('./general')
 const { roundDecimal, isInt } = require('./numbers')
 const { rollDie, rollDice } = require('./random')
@@ -161,7 +163,9 @@ const runStatsTest = (
 // runStatsTest({ verbose: true })
 
 module.exports = {
-  docs: () => print(myself),
+  // docs: () => print(myself),
+  aboutMe: () => myself.aboutMe,
+  allAboutMe: () => myself,
   rollDie,
   rollDice,
   countSides,

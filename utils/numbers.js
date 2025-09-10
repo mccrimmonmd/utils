@@ -1,4 +1,6 @@
-const myself = {} // documentation
+const myself = {
+  aboutMe: "Functions for working with numbers, especially lists of numbers."
+}
 const { print, arrayify, range } = require('./general')
 const { sum, product, diffsCalculator } = require('./reducers')
 const op = require('./operators')
@@ -90,7 +92,9 @@ const msConverter = (
 }
 
 module.exports = {
-  docs: () => print(myself),
+  // docs: () => print(myself),
+  aboutMe: () => myself.aboutMe,
+  allAboutMe: () => myself,
   sieve,
   isPrime,
   isNum,
