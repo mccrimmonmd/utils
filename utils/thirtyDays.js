@@ -19,7 +19,7 @@ const playGame = (rounds = 6, days = 30, options = {}) => {
     'totalScore',
     'totalDays',
   ]
-  const stats = () => Object.fromEntries(
+  const stats = Object.fromEntries(
     names.map(name => [ name, {
       min: Infinity,
       max: -Infinity,
