@@ -1,15 +1,17 @@
 const general = require('./general')
+// const op = require('./operators')
+
 // const myself = {
-//   utils: general.aboutMe() 
+//   utils: general.aboutMe(),
+//   op: op('aboutMe'),
 // }
 
 // const allModules = [
 //   diceStats,
 //   drawing,
-//   iterable,
+//   // iterable,
 //   numbers,
 //   objects,
-//   op,
 //   random,
 //   reducers,
 // ]
@@ -22,6 +24,7 @@ const general = require('./general')
 // module.exports = {
 //   ...general,
 //   aboutMe: () => myself,
+//   op,
 //   ...Object.fromEntries(asEntries)
 // }
 

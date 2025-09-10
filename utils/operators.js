@@ -1,3 +1,6 @@
+const myself = {
+  aboutMe: "Functional equivalents of JavaScript's native operators."
+}
 const { pluralize } = require('./general')
 const { andReduce, sum, product } = require('./reducers')
 
@@ -10,6 +13,7 @@ const parityError = (opType, n = 2) => {
   )
 }
 const opFuncs = {
+  aboutMe: () => myself.aboutMe,
 
   // non-chaining operators //
 
