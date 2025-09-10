@@ -1,4 +1,29 @@
 const general = require('./general')
+// const myself = {
+//   utils: general.aboutMe() 
+// }
+
+// const allModules = [
+//   diceStats,
+//   drawing,
+//   iterable,
+//   numbers,
+//   objects,
+//   op,
+//   random,
+//   reducers,
+// ]
+
+// const asEntries = allModules.map(name => [ name, require(`./${name}`) ])
+// for (const [ name, module ] of asEntries) {
+//   myself[name] = module.aboutMe()
+// }
+
+// module.exports = {
+//   ...general,
+//   aboutMe: () => myself,
+//   ...Object.fromEntries(asEntries)
+// }
 
 const diceStats = require('./diceStats')
 const drawing = require('./drawing')
@@ -7,12 +32,6 @@ const objects = require('./objects')
 const op = require('./operators')
 const random = require('./random')
 const reducers = require('./reducers')
-
-// const myself = {}
-// myself.utils = general.aboutMe()
-// ...
-// myself.random = random.aboutMe()
-// ...
 
 general.docs.diceStats = "Functions for analyzing dice rolls."
 general.docs.drawing = "Functions for drawing and animating ASCII art."
