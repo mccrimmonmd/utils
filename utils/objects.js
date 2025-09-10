@@ -71,7 +71,7 @@ const allKeys = (listOfObjects, regex = /(?:)/) => {
 }
 
 myself.filter = {
-  object: "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a regular expression or an iterable."
+  object: "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a single value to match, an iterable of possible matches, or a regular expression."
 }
 const filterObject = (
   obj,
@@ -91,8 +91,13 @@ const filterObject = (
     passesFilter = (value) => filter.test(value) === includeOnMatch
   }
   else {
-    console.dir(filter)
-    throw new TypeError('filter must be either an iterable or a regular expression')
+    if (filter === undefined) {
+      console.warn("filter is 'undefined'; this may be unintentional")
+      console.warn("pass a value, iterable, or regex to match against as the second parameter")
+    }
+    passesFilter = (value) => (value === filter) === includeOnMatch
+    // console.dir(filter)
+    // throw new TypeError('filter must be either an iterable or a regular expression')
   }
   const filtered = Object.entries(obj).filter(([key, value]) => {
     const candidate = filterOn === 'keys' ? key : value
