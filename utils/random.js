@@ -1,5 +1,5 @@
 const myself = {
-  // module: "Functions for generating and using random numbers."
+  aboutMe: "Functions for generating and using random numbers."
 }
 const { print, swap, arrayify } = require('./general')
 
@@ -56,9 +56,9 @@ const shuffled = (arr) => shuffle([...arr])
 // }
 
 module.exports = {
-  docs: () => print(myself),
-  // aboutMe: () => myself.module,
-  // allAboutMe: () => myself
+  // docs: () => print(myself),
+  aboutMe: () => myself.aboutMe,
+  allAboutMe: () => myself,
   coinFlip,
   randNum,
   randInt,

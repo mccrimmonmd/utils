@@ -15,7 +15,7 @@ const op = require('./operators')
 
 general.docs.numbers = "Functions for working with numbers, especially lists of numbers."
 general.docs.reducers = "Functions for passing to Array.prototype.reduce as the callback."
-general.docs.random = "Functions for generating and using random numbers."
+general.docs.random = random.aboutMe()
 general.docs.diceStats = "Functions for analyzing dice rolls."
 general.docs.drawing = "Functions for drawing and animating ASCII art."
 general.docs.objects = "Functions for working with objects, especially JSON."
@@ -35,14 +35,6 @@ module.exports = {
 }
 
 /*
-var {
-  numbers,
-  reducers,
-  random,
-  diceStats,
-  drawing,
-  objects,
-  ...general
-} = require('./utils')
+var utils = require('./utils')
 */
 
