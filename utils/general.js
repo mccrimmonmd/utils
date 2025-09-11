@@ -58,6 +58,27 @@ const zip = (arrays, ...padding) => {
   return zipped
 }
 
+myself.defaultOrAny = "For when you want default argument(s) that can be any type, including undefined. The first paramater can be a single default or an array of defaults, but the second paramater must be an array."
+const defaultOrAny = (defaultValues, wrappedValues) => {
+  if (!Array.isArray(wrappedValues)) {
+    console.log(`defaultOrAny usage:
+  function yourFunctionDefinition (requiredParam, ...oneOrMoreOptionalParams) {
+    var argValues = defaultOrAny(oneOrMoreDefaults, oneOrMoreOptionalParams)
+    ...
+  }`)
+    throw new TypeError("Second argument to 'defaultOrAny' should be an array")
+  }
+  defaultValues = ensureIterable(defaultValues)
+  const results = []
+  const empty = Symbol()
+  for (const [def, val] of zip([defaults, wrappedValues], empty)) {
+    if (def === empty) break
+    if (val === empty) results.push(def)
+    else results.push(val)
+  }
+  return results
+}
+
 myself.entries = "A generic version of Array.prototype.entries that works with any iterable."
 const entries = function* (iterable) {
   if (typeof iterable.entries === 'function') yield* iterable.entries()
@@ -557,6 +578,7 @@ module.exports = {
   range,
   zip,
   entries,
+  defaultOrAny,
   print,
   printFn,
   printVar,
