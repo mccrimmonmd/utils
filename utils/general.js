@@ -58,7 +58,7 @@ const zip = (arrays, ...padding) => {
   return zipped
 }
 
-myself.entries = "A generic function that makes any iterable behave as though it had an Array-like entries() method."
+myself.entries = "A generic version of Array.prototype.entries that works with any iterable."
 const entries = function* (iterable) {
   if (typeof iterable.entries === 'function') yield* iterable.entries()
   let i = 0
