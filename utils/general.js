@@ -78,7 +78,7 @@ myself.printFn = "A functional variant of 'print' that returns the printed objec
 const printFn = (obj, depth = null) => {
   ;`
   the main (only?) use-case for printFn is printing and returning something at
-  the same time (for e.g. debugging): 'return print.fn(thing)'
+  the same time (for e.g. debugging): 'return printFn(thing)'
   ;`
   console.dir(obj, depth)
   return obj
