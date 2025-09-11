@@ -189,9 +189,9 @@ const memoize = (func) => {
   const cache = new MultiMap()
   return new Proxy(func, {
     apply(target, thisArg, argumentsList) {
-      let args
-      if      (argumentsList.length === 0) args = Symbol.for('no args')
-      else if (argumentsList.length === 1) args = argumentsList[0]
+      let args = {}
+      if      (argumentsList.length === 0) args.arg = Symbol.for('no args')
+      else if (argumentsList.length === 1) args.arg = argumentsList[0]
       else if (argumentsList.length > 1) args = argumentsList
       else throw new TypeError("'argumentsList' is not a list (???)")
       const { hasKey, value } = cache.search(args)
@@ -209,9 +209,11 @@ const MultiMap = class extends Map {
     this.#leafKey = Symbol()
   }
 
-  #traverse (argumentsList, mutating = false, value) {
+  #traverse (argumentsList, ...newValue) {
+    const mutating = newValue.length
+    const value = mutating && newValue[0]
     const single = !argumentsList.length
-    const first = single ? argumentsList : argumentsList[0]
+    const first = single ? argumentsList.arg : argumentsList[0]
     let hasKey = super.has(first)
     let oldValue = super.get(first)
     if (single) {
@@ -246,7 +248,7 @@ const MultiMap = class extends Map {
   }
 
   set (args, value) {
-    return this.#traverse(args, true, value)
+    return this.#traverse(args, value)
   }
 }
 
