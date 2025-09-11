@@ -7,13 +7,13 @@ const myself = {
 }
 
 const moduleNames = [
-  diceStats,
-  drawing,
-  // iterable,
-  numbers,
-  objects,
-  random,
-  reducers,
+  "diceStats",
+  "drawing",
+  // "iterable",
+  "numbers",
+  "objects",
+  "random",
+  "reducers",
 ]
 
 const moduleEntries = moduleNames.map(name => [ name, require(`./${name}`) ])

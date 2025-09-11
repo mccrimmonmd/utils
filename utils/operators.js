@@ -14,7 +14,7 @@ const parityError = (opType, n = 2) => opFuncs.err(
 )
 
 const opFuncs = {
-  aboutMe: () => myself.aboutMe,
+  aboutMe: myself.aboutMe,
 
   // non-chaining operators //
 
