@@ -71,27 +71,22 @@ const entries = function* (iterable) {
   }
 }
 
-myself.print = "console.dir shorthand. 'print.fn' is a functional variant that returns the printed object."
-const print = (obj, depth = null) => console.dir(obj, { depth })
-print.fn = (obj, depth = null) => {
-  print(obj, depth)
+myself.print = "console.dir shorthand."
+const print = (obj, depth = null) => { printFn(obj, depth) }
+
+myself.printFn = "A functional variant of 'print' that returns the printed object."
+const printFn = (obj, depth = null) => {
+  ;`
+  the main (only?) use-case for printFn is printing and returning something at
+  the same time (for e.g. debugging): 'return print.fn(thing)'
+  ;`
+  console.dir(obj, depth)
   return obj
 }
 
-myself.pluralize = "Returns the plural version of the given word if the given number is more or less than 1. Makes a token attempt to be grammatical, but no guarantees."
-const pluralize = (word, n = 2) => {
-  if (Math.abs(n) === 1 || !word.length) return word
-  if (word.length === 1) return word + 's'
-  const lower = word.toLowerCase()
-  if (lower.endsWith('ife')) return word.slice(0, -2) + 'ves'
-  if (lower.endsWith('y')) return word.slice(0, -1) + 'ies'
-  if (/(?:s|x|ch|sh)$/.test(lower)) return word + 'es'
-  if (/(?:ar|a|l)f$/.test(lower)) return word.slice(0, -1) + 'ves'
-  return word + 's'
-}
-
-myself.logVar = "A debugging function that logs the name, location, and value of a variable (or variables) in a structured way."
-const logVar = (
+myself.printVar = "For logging the name, location, and value of a variable in a structured way."
+// TODO?: make functional variant of this, too?
+const printVar = (
   value,
   name = '<anonymous>',
   location = new Error().stack.split('\n').slice(2).join('\n'),
@@ -102,9 +97,22 @@ const logVar = (
   console.log('-*-'.repeat(20))
   console.dir(value)
 }
-const logVars = (...variables) => {
-  for (const variable of variables) logVar(...ensureIterable(variable))
+myself.printVars = "Uses printVar to log multiple variables."
+const printVars = (...variables) => {
+  for (const variable of variables) printVar(...ensureIterable(variable))
   console.log('=*='.repeat(20))
+}
+
+myself.pluralize = "Returns the plural version of the given word if the given number is not 1 or -1. Makes a token attempt to be grammatical, but no guarantees."
+const pluralize = (word, n = 2) => {
+  if (Math.abs(n) === 1 || !word.length) return word
+  if (word.length === 1) return word + 's'
+  const lower = word.toLowerCase()
+  if (lower.endsWith('ife')) return word.slice(0, -2) + 'ves'
+  if (lower.endsWith('y')) return word.slice(0, -1) + 'ies'
+  if (/(?:s|x|ch|sh)$/.test(lower)) return word + 'es'
+  if (/(?:ar|a|l)f$/.test(lower)) return word.slice(0, -1) + 'ves'
+  return word + 's'
 }
 
 myself.ifFunc = "Pure-ish 'if' function with short-circuiting. Just because. (Only 'ish' because, without the side effect of assignment, the return value of the executed branch would be lost, making the function useless unless the branches themselves had side effects.)"
@@ -548,9 +556,10 @@ module.exports = {
   zip,
   entries,
   print,
+  printFn,
+  printVar,
+  printVars,
   pluralize,
-  logVar,
-  logVars,
   ifFunc,
   TypeCheckedArray,
   isTruthy,
