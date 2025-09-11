@@ -89,7 +89,8 @@ const stats = (totalStats, value) => {
     count: count + 1,
   }
 }
-;`statsInit: Helper function for 'stats' that allows it to be used incrementally:
+;`
+statsInit: Helper function for 'stats' that allows it to be used incrementally:
 
   let consolidatedStats
   while (collectingData) {
