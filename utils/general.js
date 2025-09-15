@@ -66,14 +66,14 @@ const defaultOrAny = (defaultValues, wrappedValues) => {
     var argValues = defaultOrAny(oneOrMoreDefaults, oneOrMoreOptionalParams)
     ...
   }`)
-    throw new TypeError("Second argument to 'defaultOrAny' should be an array")
+    throw new TypeError("Second argument to 'defaultOrAny' must be an array")
   }
   defaultValues = ensureIterable(defaultValues)
   const results = []
   const empty = Symbol()
-  for (const [def, val] of zip([defaults, wrappedValues], empty)) {
-    if (def === empty) break
-    if (val === empty) results.push(def)
+  for (const [def, val] of zip([defaultValues, wrappedValues], empty)) {
+    if      (def === empty) break
+    else if (val === empty) results.push(def)
     else results.push(val)
   }
   return results
