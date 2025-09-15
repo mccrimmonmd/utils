@@ -1,5 +1,7 @@
-const myself = {} // documentation
-const { print, arrayOf, range } = require('./general')
+const myself = {
+  aboutMe: "Functions for working with numbers, especially lists of numbers."
+}
+const { print, arrayify, range } = require('./general')
 const { sum, product, diffsCalculator } = require('./reducers')
 const op = require('./operators')
 
@@ -23,6 +25,12 @@ const sieve = (n) => {
 myself.isPrime = "Also just for funsies. Will replace with fancier test (e.g. Miller-Rabin) later."
 const isPrime = (n) => sieve(n)[n]
 
+myself.isNum = "Checks the type of the given value against both 'number' and 'bigint'"
+const isNum = (thing) => ['number', 'bigint'].includes(typeof thing)
+
+myself.isInt = "Checks if the given value is an integer (bigint OR number)."
+const isInt = (thing) => typeof thing === 'bigint' || Number.isInteger(thing)
+
 myself.roundDecimal = "Rounds (towards zero) to a given number of decimal places."
 const roundDecimal = (value, places = 2) => {
   if (typeof value !== 'number' || Number.isInteger(value)) return value
@@ -45,7 +53,12 @@ const stdDeviation = (values, isSample = true) => {
 }
 
 myself.msConverter = "Converts milliseconds into other common units, or vice versa."
-const msConverter = (time, rawUnits, fromMs = true) => {
+const msConverter = (
+  time,
+  rawUnits = 'seconds',
+  fromMs = true,
+  verbose = true,
+) => {
   let units = rawUnits.toLowerCase()
   if (!units.endsWith('s')) units += 's'
   const factors = []
@@ -70,13 +83,22 @@ const msConverter = (time, rawUnits, fromMs = true) => {
       throw new TypeError(`Time unit '${units}' invalid or unimplemented`)
   }
 
-  return op(fromMs ? 'div' : 'mult')(time, ...factors)
+  const result = op(fromMs ? 'div' : 'mult')(time, ...factors)
+  if (verbose) {
+    const [ fromUnit, toUnit ] = fromMs ? [ 'ms', units ] : [ units, 'ms' ]
+    console.log(`msConverter: ${time} ${fromUnit} -> ${result} ${toUnit}`)
+  }
+  return result 
 }
 
 module.exports = {
-  docs: () => print(myself),
+  // docs: () => print(myself),
+  aboutMe: () => myself.aboutMe,
+  allAboutMe: () => myself,
   sieve,
   isPrime,
+  isNum,
+  isInt,
   roundDecimal,
   arithmeticMean,
   diffsCalculator,

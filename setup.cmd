@@ -3,7 +3,7 @@ REM TODO: set up WSL
 REM If WinGet isn't already installed (PowerShell):
 REM Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
 
-REM Use cmd.exe instead of PowerShell to have apps added to Path automatically:
+REM Use cmd.exe instead of PowerShell so apps get added to Path automatically:
 winget install git.git
 winget install vim.vim
 winget install node.js

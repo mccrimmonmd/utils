@@ -1,6 +1,8 @@
-const myself = {} // documentation
-const { print, arrayify, arrayOf } = require('./general')
-const { roundDecimal } = require('./numbers')
+const myself = {
+  aboutMe: "Functions for analyzing dice rolls."
+}
+const { print, arrayify } = require('./general')
+const { roundDecimal, isInt } = require('./numbers')
 const { rollDie, rollDice } = require('./random')
 const { allKeys } = require('./objects')
 
@@ -11,15 +13,15 @@ myself.countSides = "Generates (or takes as a parameter) a list of dice rolls an
 const countSides = (dice = 4, sides, rStyle = false) => {
   // 'sides' is optional, but it can't be a default parameter because the
   // default is different depending on whether 'dice' is a number or an array
-  if (['number', 'bigint'].includes(typeof dice)) {
+  if (isInt(dice)) {
     sides = sides ?? 6
     dice = rollDice(dice, sides)
   }
   else {
-    dice = arrayify(dice)
+    dice = [...dice]
     sides = sides ?? Math.max(...dice)
   }
-  const multiples = arrayOf(sides, 0)
+  const multiples = arrayify(0, sides)
   dice.reverse()
   for (const result of dice) {
     if (rStyle && result !== dice[0]) break
@@ -80,7 +82,7 @@ const generateMultiples = (
   dice = 4,
   sides = 6,
   rStyle = false,
-) => arrayOf(amount, () => countSides(dice, sides, rStyle))
+) => arrayify(() => countSides(dice, sides, rStyle), amount)
 
 myself.printMultiples = "Takes a result from countSides and prints it to the console."
 const printMultiples = (multiples) =>
@@ -96,7 +98,7 @@ const initializeNames = (results) => {
     twoPair: 0,
     quads: 0,
   }
-  if (shortNames.includes('5s')) {
+  if (shortNames.includes('5s') || shortNames.includes('6s')) {
     fullNames = {
       fullHouse: 0,
       quints: 0,
@@ -161,7 +163,9 @@ const runStatsTest = (
 // runStatsTest({ verbose: true })
 
 module.exports = {
-  docs: () => print(myself),
+  // docs: () => print(myself),
+  aboutMe: () => myself.aboutMe,
+  allAboutMe: () => myself,
   rollDie,
   rollDice,
   countSides,

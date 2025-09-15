@@ -38,8 +38,9 @@
   ch = checkout
   su = push --set-upstream origin HEAD
   ap = add --patch
-  fe = fetch --all
+  fa = fetch --all
   pr = fetch --prune
+  fe = fetch --all --prune
   prt = fetch --prune --prune-tags
   delete-local = branch -d
   delete-remote = push -d origin

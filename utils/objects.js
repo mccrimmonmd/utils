@@ -1,7 +1,9 @@
 const fs = require('fs')
 const path = require('path')
 
-const myself = {} // documentation
+const myself = {
+  aboutMe: "Functions for working with objects, especially JSON."
+}
 const {
   print,
   isEmpty,
@@ -33,22 +35,27 @@ const merge = (
   return merged
 }
 
-myself.recombine = "Sort of like Python's 'zip' function, generalized for Objects: transforms [{ id: xid, key: xVal1 }, { id: xid, key: xVal2 }, { id: yid, otherKey: yVal1 }, ...] into [{ id: xid, key: [xVal1, xVal2, ...] }, { id: yid, otherKey: [yVal1, ...] }, ...]"
+myself.recombine = "Sort of like Python's 'zip' function, generalized for Objects. Haven't come up with a good way to describe it except by example (see source)."
+;`
+> data = [{ id: xid, xKey: xVal1 }, { id: xid, xKey: xVal2, xKey2: xVal3 }, { id: yid, yKey: yVal1 }, ...]
+> recombine(data, (obj) => obj.id)
+[{ id: xid, xKey: [xVal1, xVal2, ...], xKey2: [xVal3, ...] }, { id: yid, yKey: [yVal1, ...] }, ...]
+;`
 const recombine = (listOfObjects, getKey, showDuplicates = true) => {
-  const mapped = listOfObjects.reduce((masterObj, obj) => {
-    const masterKey = getKey(obj)
-    const combinedObj = masterObj[masterKey] ?? {}
+  const mapped = listOfObjects.reduce((allGroups, obj) => {
+    const groupKey = getKey(obj)
+    const group = allGroups[groupKey] ?? {}
     for (const [key, val] of Object.entries(obj)) {
-      if (val === masterKey) {
-        combinedObj[key] = val
+      if (val === groupKey) {
+        group[key] = val
         continue
       }
-      let bucket = combinedObj[key] ?? []
+      let bucket = group[key] ?? []
       if (showDuplicates || !bucket.includes(val)) bucket.push(val)
-      combinedObj[key] = bucket
+      group[key] = bucket
     }
-    masterObj[masterKey] = combinedObj
-    return masterObj
+    allGroups[groupKey] = group
+    return allGroups
   }, {})
   return Object.values(mapped)
 }
@@ -66,7 +73,7 @@ const allKeys = (listOfObjects, regex = /(?:)/) => {
 }
 
 myself.filter = {
-  object: "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a regular expression or an iterable."
+  object: "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a single value to match, an iterable of possible matches, or a regular expression."
 }
 const filterObject = (
   obj,
@@ -86,8 +93,13 @@ const filterObject = (
     passesFilter = (value) => filter.test(value) === includeOnMatch
   }
   else {
-    console.dir(filter)
-    throw new TypeError('filter must be either an iterable or a regular expression')
+    if (filter === undefined) {
+      console.warn("filter is 'undefined'; this may be unintentional")
+      console.warn("pass a value, iterable, or regex to match against as the second parameter")
+    }
+    passesFilter = (value) => (value === filter) === includeOnMatch
+    // console.dir(filter)
+    // throw new TypeError('filter must be either an iterable or a regular expression')
   }
   const filtered = Object.entries(obj).filter(([key, value]) => {
     const candidate = filterOn === 'keys' ? key : value
@@ -192,7 +204,9 @@ const excludeOpts = { includeOnMatch: false }
 const excludeValOpts = { filterOn: 'values', includeOnMatch: false }
 
 module.exports = {
-  docs: () => print(myself),
+  // docs: () => print(myself),
+  aboutMe: () => myself.aboutMe,
+  allAboutMe: () => myself,
   merge,
   recombine,
   allValues,

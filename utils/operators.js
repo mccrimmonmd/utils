@@ -1,15 +1,20 @@
+const myself = {
+  aboutMe: "Functional equivalents of JavaScript's native operators."
+}
 const { pluralize } = require('./general')
 const { andReduce, sum, product } = require('./reducers')
 
 const op = (opType) => opFuncs[opType] ?? opFuncs.err(
-  `Unsupported or invalid operator '${opType}'`, TypeError
+  `Unsupported or invalid operator '${opType}'`,
+  TypeError,
 )
-const parityError = (opType, n = 2) => {
-  throw new TypeError(
-    `Operator '${opType}' requires at least ${n} ${pluralize('argument', n)}`
-  )
-}
+const parityError = (opType, n = 2) => opFuncs.err(
+  `Operator '${opType}' requires at least ${n} ${pluralize('argument', n)}`,
+  TypeError,
+)
+
 const opFuncs = {
+  aboutMe: myself.aboutMe,
 
   // non-chaining operators //
 
@@ -115,7 +120,7 @@ const opFuncs = {
 
   all: (paramIter, test = (a) => !!a) => andReduce(
     paramIter,
-    (_, b) => test(b),
+    (_, thing) => test(thing),
     null
   ),
 }

@@ -1,5 +1,6 @@
-const myself = {} // documentation
-const { arrayify } = require('./general')
+const myself = {
+  aboutMe: "Functions intended as the callback to Array.prototype.reduce."
+}
 
 myself.flatten = "Concatenates two items that may or may not be arrays, using push instead of concat for speed. You should probably just use Array.prototype.flat instead."
 const flatten = (flattened, bump, i) => {
@@ -17,10 +18,10 @@ const flatten = (flattened, bump, i) => {
   return flattened
 }
 
-myself.andReduce = "Takes an iterable and a function that compares two objects to yield a boolean. Returns true iff the function returns true for each adjacent pair in the iterable. Used in operators.js for chaining."
+myself.andReduce = "Takes an iterable and a function that compares two objects to yield a boolean. Returns true iff the function returns true for every adjacent pair in the iterable. Used in operators.js for chaining."
 const andReduce = (things, func, ...initialValue) => {
   let firstIter = true
-  let prev = null
+  let prev
   for (const thing of things) {
     if (firstIter) {
       firstIter = false
@@ -88,7 +89,8 @@ const stats = (totalStats, value) => {
     count: count + 1,
   }
 }
-;`statsInit: Helper function for 'stats' that allows it to be used incrementally:
+;`
+statsInit: Helper function for 'stats' that allows it to be used incrementally:
 
   let consolidatedStats
   while (collectingData) {
@@ -99,7 +101,7 @@ const stats = (totalStats, value) => {
 or in a single pass:
 
   let consolidatedStats = allTheRawData.reduce(stats)
-`
+;`
 const statsInit = (value) => {
   return {
     max: value,
@@ -110,7 +112,9 @@ const statsInit = (value) => {
 }
 
 module.exports = {
-  docs: () => print(myself),
+  // docs: () => print(myself), 
+  aboutMe: () => myself.aboutMe,
+  allAboutMe: () => myself,
   flatten,
   andReduce,
   orReduce,
@@ -122,4 +126,3 @@ module.exports = {
   min,
   stats,
 }
-
