@@ -206,6 +206,7 @@ const ensureIterable = (thing) => isIterable(thing) ? thing : [thing]
 
 myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value. NOTE: if the original function is recursive, it must be saved to the same variable (`someFunc = memoize(someFunc)`) or wrapped in a closure first to be memoized properly."
 // TODO: fix 'new name must be old name' thing...somehow?
+// TODO: variable # of arguments will break 1-arg optimization. fix?
 const memoize = (func) => {
   const cache = new MultiMap()
   return new Proxy(func, {
