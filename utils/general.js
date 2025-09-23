@@ -63,7 +63,7 @@ const defaultOrAny = (defaultValues, wrappedValues) => {
   if (!Array.isArray(wrappedValues)) {
     console.log(`defaultOrAny usage:
   function yourFunctionDefinition (requiredParam, ...oneOrMoreOptionalParams) {
-    var argValues = defaultOrAny(oneOrMoreDefaults, oneOrMoreOptionalParams)
+    var [ arg1, ... ] = defaultOrAny(oneOrMoreDefaults, oneOrMoreOptionalParams)
     ...
   }`)
     throw new TypeError("Second argument to 'defaultOrAny' must be an array")
