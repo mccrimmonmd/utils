@@ -206,7 +206,6 @@ const ensureIterable = (thing) => isIterable(thing) ? thing : [thing]
 
 myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value. NOTE: if the original function is recursive, it must be saved to the same variable (`someFunc = memoize(someFunc)`) or wrapped in a closure first to be memoized properly."
 // TODO: fix 'new name must be old name' thing...somehow?
-// TODO: variable # of arguments will break 1-arg optimization. fix?
 const memoize = (func) => {
   const cache = new MultiMap()
   return new Proxy(func, {
@@ -225,9 +224,11 @@ const memoize = (func) => {
   })
 }
 const MultiMap = class extends Map {
+  #rootKey
   #leafKey
   constructor (...params) {
     super(...params)
+    this.#rootKey = Symbol()
     this.#leafKey = Symbol()
   }
 
@@ -235,7 +236,7 @@ const MultiMap = class extends Map {
     const mutating = newValue.length
     const value = mutating && newValue[0]
     const single = !argumentsList.length
-    const first = single ? argumentsList.arg : argumentsList[0]
+    const first = single ? argumentsList.arg : this.#rootKey
     let hasKey = super.has(first)
     let oldValue = super.get(first)
     if (single) {
@@ -245,7 +246,7 @@ const MultiMap = class extends Map {
 
     if (!hasKey) super.set(first, new Map())
     let innerMap = super.get(first)
-    for (const key of argumentsList.slice(1)) {
+    for (const key of argumentsList) {
       if (!innerMap.has(key)) {
         innerMap.set(key, new Map())
       }
