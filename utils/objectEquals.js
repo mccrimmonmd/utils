@@ -1,4 +1,4 @@
-const { isIterable, iterEquals } = require('./general')
+const { isIterable, iterEqualsUnordered } = require('./general')
 
 module.exports = (
   objA,
@@ -9,9 +9,8 @@ module.exports = (
     maxDepth = Infinity,
   } = {}
 ) => {
-  if (objA === objB) {
-    return true
-  }
+  if (objA === objB) return true
+
   let typeOfA = typeof objA
   if (typeOfA !== typeof objB) {
     if (compareBigIntToNumber) {
@@ -22,11 +21,14 @@ module.exports = (
         return BigInt(objA) === objB
       }
     }
+
     return false
   }
+
   if (typeOfA === 'number' && isNaN(objA)) {
     return isNaN(objB)
   }
+
   if (typeOfA === 'function') {
     if (!compareFuncsWith) {
       throw new Error(
@@ -41,6 +43,7 @@ module.exports = (
       return true
     }
   }
+
   if (typeOfA === 'object') {
     if ( objA === null
       || maxDepth <= 0
@@ -50,7 +53,7 @@ module.exports = (
     }
     
     if (isIterable(objA)) {
-      return iterEquals(objA, objB, false) // move down, make recursive
+      return iterEqualsUnordered(objA, objB) // move down, make recursive
     }
    
     if (maxDepth === Infinity) {
@@ -97,5 +100,6 @@ module.exports = (
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol
     })
   }
+
   return false
 }

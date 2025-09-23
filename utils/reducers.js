@@ -1,10 +1,5 @@
-const myself = {} // documentation
-
-// TODO: document
-const reduceify = (func, ...initialValue) => {
-  return (...params) => initialValue.length ?
-      params.reduce(func, initialValue[0])
-    : params.reduce(func)
+const myself = {
+  aboutMe: "Functions intended as the callback to Array.prototype.reduce."
 }
 
 myself.flatten = "Concatenates two items that may or may not be arrays, using push instead of concat for speed. You should probably just use Array.prototype.flat instead."
@@ -21,6 +16,40 @@ const flatten = (flattened, bump, i) => {
   if (Array.isArray(bump)) flattened.push(...bump)
   else flattened.push(bump)
   return flattened
+}
+
+myself.andReduce = "Takes an iterable and a function that compares two objects to yield a boolean. Returns true iff the function returns true for every adjacent pair in the iterable. Used in operators.js for chaining."
+const andReduce = (things, func, ...initialValue) => {
+  let firstIter = true
+  let prev
+  for (const thing of things) {
+    if (firstIter) {
+      firstIter = false
+      if (initialValue.length && !func(initialValue[0], thing)) return false
+      prev = thing
+      continue
+    }
+    if (!func(prev, thing)) return false
+    prev = thing
+  }
+  return true
+}
+
+myself.orReduce = "Identical to andReduce, except it returns true iff the function returns true for *any* adjacent pair in the iterable."
+const orReduce = (things, func, ...initialValue) => {
+  let firstIter = true
+  let prev
+  for (const thing of things) {
+    if (firstIter) {
+      firstIter = false
+      if (initialValue.length && func(initialValue[0], thing)) return true
+      prev = thing
+      continue
+    }
+    if (func(prev, thing)) return true
+    prev = thing
+  }
+  return false
 }
 
 myself.diffsCalculator = "Intended as a helper function for numbers.stdDeviation, but can also be used by itself. The function it returns is the callback for Array.prototype.reduce."
@@ -60,9 +89,10 @@ const stats = (totalStats, value) => {
     count: count + 1,
   }
 }
-;`statsInit: Helper function for 'stats' that allows it to be used incrementally:
+;`
+statsInit: Helper function for 'stats' that allows it to be used incrementally:
 
-  var consolidatedStats
+  let consolidatedStats
   while (collectingData) {
     let newData = collectMoreData()
     consolidatedStats = newData.reduce(stats, consolidatedStats)
@@ -70,8 +100,8 @@ const stats = (totalStats, value) => {
 
 or in a single pass:
 
-  var consolidatedStats = allTheRawData.reduce(stats)
-`
+  let consolidatedStats = allTheRawData.reduce(stats)
+;`
 const statsInit = (value) => {
   return {
     max: value,
@@ -82,9 +112,12 @@ const statsInit = (value) => {
 }
 
 module.exports = {
-  docs: () => print(myself),
-  reduceify,
+  // docs: () => print(myself), 
+  aboutMe: () => myself.aboutMe,
+  allAboutMe: () => myself,
   flatten,
+  andReduce,
+  orReduce,
   diffsCalculator,
   sum,
   product,

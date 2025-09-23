@@ -1,5 +1,7 @@
-const myself = {} // documentation
-const { print, arrayOf } = require('./general')
+const myself = {
+  aboutMe: "Functions for drawing and animating ASCII art."
+}
+const { len, print, arrayify } = require('./general')
 
 myself.draw = "Prints the given string or string array to the console as ASCII art."
 const draw = (picture) => {
@@ -15,7 +17,7 @@ const combinePics = (pictures, padding = 0) => {
   pictures = pictures.map(makeRectangular)
   let height = Math.max(...pictures.map(pic => pic.length))
   
-  let lines = arrayOf(height, [])
+  let lines = arrayify([], height)
   for (const pic of pictures) {
     let i = 0
     for (; i < pic.length; i++) {
@@ -42,7 +44,7 @@ const makeRectangular = (picture) => {
 myself.animate = "Animates a sequence of ASCII images or image arrays with the given delay. Multiple sequences with different delays can be given as [{ frames, delay }, ...]."
 const animate = (sequence, defaultDelay = 1000) => {
   console.log()
-  if (!sequence?.length) return process.stdout.write('> ')
+  if (!len(sequence)) return process.stdout.write('> ')
   if (sequence[0].length != null) {
     sequence = [{ frames: sequence, delay: defaultDelay }]
   }
@@ -63,7 +65,9 @@ const animate = (sequence, defaultDelay = 1000) => {
 }
 
 module.exports = {
-  docs: () => print(myself),
+  // docs: () => print(myself),
+  aboutMe: () => myself.aboutMe,
+  allAboutMe: () => myself,
   draw,
   drawRow,
   animate,

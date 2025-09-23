@@ -1,4 +1,4 @@
-const { range, timeIt, findDupes } = require('./general')
+const { range, timeIt, findDupes, arrayify } = require('./general')
 const { roundDecimal, arithmeticMean } = require('./numbers')
 const { rollDice } = require('./random')
 const { sum } = require('./reducers')
@@ -19,7 +19,7 @@ const playGame = (rounds = 6, days = 30, options = {}) => {
     'totalScore',
     'totalDays',
   ]
-  const stats = () => Object.fromEntries(
+  const stats = Object.fromEntries(
     names.map(name => [ name, {
       min: Infinity,
       max: -Infinity,
@@ -65,13 +65,6 @@ const playRound = (
     perfectDays: 7,
     ...options
   }
-  const totals = [
-    0,
-    0,
-    0,
-    0,
-    0,
-  ]
   const names = [
     '',
     'Two Pair',
@@ -79,6 +72,7 @@ const playRound = (
     'Triple',
     'Perfect Roll'
   ]
+  const totals = arrayify(0, names.length)
   const findDupeTypes = (dupeSets) => {
     const dupeTypes = []
     for (const [i, dupes] of dupeSets.entries()) {

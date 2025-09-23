@@ -1,4 +1,4 @@
-const backToWork = '***~~GET OUT~~***'
+const backToWork = '***~~KEEP YOUR JOB~~***'
 
 console.log(backToWork)
 
