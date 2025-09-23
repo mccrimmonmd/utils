@@ -93,7 +93,7 @@ const entries = function* (iterable) {
 }
 
 myself.print = "console.dir shorthand."
-const print = (obj, depth = null) => { printFn(obj, depth) }
+const print = (obj, depth = null) => console.dir(obj, { depth })
 
 myself.printFn = "A functional variant of 'print' that returns the printed object."
 const printFn = (obj, depth = null) => {
@@ -101,7 +101,7 @@ const printFn = (obj, depth = null) => {
   the main (only?) use-case for printFn is printing and returning something at
   the same time (for e.g. debugging): 'return printFn(thing)'
   ;`
-  console.dir(obj, depth)
+  print(obj, depth)
   return obj
 }
 
