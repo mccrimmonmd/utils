@@ -69,7 +69,7 @@ myself.allKeys = "Returns an array of every unique key among the objects provide
 const allKeys = (listOfObjects, regex = /(?:)/) => {
   // The empty regex /(?:)/ matches any string
   const uniqueKeys = new Set(listOfObjects.flatMap(Object.keys))
-  return [...uniqueKeys].filter(key => regex.test(key))
+  return [...uniqueKeys.values().filter(key => regex.test(key))]
 }
 
 myself.filter = {
