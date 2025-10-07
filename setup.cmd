@@ -9,6 +9,8 @@ winget install vim.vim
 winget install node.js
 winget install python.python.3.13
 winget install chocolatey
+REM install vscode
+REM install duckduckgo(?)
 REM ...
 
 REM For PowerShell, use ~ instead--no variable that works in both :'(
