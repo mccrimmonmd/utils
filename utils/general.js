@@ -72,7 +72,7 @@ const defaultOrAny = (defaultValues, wrappedValues) => {
   const results = []
   const empty = Symbol()
   for (const [def, val] of zip([defaultValues, wrappedValues], empty)) {
-    if      (def === empty) break
+    if      (def === empty) break // is this really the behavior I want?
     else if (val === empty) results.push(def)
     else results.push(val)
   }
