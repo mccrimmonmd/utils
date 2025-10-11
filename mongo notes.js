@@ -41,6 +41,7 @@ db.getCollection('logViewer.log')
   .count()
 
 // combine multiple conditions (should be implicit, but sometimes isn't?)
+// (maybe because it's on the same field?)
 db.getCollection('userSession')
   .find({ $and: [
     {role: {$ne: 10}},

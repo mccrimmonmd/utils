@@ -53,7 +53,7 @@ module.exports = (
     }
     
     if (isIterable(objA)) {
-      return iterEqualsUnordered(objA, objB) // move down, make recursive
+      return iterEqualsUnordered(objA, objB) // TODO: move down, make recursive
     }
    
     if (maxDepth === Infinity) {
