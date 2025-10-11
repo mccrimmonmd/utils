@@ -42,15 +42,15 @@ const opFuncs = {
     tasks = [],
     defaultTask,
     matchAll = true,
-    fallthrough = false
   }) => {
     let noMatch = true
     let fellthrough = false
     let result
-    for (const { cases, task, params = [], me = this } of tasks) {
+    for (const { cases, task, params = [], me = this, fallthrough = false } of tasks) {
+      fellthrough = fallthrough && fellthrough
       if (cases.includes(switchOn) || fellthrough) {
         noMatch = false
-        fellthrough = fallthrough
+        fellthrough = true
         result = task.apply(me, params)
         if (!matchAll) break
       }
