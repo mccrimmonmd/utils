@@ -297,10 +297,10 @@ const timeIt = (
   }
 }
 
-;`
 myself.dateFilter = "TODO: use with upcoming Temporal object to make utils for searching and filtering dates."
 // TODO: parse dates/get 'today' with Temporal instead of moment
 // TODO: export all
+;`
 const inRange = (things, startDate, endDate, dateify = op('id')) => {
   things = [].concat(things)
   dateify = typeof dateify === 'function' ? dateify : (thing) => thing[dateify]
@@ -571,6 +571,20 @@ myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be 
 const multilineRegex = (parts, flags = '') =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
 
+myself.fetchAll = "A convenience function for working with paginated APIs."
+const gn = (json) => json.links.next
+const fetchAll = async (uri, getNext = gn) => {
+  const allData = []
+  let next = uri
+  while (next != null) {
+    const result = await fetch(next)
+    const json = await result.json()
+    allData.push(...json.data)
+    next = getNext(json)
+  }
+  return allData
+}
+
 // TODO: new array/iterable submodule 'iters'
 // array object { swap, last, etc. } *and* iterable submodule?
 // also include getSorter
@@ -611,6 +625,7 @@ module.exports = {
   iterEqualsUnordered,
   getIter,
   multilineRegex,
+  fetchAll,
 } // = require('./general')
 
 // for organization? (future):

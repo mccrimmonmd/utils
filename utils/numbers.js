@@ -1,7 +1,7 @@
 const myself = {
   aboutMe: "Functions for working with numbers, especially lists of numbers."
 }
-const { print, arrayify, range } = require('./general')
+const { print, len, arrayify, range } = require('./general')
 const { sum, product, diffsCalculator } = require('./reducers')
 const op = require('./operators')
 
