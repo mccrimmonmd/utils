@@ -23,10 +23,12 @@
   undo-soft = revert --no-commit HEAD
   undo-hard = reset HEAD~
   undo-range = revert --no-commit
+  pusht = push --follow-tags
   stashl = stash list
   stashs = stash show
   stashd = stash show --patch
   stashst = stash --staged
+  taag = tag -a -m ''
   unstash = stash pop
   unst = stash pop
   br = branch
