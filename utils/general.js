@@ -165,17 +165,16 @@ const isTruthy = (thing) => thing ? 'yes' : 'no'
 myself.isIterable = "A more concise test for iterability."
 const isIterable = (thing) => typeof thing?.[Symbol.iterator] === 'function'
 
-myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge. By default, 0 and NaN are *not* considered empty. (Defaults can be overridden by supplying an array of exceptions.)"
+myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge. Empty collections, zero-length iterables, and most falsy values are considered empty; but booleans and numbers (including false, 0, and NaN) are *not* considered empty. Defaults can be overridden by supplying an array of exceptions."
 const isEmpty = (
   value,
-  { alwaysEmpty = [], neverEmpty = [ 0, 0n ] } = {}
+  { alwaysEmpty = [], neverEmpty = [] } = {}
 ) => {
   if (alwaysEmpty.includes(value)) return true
   if (neverEmpty.includes(value)) return false
   
   if (value == null) return true
-  if (typeof value === 'boolean') return false
-  if (isNaN(value)) return false
+  if (['boolean', 'number', 'bigint'].includes(typeof value)) return false
   if (typeof value === 'function') {
     // this will probably never be useful, but it was a fun regex exercise
     const arrowRegex = multilineRegex([
