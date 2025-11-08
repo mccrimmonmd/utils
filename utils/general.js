@@ -404,9 +404,9 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
     if (a === b) return [ a, b ]
 
     // null's default sort order is especially dumb -- I opted to 
-    // change it to 'null > everything except undefined'
+    // change it to 'null > everything except undefined'.
     // You could also make a case for 'null < everything', but IMO
-    // it's nicer if the 'clutter' is at the end of the sort
+    // it's nicer if the 'clutter' is at the end of the sort.
 
     // null = 1; undefined = 2; other = 0
     if (a === null) return [ 1, b === undefined ? 2 : 0 ]
@@ -423,6 +423,7 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
       ]
     }
     else {
+      // all other types (e.g. symbol, function, boolean) are string-comparable
       const localeCompare = String(a).localeCompare(String(b))
       return [ localeCompare, -localeCompare ]
     }
