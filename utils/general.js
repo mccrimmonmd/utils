@@ -165,6 +165,9 @@ const isTruthy = (thing) => thing ? 'yes' : 'no'
 myself.isIterable = "A more concise test for iterability."
 const isIterable = (thing) => typeof thing?.[Symbol.iterator] === 'function'
 
+// TODO: exception handling should be done with a function, not arrays
+// (otherwise, no way to make an exception for e.g. custom collections,
+// or objects w/a certain property)
 myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge. Empty collections, zero-length iterables, and most falsy values are considered empty; but booleans and numbers (including false, 0, and NaN) are *not* considered empty. Defaults can be overridden by supplying an array of exceptions."
 const isEmpty = (
   value,
