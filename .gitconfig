@@ -5,6 +5,7 @@
   ff = only
 [core]
   autocrlf = true
+  editor = 'C:\\Program Files\\Vim\\vim91\\gvim.exe'
 [alias]
   cg = config --global
   mig = remote set-url origin
