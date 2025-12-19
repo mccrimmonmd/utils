@@ -398,8 +398,8 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
   // Array arr, `shuffle(arr).sort(getSorter())` should result in the same
   // permutation every time it's called (this may or may not be possible).
   const descending =
-    ['descending', 'desc', '-', false].includes(sortOrder)
-    || (['number', 'bigint'].includes(typeof sortOrder) && sortOrder < 0)
+    ['descending', 'desc', '-', false].includes(sortOrder) ||
+    (['number', 'bigint'].includes(typeof sortOrder) && sortOrder < 0)
     
   const [ifLess, ifMore] = descending ? [1, -1] : [-1, 1]
   const sorters = ensureIterable(sortOn)
