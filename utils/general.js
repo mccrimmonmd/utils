@@ -132,12 +132,13 @@ const printVars = (...variables) => {
 myself.pluralize = "Returns the plural version of the given word if the given number is not 1 or -1. Makes a token attempt to be grammatical, but no guarantees."
 const pluralize = (word, n = 2) => {
   if (Math.abs(n) === 1 || !word.length) return word
-  if (word.length === 1) return word + 's'
-  const lower = word.toLowerCase()
-  if (lower.endsWith('ife')) return word.slice(0, -2) + 'ves'
-  if (lower.endsWith('y')) return word.slice(0, -1) + 'ies'
-  if (/(?:s|x|ch|sh)$/.test(lower)) return word + 'es'
-  if (/(?:ar|a|l)f$/.test(lower)) return word.slice(0, -1) + 'ves'
+  if (word.length > 1) {
+    const lower = word.toLowerCase()
+    if (lower.endsWith('ife')) return word.slice(0, -2) + 'ves'
+    if (/[^aeiou]y$/.test(lower)) return word.slice(0, -1) + 'ies'
+    if (/(?:ar|a|l)f$/.test(lower)) return word.slice(0, -1) + 'ves'
+    if (/(?:s|x|ch|sh)$/.test(lower)) return word + 'es'
+  }
   return word + 's'
 }
 
