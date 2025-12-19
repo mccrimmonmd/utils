@@ -122,11 +122,11 @@ const printVar = (
   console.log(location)
   console.log('-*-'.repeat(20))
   console.dir(value)
+  console.log('=*='.repeat(20))
 }
 myself.printVars = "Uses printVar to log multiple variables."
 const printVars = (...variables) => {
   for (const variable of variables) printVar(...ensureIterable(variable))
-  console.log('=*='.repeat(20))
 }
 
 myself.pluralize = "Returns the plural version of the given word if the given number is not 1 or -1. Makes a token attempt to be grammatical, but no guarantees."
