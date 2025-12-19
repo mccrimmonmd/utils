@@ -516,6 +516,7 @@ const iterEquals = (a, b) => {
     a.length === b.length
     && a.every((value, index) => value === b[index])
   )
+  // prematurely-optimized version:
   // a = [...a]
   // let i, val
   // for ([ i, val ] of entries(b)) {
@@ -531,6 +532,15 @@ const iterEqualsUnordered = (a, b) => {
   return (a.size === b.size) && a.entries().every(
       ([key, aGroup]) => b.has(key) && b.get(key).length === aGroup.length
     )
+  // prematurely-optimized(?) version:
+  a = makeGroups(a)
+  for (const val of b) {
+    if (!a.has(val)) return false
+    let group = a.get(val)
+    if (group.length === 0) return false
+    group.pop()
+  }
+  return a.values().every(group => group.length === 0)
 }
 
 // TODO: document, export
