@@ -38,12 +38,9 @@ const range = function* (start = 0, stop, step = 1) {
 
 myself.zip = "Python-style zip function: combines a list of arrays into a list of pairs/triplets/etc. Takes an optional parameter for padding the results when the input arrays are different lengths; if none is provided, the output will be the length of the shortest input array."
 const zip = (arrays, ...padding) => {
-  const padResults = Boolean(padding.length)
-  padding = padding[0]
+  const [ padResults, padding ] = [ padding.length !== 0, padding[0] ]
   
   const zipped = []
-  if (!len(arrays)) return zipped
-
   const zippedLen = arrays
     .map(array => array.length)
     .reduce(padResults ? max : min)
@@ -58,12 +55,21 @@ const zip = (arrays, ...padding) => {
   return zipped
 }
 
+// TODO
+const zipIter = function* (iters, ...padding) {
+  // determine stopping criterion
+  // get the first element of every iterable
+  // if necessary, add padding if an iterable is empty
+  // yield the elements as an array
+  // repeat until the criterion is met
+}
+
 myself.defaultOrAny = "For when you want default argument(s) that can be any type, including undefined. The first paramater can be a single default or an array of defaults, but the second paramater must be an array."
 const defaultOrAny = (defaultValues, wrappedValues) => {
   if (!Array.isArray(wrappedValues)) {
     console.log(`defaultOrAny usage:
   function yourFunctionDefinition (requiredParam, ...oneOrMoreOptionalParams) {
-    var argValues = defaultOrAny(oneOrMoreDefaults, oneOrMoreOptionalParams)
+    var [ arg1, ... ] = defaultOrAny(oneOrMoreDefaults, oneOrMoreOptionalParams)
     ...
   }`)
     throw new TypeError("Second argument to 'defaultOrAny' must be an array")
@@ -72,8 +78,7 @@ const defaultOrAny = (defaultValues, wrappedValues) => {
   const results = []
   const empty = Symbol()
   for (const [def, val] of zip([defaultValues, wrappedValues], empty)) {
-    if      (def === empty) break
-    else if (val === empty) results.push(def)
+    if (val === empty) results.push(def)
     else results.push(val)
   }
   return results
@@ -93,7 +98,7 @@ const entries = function* (iterable) {
 }
 
 myself.print = "console.dir shorthand."
-const print = (obj, depth = null) => { printFn(obj, depth) }
+const print = (obj, depth = null) => console.dir(obj, { depth })
 
 myself.printFn = "A functional variant of 'print' that returns the printed object."
 const printFn = (obj, depth = null) => {
@@ -101,7 +106,7 @@ const printFn = (obj, depth = null) => {
   the main (only?) use-case for printFn is printing and returning something at
   the same time (for e.g. debugging): 'return printFn(thing)'
   ;`
-  console.dir(obj, depth)
+  print(obj, depth)
   return obj
 }
 
@@ -117,22 +122,23 @@ const printVar = (
   console.log(location)
   console.log('-*-'.repeat(20))
   console.dir(value)
+  console.log('=*='.repeat(20))
 }
 myself.printVars = "Uses printVar to log multiple variables."
 const printVars = (...variables) => {
   for (const variable of variables) printVar(...ensureIterable(variable))
-  console.log('=*='.repeat(20))
 }
 
 myself.pluralize = "Returns the plural version of the given word if the given number is not 1 or -1. Makes a token attempt to be grammatical, but no guarantees."
 const pluralize = (word, n = 2) => {
   if (Math.abs(n) === 1 || !word.length) return word
-  if (word.length === 1) return word + 's'
-  const lower = word.toLowerCase()
-  if (lower.endsWith('ife')) return word.slice(0, -2) + 'ves'
-  if (lower.endsWith('y')) return word.slice(0, -1) + 'ies'
-  if (/(?:s|x|ch|sh)$/.test(lower)) return word + 'es'
-  if (/(?:ar|a|l)f$/.test(lower)) return word.slice(0, -1) + 'ves'
+  if (word.length > 1) {
+    const lower = word.toLowerCase()
+    if (lower.endsWith('ife')) return word.slice(0, -2) + 'ves'
+    if (/[^aeiou]y$/.test(lower)) return word.slice(0, -1) + 'ies'
+    if (/(?:ar|a|l)f$/.test(lower)) return word.slice(0, -1) + 'ves'
+    if (/(?:s|x|ch|sh)$/.test(lower)) return word + 'es'
+  }
   return word + 's'
 }
 
@@ -165,17 +171,24 @@ const isTruthy = (thing) => thing ? 'yes' : 'no'
 myself.isIterable = "A more concise test for iterability."
 const isIterable = (thing) => typeof thing?.[Symbol.iterator] === 'function'
 
-myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge. By default, 0 and NaN are *not* considered empty. (Defaults can be overridden by supplying an array of exceptions.)"
+// TODO: exception handling should be done with a function, not arrays
+// (otherwise, no way to make an exception for e.g. custom collections,
+// or objects w/a certain property)
+// (wait, no, that's dumb; the caller should just delegate if it's *not*
+// one of the exceptions)
+myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge. Empty collections, zero-length iterables, and most falsy values are considered empty; but booleans and numbers (including false, 0, and NaN) are *not* considered empty. Defaults can be overridden by supplying an array of exceptions."
 const isEmpty = (
   value,
-  { alwaysEmpty = [], neverEmpty = [ 0, 0n ] } = {}
+  {
+    alwaysEmpty = [],
+    neverEmpty = [],
+  } = {}
 ) => {
   if (alwaysEmpty.includes(value)) return true
   if (neverEmpty.includes(value)) return false
   
   if (value == null) return true
-  if (typeof value === 'boolean') return false
-  if (isNaN(value)) return false
+  if (['boolean', 'number', 'bigint'].includes(typeof value)) return false
   if (typeof value === 'function') {
     // this will probably never be useful, but it was a fun regex exercise
     const arrowRegex = multilineRegex([
@@ -201,8 +214,14 @@ const isEmpty = (
   return !value
 }
 
-myself.ensureIterable = "Wraps the given parameter in an array, unless it's already iterable. (In case you want to preserve the original type and/or avoid making a copy--otherwise, `[].concat(thing)` is probably a better choice.)"
+myself.ensureIterable = "Wraps the given parameter in an array, unless it's already iterable."
 const ensureIterable = (thing) => isIterable(thing) ? thing : [thing]
+
+myself.ensureArray = "Spreads the given iterable into an array, unless it's already an array. If the parameter is not iterable, it wraps it in a new array before returning it. For when you want to avoid making unnecessary copies and/or you're not sure the parameter will be iterable. (If you know the paramater will either be an array OR a non-iterable, and you don't mind making some copies, `[].concat(thing)` is more concise.)"
+const ensureArray = (thing) =>
+  Array.isArray(thing) ? thing
+  : isIterable(thing) ? [...thing]
+  : [thing]
 
 myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value. NOTE: if the original function is recursive, it must be saved to the same variable (`someFunc = memoize(someFunc)`) or wrapped in a closure first to be memoized properly."
 // TODO: fix 'new name must be old name' thing...somehow?
@@ -210,31 +229,36 @@ const memoize = (func) => {
   const cache = new MultiMap()
   return new Proxy(func, {
     apply(target, thisArg, argumentsList) {
-      let args = {}
-      if      (argumentsList.length === 0) args.arg = Symbol.for('no args')
-      else if (argumentsList.length === 1) args.arg = argumentsList[0]
-      else if (argumentsList.length > 1) args = argumentsList
-      else throw new TypeError("'argumentsList' is not a list (???)")
-      const { hasKey, value } = cache.search(args)
+      const { hasKey, value } = cache.search(argumentsList)
       if (hasKey) return value 
       const result = Reflect.apply(target, thisArg, argumentsList)
-      cache.set(args, result)
+      cache.set(argumentsList, result)
       return result
     }
   })
 }
 const MultiMap = class extends Map {
+  #noArgsKey
+  #rootKey
   #leafKey
   constructor (...params) {
     super(...params)
+    this.#noArgsKey = Symbol()
+    this.#rootKey = Symbol()
     this.#leafKey = Symbol()
   }
 
   #traverse (argumentsList, ...newValue) {
     const mutating = newValue.length
     const value = mutating && newValue[0]
-    const single = !argumentsList.length
-    const first = single ? argumentsList.arg : argumentsList[0]
+    const single = argumentsList.length <= 1
+    const first =
+      single ?
+        argumentsList.length ?
+          argumentsList[0]
+        : this.#noArgsKey
+      : this.#rootKey
+
     let hasKey = super.has(first)
     let oldValue = super.get(first)
     if (single) {
@@ -244,7 +268,7 @@ const MultiMap = class extends Map {
 
     if (!hasKey) super.set(first, new Map())
     let innerMap = super.get(first)
-    for (const key of argumentsList.slice(1)) {
+    for (const key of argumentsList) {
       if (!innerMap.has(key)) {
         innerMap.set(key, new Map())
       }
@@ -292,10 +316,10 @@ const timeIt = (
   }
 }
 
-;`
 myself.dateFilter = "TODO: use with upcoming Temporal object to make utils for searching and filtering dates."
 // TODO: parse dates/get 'today' with Temporal instead of moment
 // TODO: export all
+;`
 const inRange = (things, startDate, endDate, dateify = op('id')) => {
   things = [].concat(things)
   dateify = typeof dateify === 'function' ? dateify : (thing) => thing[dateify]
@@ -367,14 +391,15 @@ const findUniques = (iterable, identifier) => {
 }
 
 myself.getSorter = "Returns a sorting function that behaves more sanely than the default (specifically: mixed-case text, text with diacritics, and numbers sort the way you would expect; Objects are sorted with util.inspect; and mixed-type arrays are sorted by type first, then value). Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties)."
+// TODO: OH NO NaN RUINS EVERYTHING
 const getSorter = (sortOn, sortOrder = 'ascending') => {
   // In addition to a saner sort order, this function has a secondary goal of
   // sorting arbitrary permutations *unambiguously.* That is, for any given
   // Array arr, `shuffle(arr).sort(getSorter())` should result in the same
   // permutation every time it's called (this may or may not be possible).
   const descending =
-    ['descending', 'desc', '-', false].includes(sortOrder)
-    || (['number', 'bigint'].includes(typeof sortOrder) && sortOrder < 0)
+    ['descending', 'desc', '-', false].includes(sortOrder) ||
+    (['number', 'bigint'].includes(typeof sortOrder) && sortOrder < 0)
     
   const [ifLess, ifMore] = descending ? [1, -1] : [-1, 1]
   const sorters = ensureIterable(sortOn)
@@ -399,9 +424,9 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
     if (a === b) return [ a, b ]
 
     // null's default sort order is especially dumb -- I opted to 
-    // change it to 'null > everything except undefined'
+    // change it to 'null > everything except undefined'.
     // You could also make a case for 'null < everything', but IMO
-    // it's nicer if the 'clutter' is at the end of the sort
+    // it's nicer if the 'clutter' is at the end of the sort.
 
     // null = 1; undefined = 2; other = 0
     if (a === null) return [ 1, b === undefined ? 2 : 0 ]
@@ -418,6 +443,7 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
       ]
     }
     else {
+      // all other types (e.g. symbol, function, boolean) are string-comparable
       const localeCompare = String(a).localeCompare(String(b))
       return [ localeCompare, -localeCompare ]
     }
@@ -490,15 +516,31 @@ const iterEquals = (a, b) => {
     a.length === b.length
     && a.every((value, index) => value === b[index])
   )
+  // prematurely-optimized version:
+  // a = [...a]
+  // let i, val
+  // for ([ i, val ] of entries(b)) {
+  //   if (val !== a[i]) return false
+  // }
+  // return i + 1 === a.length
 }
 
 myself.iterEqualsUnordered = "Tests two iterables to see if they are equal. Ignores ordering (different permutations of the same elements are considered equal)."
 const iterEqualsUnordered = (a, b) => {
   a = makeGroups(a)
   b = makeGroups(b)
-  return (a.size === b.size) && [...a.entries()].every(
+  return (a.size === b.size) && a.entries().every(
       ([key, aGroup]) => b.has(key) && b.get(key).length === aGroup.length
     )
+  // prematurely-optimized(?) version:
+  a = makeGroups(a)
+  for (const val of b) {
+    if (!a.has(val)) return false
+    let group = a.get(val)
+    if (group.length === 0) return false
+    group.pop()
+  }
+  return a.values().every(group => group.length === 0)
 }
 
 // TODO: document, export
@@ -566,6 +608,20 @@ myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be 
 const multilineRegex = (parts, flags = '') =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
 
+myself.fetchAll = "A convenience function for working with paginated APIs."
+const gn = (json) => json.links.next
+const fetchAll = async (uri, getNext = gn) => {
+  const allData = []
+  let next = uri
+  while (next != null) {
+    const result = await fetch(next)
+    const json = await result.json()
+    allData.push(...json.data)
+    next = getNext(json)
+  }
+  return allData
+}
+
 // TODO: new array/iterable submodule 'iters'
 // array object { swap, last, etc. } *and* iterable submodule?
 // also include getSorter
@@ -590,6 +646,7 @@ module.exports = {
   isIterable,
   isEmpty,
   ensureIterable,
+  ensureArray ,
   memoize,
   timeIt,
   makeGroups,
@@ -606,6 +663,7 @@ module.exports = {
   iterEqualsUnordered,
   getIter,
   multilineRegex,
+  fetchAll,
 } // = require('./general')
 
 // for organization? (future):
