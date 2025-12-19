@@ -5,7 +5,7 @@ const { print, len, arrayify, range } = require('./general')
 const { sum, product, diffsCalculator } = require('./reducers')
 const op = require('./operators')
 
-myself.sieve = "Sieve of Eratosthenes. Just for funsies. Might refactor into a bignum generator later."
+myself.sieve = "Sieve of Eratosthenes. Just for funsies. Might refactor into a bignum generator...somehow."
 const sieve = (n) => {
   n = Math.abs(n)
   const isPrime = Array(n + 1).fill(true)
@@ -80,7 +80,7 @@ const msConverter = (
       factors.push(1_000)
       break
     default:
-      throw new TypeError(`Time unit '${units}' invalid or unimplemented`)
+      throw new TypeError(`Time unit '${rawUnits}' invalid or unimplemented`)
   }
 
   const result = op(fromMs ? 'div' : 'mult')(time, ...factors)
