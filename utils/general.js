@@ -528,9 +528,9 @@ myself.iterEqualsUnordered = "Tests two iterables to see if they are equal. Igno
 const iterEqualsUnordered = (a, b) => {
   a = makeGroups(a)
   b = makeGroups(b)
-  return (a.size === b.size) && [...a.entries().every(
+  return (a.size === b.size) && a.entries().every(
       ([key, aGroup]) => b.has(key) && b.get(key).length === aGroup.length
-    )]
+    )
 }
 
 // TODO: document, export
