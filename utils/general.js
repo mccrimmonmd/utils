@@ -41,8 +41,6 @@ const zip = (arrays, ...padding) => {
   const [ padResults, padding ] = [ padding.length !== 0, padding[0] ]
   
   const zipped = []
-  if (!len(arrays)) return zipped
-
   const zippedLen = arrays
     .map(array => array.length)
     .reduce(padResults ? max : min)
