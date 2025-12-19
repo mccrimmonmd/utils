@@ -516,6 +516,12 @@ const iterEquals = (a, b) => {
     a.length === b.length
     && a.every((value, index) => value === b[index])
   )
+  // a = [...a]
+  // let i, val
+  // for ([ i, val ] of entries(b)) {
+  //   if (val !== a[i]) return false
+  // }
+  // return i + 1 === a.length
 }
 
 myself.iterEqualsUnordered = "Tests two iterables to see if they are equal. Ignores ordering (different permutations of the same elements are considered equal)."
