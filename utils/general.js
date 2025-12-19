@@ -58,6 +58,15 @@ const zip = (arrays, ...padding) => {
   return zipped
 }
 
+// TODO
+const zipIter = function* (iters, ...padding) {
+  // determine stopping criterion
+  // get the first element of every iterable
+  // if necessary, add padding if an iterable is empty
+  // yield the elements as an array
+  // repeat until the criterion is met
+}
+
 myself.defaultOrAny = "For when you want default argument(s) that can be any type, including undefined. The first paramater can be a single default or an array of defaults, but the second paramater must be an array."
 const defaultOrAny = (defaultValues, wrappedValues) => {
   if (!Array.isArray(wrappedValues)) {
