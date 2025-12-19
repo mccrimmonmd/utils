@@ -214,8 +214,14 @@ const isEmpty = (
   return !value
 }
 
-myself.ensureIterable = "Wraps the given parameter in an array, unless it's already iterable. (In case you want to preserve the original type and/or avoid making a copy--otherwise, `[].concat(thing)` is probably a better choice.)"
+myself.ensureIterable = "Wraps the given parameter in an array, unless it's already iterable."
 const ensureIterable = (thing) => isIterable(thing) ? thing : [thing]
+
+myself.ensureArray = "Spreads the given iterable into an array, unless it's already an array. If the parameter is not iterable, it wraps it in a new array before returning it. For when you want to avoid making unnecessary copies and/or you're not sure the parameter will be iterable. (If you know the paramater will either be an array OR a non-iterable, and you don't mind making some copies, `[].concat(thing)` is more concise.)"
+const ensureArray = (thing) =>
+  Array.isArray(thing) ? thing
+  : isIterable(thing) ? [...thing]
+  : [thing]
 
 myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value. NOTE: if the original function is recursive, it must be saved to the same variable (`someFunc = memoize(someFunc)`) or wrapped in a closure first to be memoized properly."
 // TODO: fix 'new name must be old name' thing...somehow?
@@ -623,6 +629,7 @@ module.exports = {
   isIterable,
   isEmpty,
   ensureIterable,
+  ensureArray ,
   memoize,
   timeIt,
   makeGroups,
