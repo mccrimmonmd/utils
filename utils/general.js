@@ -517,12 +517,12 @@ const iterEquals = (a, b) => {
     && a.every((value, index) => value === b[index])
   )
   // prematurely-optimized version:
-  // a = [...a]
-  // let i, val
-  // for ([ i, val ] of entries(b)) {
-  //   if (val !== a[i]) return false
-  // }
-  // return i + 1 === a.length
+  a = [...a]
+  let i, val
+  for ([ i, val ] of entries(b)) {
+    if (val !== a[i]) return false
+  }
+  return i + 1 === a.length
 }
 
 myself.iterEqualsUnordered = "Tests two iterables to see if they are equal. Ignores ordering (different permutations of the same elements are considered equal)."
@@ -530,7 +530,7 @@ const iterEqualsUnordered = (a, b) => {
   a = makeGroups(a)
   b = makeGroups(b)
   return (a.size === b.size) && a.entries().every(
-      ([key, aGroup]) => b.has(key) && b.get(key).length === aGroup.length
+      ([ key, aGroup ]) => b.has(key) && b.get(key).length === aGroup.length
     )
   // prematurely-optimized(?) version:
   a = makeGroups(a)
