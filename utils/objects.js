@@ -194,6 +194,20 @@ myself.multiply = "Same as count, but with multiplication instead of addition."
 const multiply = (listOfObjects, getValue = (obj) => Number(obj)) =>
   listOfObjects.map(getValue).reduce(product, 1)
 
+myself.makeEnum = "Factory for creating enum-like objects that associate Strings with Symbols."
+const makeEnum = (...names) => {
+  if (names.length === 1 && isIterable(names[0])) {
+    names = names[0]
+  }
+  const en = {}
+  for (const name of names) {
+    if (name === 'all') throw new Error('Enums reserve the name "all" for enumerating their values; please choose a different name')
+    en[name] = Symbol()
+  }
+  en.all = () => [...names]
+  return en
+}
+
 myself.filter.many = "Convenience function for mapping filter.object to a list of multiple objects."
 myself.filter.xxxx = "Convenience functions for using filter.object with preset options: byKeys (default), byValues, excludeKeys, excludeValues" 
 
@@ -223,4 +237,5 @@ module.exports = {
   toCsv,
   count,
   multiply,
+  makeEnum,
 }
