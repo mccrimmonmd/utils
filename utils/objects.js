@@ -98,8 +98,6 @@ const filterObject = (
       console.warn("pass a value, iterable, or regex to match against as the second parameter")
     }
     passesFilter = (value) => (value === filter) === includeOnMatch
-    // console.dir(filter)
-    // throw new TypeError('filter must be either an iterable or a regular expression')
   }
   const filtered = Object.entries(obj).filter(([key, value]) => {
     const candidate = filterOn === 'keys' ? key : value
