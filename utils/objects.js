@@ -196,12 +196,13 @@ const makeEnum = (...names) => {
   if (names.length === 1 && isIterable(names[0])) {
     names = names[0]
   }
-  const en = {}
+  const en = {
+    allNames: () => [...names]
+  }
   for (const name of names) {
-    if (name === 'all') throw new Error('Enums reserve the name "all" for enumerating their values; please choose a different name')
+    if (name === 'allNames') throw new Error('Enums reserve the name "allNames" for enumerating their values; please choose a different name')
     en[name] = Symbol()
   }
-  en.all = () => [...names]
   return en
 }
 
