@@ -15,16 +15,13 @@ const { sum, product } = require('./reducers')
 
 myself.merge = "Merges a secondary or 'fallback' object into a primary or 'reference' object. Returns a new object that matches the primary, plus all non-empty values from the secondary that are empty in the primary. Uses general.isEmpty to determine what counts as empty."
 const merge = (
-  a, b,
+  primary, secondary,
   {
-    decider = (first, second) => first, 
     alwaysEmpty = ['undefined', 'null'],
     neverEmpty = [0],
   } = {}
 ) => {
-  if (a == null || b == null) return a ?? b
-  let primary = decider(a, b)
-  let secondary = primary === a ? b : a
+  if (primary == null || secondary == null) return primary ?? secondary
   let merged = { ...primary }
   let options = [alwaysEmpty, neverEmpty]
   for (const [key, val] of Object.entries(secondary)) {
@@ -98,8 +95,6 @@ const filterObject = (
       console.warn("pass a value, iterable, or regex to match against as the second parameter")
     }
     passesFilter = (value) => (value === filter) === includeOnMatch
-    // console.dir(filter)
-    // throw new TypeError('filter must be either an iterable or a regular expression')
   }
   const filtered = Object.entries(obj).filter(([key, value]) => {
     const candidate = filterOn === 'keys' ? key : value
@@ -196,6 +191,21 @@ myself.multiply = "Same as count, but with multiplication instead of addition."
 const multiply = (listOfObjects, getValue = (obj) => Number(obj)) =>
   listOfObjects.map(getValue).reduce(product, 1)
 
+myself.makeEnum = "Factory for creating enum-like objects that associate Strings with Symbols."
+const makeEnum = (...names) => {
+  if (names.length === 1 && isIterable(names[0])) {
+    names = names[0]
+  }
+  const en = {
+    allNames: () => [...names]
+  }
+  for (const name of names) {
+    if (name === 'allNames') throw new Error('Enums reserve the name "allNames" for enumerating their values; please choose a different name')
+    en[name] = Symbol()
+  }
+  return en
+}
+
 myself.filter.many = "Convenience function for mapping filter.object to a list of multiple objects."
 myself.filter.xxxx = "Convenience functions for using filter.object with preset options: byKeys (default), byValues, excludeKeys, excludeValues" 
 
@@ -225,4 +235,5 @@ module.exports = {
   toCsv,
   count,
   multiply,
+  makeEnum,
 }
