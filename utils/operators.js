@@ -37,6 +37,11 @@ const opFuncs = {
     return result
   },
 
+  // TODO: add (or replace) different switch-like: switch/do/dont
+  // (or on/off) -- make fall-through more explicit and allow
+  // execution to be 'switched' back on (instead of just breaking
+  // out of the op entirely)
+  
   switcher: ({
     switchOn,
     tasks = [],
