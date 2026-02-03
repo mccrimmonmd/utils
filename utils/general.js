@@ -513,8 +513,8 @@ const iterEquals = (a, b) => {
   a = [...a]
   b = [...b]
   return (
-    a.length === b.length
-    && a.every((value, index) => value === b[index])
+    a.length === b.length &&
+    a.every((value, index) => value === b[index])
   )
   // prematurely-optimized version:
   a = [...a]
@@ -609,8 +609,7 @@ const multilineRegex = (parts, flags = '') =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
 
 myself.fetchAll = "A convenience function for working with paginated APIs."
-const gn = (json) => json.links.next
-const fetchAll = async (uri, getNext = gn) => {
+const fetchAll = async (uri, getNext = (json) => json.links.next) => {
   const allData = []
   let next = uri
   while (next != null) {

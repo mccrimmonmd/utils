@@ -96,10 +96,9 @@ const filterObject = (
     }
     passesFilter = (value) => (value === filter) === includeOnMatch
   }
-  const filtered = Object.entries(obj).filter(([key, value]) => {
-    const candidate = filterOn === 'keys' ? key : value
-    return passesFilter(candidate)
-  })
+  const filtered = Object.entries(obj).filter(
+    ([key, value]) => passesFilter(filterOn === 'keys' ? key : value)
+  )
   return Object.fromEntries(filtered)
 }
 
