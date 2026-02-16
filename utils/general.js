@@ -64,20 +64,25 @@ const zipIter = function* (iters, ...padding) {
   // repeat until the criterion is met
 }
 
-myself.defaultOrAny = "For when you want default argument(s) that can be any type, including undefined. The first paramater can be a single default or an array of defaults, but the second paramater must be an array."
-const defaultOrAny = (defaultValues, wrappedValues) => {
-  if (!Array.isArray(wrappedValues)) {
-    console.log(`defaultOrAny usage:
-  function yourFunctionDefinition (requiredParam, ...oneOrMoreOptionalParams) {
-    var [ arg1, ... ] = defaultOrAny(oneOrMoreDefaults, oneOrMoreOptionalParams)
-    ...
-  }`)
-    throw new TypeError("Second argument to 'defaultOrAny' must be an array")
-  }
-  defaultValues = ensureIterable(defaultValues)
+myself.defaultOrAny = "For when you want default argument(s) that can be any type, including undefined. The first parameter should be the array created by a rest arguments parameter, the second is the default."
+const defaultOrAny = (restParams, defaultValue) => {
+  // sometimes, instead of a default value, you need a different logic path if
+  // an argument was not supplied. In that case, use a Symbol as the default
+  // and compare it to the return value to determine which branch to take:
+  // ```
+  // const noArg = Symbol()
+  // const arg = defaultOrAny(restParams, noArg)
+  // if (arg !== noArg) { ...do stuff with arg... }
+  // else { ...do default stuff... }
+  // ```
+  return restParams.length > 0 ? restParams[0] : defaultValue
+}
+
+myself.defaultsOrAny = "Same as defaultOrAny, but for multiple parameters and defaults."
+const defaultsOrAny = (restParams, defaultValues) => {
   const results = []
   const empty = Symbol()
-  for (const [def, val] of zip([defaultValues, wrappedValues], empty)) {
+  for (const [def, val] of zip([defaultValues, restParams], empty)) {
     if (val === empty) results.push(def)
     else results.push(val)
   }
