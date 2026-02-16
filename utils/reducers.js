@@ -18,24 +18,7 @@ const flatten = (flattened, bump, i) => {
   return flattened
 }
 
-myself.andReduce = "Takes an iterable and a function that compares two objects to yield a boolean. Returns true iff the function returns true for every adjacent pair in the iterable. Used in operators.js for chaining."
-const andReduce = (things, func, ...initialValue) => {
-  let firstIter = true
-  let prev
-  for (const thing of things) {
-    if (firstIter) {
-      firstIter = false
-      if (initialValue.length && !func(initialValue[0], thing)) return false
-      prev = thing
-      continue
-    }
-    if (!func(prev, thing)) return false
-    prev = thing
-  }
-  return true
-}
-
-myself.orReduce = "Identical to andReduce, except it returns true iff the function returns true for *any* adjacent pair in the iterable."
+myself.orReduce = "Takes an iterable and a function that compares two objects to yield a boolean. Returns true iff the function returns true for any adjacent pair in the iterable. Used in operators.js for chaining."
 const orReduce = (things, func, ...initialValue) => {
   let firstIter = true
   let prev
@@ -51,6 +34,10 @@ const orReduce = (things, func, ...initialValue) => {
   }
   return false
 }
+
+myself.andReduce = "Same as orReduce, except it returns true iff the function returns true for *every* adjacent pair in the iterable."
+const andReduce = (things, func, ...initialValue) =>
+  !orReduce(things, (a, b) => !func(a, b), ...initialValue)
 
 myself.diffsCalculator = "Intended as a helper function for numbers.stdDeviation, but can also be used by itself. The function it returns is the callback for Array.prototype.reduce."
 const diffsCalculator = (mean) => 
@@ -116,8 +103,8 @@ module.exports = {
   aboutMe: () => myself.aboutMe,
   allAboutMe: () => myself,
   flatten,
-  andReduce,
   orReduce,
+  andReduce,
   diffsCalculator,
   sum,
   product,
