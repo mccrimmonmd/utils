@@ -38,7 +38,8 @@ const range = function* (start = 0, stop, step = 1) {
 
 myself.zip = "Python-style zip function: combines a list of arrays into a list of pairs/triplets/etc. Takes an optional parameter for padding the results when the input arrays are different lengths; if none is provided, the output will be the length of the shortest input array."
 const zip = (arrays, ...padding) => {
-  const [ padResults, padding ] = [ padding.length !== 0, padding[0] ]
+  const padResults = padding.length !== 0
+  padding = padding[0]
   
   const zipped = []
   const zippedLen = arrays
