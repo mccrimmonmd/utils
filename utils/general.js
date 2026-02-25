@@ -1,6 +1,6 @@
 // TODO: pull some of these functions out into new submodule "iterable"
 const myself = {
-  aboutMe: "General 'utils' documentation goes here."
+  aboutMe: "TODO: General 'utils' documentation goes here."
 }
 const { max, min, flatten } = require('./reducers')
 // const { range, entries, isIterable, ensureIterable } = require('./iterable') // for re-export
@@ -160,6 +160,21 @@ const TypeCheckedArray = class extends Array {
       set: (target, prop, value) => {
         if (typeof value !== this.#type && prop !== 'length') return false
         return Reflect.set(target, prop, value)
+      }
+    })
+  }
+}
+
+myself.WrappedArray = "An array that can be indexed with any integer. Numbers less than 0 or greater than arr.length - 1 'wrap around' to a valid index. Does(n't?) work with bigints."
+const WrappedArray = class extends Array {
+  constructor(...params) {
+    super(...params)
+    return new Proxy(this, {
+      get: (target, prop) => { // is this the right name?
+        if (Number.isInteger(prop)) {
+          // wrap it, wrap it good
+        }
+        return Reflect.get(target, prop)
       }
     })
   }
