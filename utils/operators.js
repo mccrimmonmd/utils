@@ -2,7 +2,7 @@ const myself = {
   aboutMe: "Functional equivalents of JavaScript's native operators."
 }
 const { pluralize } = require('./general')
-const { andReduce, sum, product } = require('./reducers')
+const { orReduce, andReduce, sum, product } = require('./reducers')
 
 const op = (opType) => opFuncs[opType] ?? opFuncs.err(
   `Unsupported or invalid operator '${opType}'`,
@@ -37,6 +37,11 @@ const opFuncs = {
     return result
   },
 
+  // TODO: add (or replace) different switch-like: switch/do/dont
+  // (or on/off) -- make fall-through more explicit and allow
+  // execution to be 'switched' back on (instead of just breaking
+  // out of the op entirely)
+  
   switcher: ({
     switchOn,
     tasks = [],

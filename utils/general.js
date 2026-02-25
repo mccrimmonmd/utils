@@ -38,7 +38,8 @@ const range = function* (start = 0, stop, step = 1) {
 
 myself.zip = "Python-style zip function: combines a list of arrays into a list of pairs/triplets/etc. Takes an optional parameter for padding the results when the input arrays are different lengths; if none is provided, the output will be the length of the shortest input array."
 const zip = (arrays, ...padding) => {
-  const [ padResults, padding ] = [ padding.length !== 0, padding[0] ]
+  const padResults = padding.length !== 0
+  padding = padding[0]
   
   const zipped = []
   const zippedLen = arrays
@@ -62,26 +63,6 @@ const zipIter = function* (iters, ...padding) {
   // if necessary, add padding if an iterable is empty
   // yield the elements as an array
   // repeat until the criterion is met
-}
-
-myself.defaultOrAny = "For when you want default argument(s) that can be any type, including undefined. The first paramater can be a single default or an array of defaults, but the second paramater must be an array."
-const defaultOrAny = (defaultValues, wrappedValues) => {
-  if (!Array.isArray(wrappedValues)) {
-    console.log(`defaultOrAny usage:
-  function yourFunctionDefinition (requiredParam, ...oneOrMoreOptionalParams) {
-    var [ arg1, ... ] = defaultOrAny(oneOrMoreDefaults, oneOrMoreOptionalParams)
-    ...
-  }`)
-    throw new TypeError("Second argument to 'defaultOrAny' must be an array")
-  }
-  defaultValues = ensureIterable(defaultValues)
-  const results = []
-  const empty = Symbol()
-  for (const [def, val] of zip([defaultValues, wrappedValues], empty)) {
-    if (val === empty) results.push(def)
-    else results.push(val)
-  }
-  return results
 }
 
 myself.entries = "A generic version of Array.prototype.entries that works with any iterable."
@@ -531,8 +512,8 @@ const iterEquals = (a, b) => {
   a = [...a]
   b = [...b]
   return (
-    a.length === b.length
-    && a.every((value, index) => value === b[index])
+    a.length === b.length &&
+    a.every((value, index) => value === b[index])
   )
   // prematurely-optimized version:
   a = [...a]
@@ -627,8 +608,7 @@ const multilineRegex = (parts, flags = '') =>
   new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
 
 myself.fetchAll = "A convenience function for working with paginated APIs."
-const gn = (json) => json.links.next
-const fetchAll = async (uri, getNext = gn) => {
+const fetchAll = async (uri, getNext = (json) => json.links.next) => {
   const allData = []
   let next = uri
   while (next != null) {
@@ -652,7 +632,6 @@ module.exports = {
   range,
   zip,
   entries,
-  defaultOrAny,
   print,
   printFn,
   printVar,
