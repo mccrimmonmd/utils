@@ -30,6 +30,7 @@ const combinePics = (pictures, padding = 0) => {
   return lines.map(line => line.join(''))
 }
 
+// why didn't I name this 'rectanglify'??
 myself.makeRectangular = "Pads an array of strings so all rows are the same length."
 const makeRectangular = (picture) => {
   if (typeof picture === 'string') picture = picture.split('\n')
