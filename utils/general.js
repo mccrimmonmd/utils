@@ -170,9 +170,12 @@ const WrappedArray = class extends Array {
   constructor(...params) {
     super(...params)
     return new Proxy(this, {
-      get: (target, prop) => { // is this the right name?
+      get: (target, prop) => { // is this right?
         if (Number.isInteger(prop)) {
-          // wrap it, wrap it good
+           while (prop < 0) {
+             prop += this.length
+           }
+           prop = prop % this.length
         }
         return Reflect.get(target, prop)
       }
