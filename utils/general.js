@@ -168,6 +168,29 @@ const WrappedArray = class extends Array {
   }
 }
 
+myself.indexWrapify = "Takes an array-like object and returns a Proxy that 'wraps around' indicies outside the array's bounds to a valid index. More precisely, the index is taken modulo the array's length, and if the result is negative the array's length is added to it. Thus, arr[-1] will return the last element, arr[arr.length] will return the first element, and so on."
+const indexWrapify = (obj) => {
+  const wrapIndex = (target, prop) => {
+    let i = Number(prop)
+    if (Number.isInteger(i)) {
+      i = i % target.length
+      prop = i < 0 ? i + target.length : i
+    }
+    return prop
+  }
+  return new Proxy(obj, {
+    get(target, prop) {
+      console.log('getting:', prop)
+      prop =
+        ['number', 'bigint', 'string'].includes(typeof prop) ?
+          wrapIndex(target, prop)
+        : prop
+      console.log('prop is now:', prop)
+      return Reflect.get(target, prop)
+    }
+  })
+}
+
 myself.isTruthy = "Javascript's truthiness rules are obnoxious and I always second-guess myself when trying to remember them."
 const isTruthy = (thing) => thing ? 'yes' : 'no'
 
@@ -644,6 +667,7 @@ module.exports = {
   ifFunc,
   TypeCheckedArray,
   WrappedArray,
+  indexWrapify,
   isTruthy,
   isIterable,
   isEmpty,
