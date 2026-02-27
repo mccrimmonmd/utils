@@ -146,19 +146,23 @@ const TypeCheckedArray = class extends Array {
   }
 }
 
-myself.WrappedArray = "An array that can be indexed with any integer. Numbers less than 0 or greater than arr.length - 1 'wrap around' to a valid index. Does(n't?) work with bigints."
+myself.WrappedArray = "An array that can be indexed with any integer. Numbers less than 0 or greater than arr.length - 1 'wrap around' to a valid index."
 const WrappedArray = class extends Array {
+  #wrappedIndex(prop) {
+    let i = Number(prop)
+    if (!Number.isInteger(i)) return prop
+    i = i % this.length
+    return i < 0 ? i + this.length : i
+  }
   constructor(...params) {
     super(...params)
     return new Proxy(this, {
-      get: (target, prop) => { // is this right?
-        if (Number.isInteger(prop)) {
-           while (prop < 0) {
-             prop += this.length
-           }
-           prop = prop % this.length
-        }
-        return Reflect.get(target, prop)
+      get: (target, prop, receiver) => {
+        prop =
+          ['number', 'bigint', 'string'].includes(typeof prop) ?
+            this.#wrappedIndex(prop)
+          : prop
+        return Reflect.get(target, prop, receiver)
       }
     })
   }
@@ -639,6 +643,7 @@ module.exports = {
   pluralize,
   ifFunc,
   TypeCheckedArray,
+  WrappedArray,
   isTruthy,
   isIterable,
   isEmpty,
