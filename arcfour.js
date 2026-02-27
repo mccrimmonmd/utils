@@ -1,6 +1,5 @@
 const {
   range,
-  enumerate,
   arrayify,
   swap,
   random: {
@@ -37,7 +36,7 @@ mix(key, iVec, blender)
 
 const output = new Uint8Array(iVec.length + cipherbytes.length)
 let j = 0
-for (const [cByte, k] of stringToBytes(ciphertext).enumerate()) {
+for (const [k, cByte] of stringToBytes(ciphertext).entries()) {
   const i = add256(k, 1)
   j = add256(j, state[i])
   swap(state, i, j)
