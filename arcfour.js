@@ -34,14 +34,14 @@ const blender = [...range(256)]
 
 mix(key, iVec, blender)
 
-const output = new Uint8Array(iVec.length + cipherbytes.length)
+const crypt = new Uint8Array(cipherbytes.length)
 let j = 0
 for (const [k, cByte] of cipherbytes.entries()) {
   const i = add256(k, 1)
   j = add256(j, state[i])
   swap(state, i, j)
   let n = add256(state[i], state[j])
-  output.push(state[n] ^ cByte)
+  crypt[k] = state[n] ^ cByte
 }
 
-console.log(bytesToString(output))
+console.log(bytesToString([...iVec, ...crypt]))
