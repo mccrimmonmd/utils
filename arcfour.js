@@ -14,11 +14,12 @@ const stringToBytes = (string) => new Uint8Array(arrayify(
   (i) => string.charCodeAt(i), string.length
 ))
 
-const mix = (key, iVec, state, n = 1) => {
+const mix = (key, iVec, state, N = 1) => {
   let j = 0
-  for (const _ of range(n)) {
+  for (const _ of range(N)) {
     for (const i of range(256)) {
-      j = (j + state[i] + key[i % key.length]) % 256
+      let n = i % key.length
+      j = add256(j, state[i], key[n])
       swap(state, i, j)
     }
   }
@@ -29,14 +30,13 @@ const ciphertext = '=SomE eXample(1)(!)[?]'
 const cipherbytes = stringToBytes(ciphertext)
 const keyText = 'asdfg'
 const key = new Uint8Array([...stringToBytes(keyText), ...iVec])
-const blender = arrayify( (i) => i, 256 )
-// for (const i of range(256)) blender.push(i)
+const blender = [...range(256)]
 
 mix(key, iVec, blender)
 
 const output = new Uint8Array(iVec.length + cipherbytes.length)
 let j = 0
-for (const [k, cByte] of stringToBytes(ciphertext).entries()) {
+for (const [k, cByte] of cipherbytes.entries()) {
   const i = add256(k, 1)
   j = add256(j, state[i])
   swap(state, i, j)
