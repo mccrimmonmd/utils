@@ -146,28 +146,6 @@ const TypeCheckedArray = class extends Array {
   }
 }
 
-myself.WrappedArray = "An array that can be indexed with any integer. Numbers less than 0 or greater than arr.length - 1 'wrap around' to a valid index."
-const WrappedArray = class extends Array {
-  #wrappedIndex(prop) {
-    let i = Number(prop)
-    if (!Number.isInteger(i)) return prop
-    i = i % this.length
-    return i < 0 ? i + this.length : i
-  }
-  constructor(...params) {
-    super(...params)
-    return new Proxy(this, {
-      get: (target, prop, receiver) => {
-        prop =
-          ['number', 'bigint', 'string'].includes(typeof prop) ?
-            this.#wrappedIndex(prop)
-          : prop
-        return Reflect.get(target, prop, receiver)
-      }
-    })
-  }
-}
-
 myself.indexWrapify = "Takes an array-like object and returns a Proxy that 'wraps around' indicies outside the array's bounds to a valid index. More precisely, the index is taken modulo the array's length, and if the result is negative the array's length is added to it. Thus, arr[-1] will return the last element, arr[arr.length] will return the first element, and so on."
 const indexWrapify = (obj) => {
   const wrapIndex = (target, prop) => {
@@ -666,7 +644,6 @@ module.exports = {
   pluralize,
   ifFunc,
   TypeCheckedArray,
-  WrappedArray,
   indexWrapify,
   isTruthy,
   isIterable,
