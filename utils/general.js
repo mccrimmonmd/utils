@@ -160,9 +160,7 @@ const indexWrapify = (obj) => {
   }
   return new Proxy(obj, {
     get(target, prop) {
-      console.log('getting:', prop)
       prop = wrapIndex(target, prop)
-      console.log('prop is now:', prop)
       return Reflect.get(target, prop)
     }
   })
