@@ -15,6 +15,7 @@ const stringToBytes = (string) => new Uint8Array(arrayify(
 ))
 
 const mix = (key, iVec, state, N = 1) => {
+  assert(state[-1] === state[state.length - 1])
   let j = 0
   for (const _ of range(N)) {
     for (const i of range(256)) {
