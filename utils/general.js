@@ -163,6 +163,9 @@ const indexWrapify = (obj) => {
       prop = wrapIndex(target, prop)
       return Reflect.get(target, prop)
     }
+    set(target, prop, value) {
+      prop = wrapIndex(target, prop)
+      return Reflect.set(target, prop, value)
   })
 }
 
