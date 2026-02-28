@@ -26,10 +26,6 @@ const mix = (key, iVec, state, N = 1) => {
   }
 }
 
-const iVec = new Uint8Array(arrayify(() => randInt(256), 10))
-const ciphertext = '=SomE eXample(1)(!)[?]'
-const cipherbytes = stringToBytes(ciphertext)
-const keyText = 'asdfg'
 const crypt = (bytes, state) => {
   const output = new Uint8Array(bytes.length)
   let j = 0
@@ -42,6 +38,16 @@ const crypt = (bytes, state) => {
   }
   return output
 }
+
+// TODO: load from file or take as parameter
+const cipherbytes = stringToBytes('=SomE eXample(1)(!)[?]')
+const iVec =
+  encoding ?
+    new Uint8Array(arrayify(() => randInt(256), 10))
+  : cipherbytes.slice(0, 10)
+const cipher = encoding ? cipherbytes : cipherbytes.slice(10)
+
+const keyText = 'asdfg' // TODO: ditto
 const key = new Uint8Array([...stringToBytes(keyText), ...iVec])
 const state = indexWrapify([...range(256)])
 
