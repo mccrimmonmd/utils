@@ -222,13 +222,13 @@ const isEmpty = (
 myself.ensureIterable = "Wraps the given parameter in an array, unless it's already iterable."
 const ensureIterable = (thing) => isIterable(thing) ? thing : [thing]
 
-myself.ensureArray = "Spreads the given iterable into an array, unless it's already an array. If the parameter is not iterable, it wraps it in a new array before returning it. For when you want to avoid making unnecessary copies and/or you're not sure the parameter will be iterable. (If you know the paramater will either be an array OR a non-iterable, and you don't mind making some copies, `[].concat(thing)` is more concise.)"
+myself.ensureArray = "Wraps the parameter in an array and returns it. If the parameter is iterable, it spreads it into the array before returning it. If the parameter is already an array, it is returned as-is. For when you want to avoid making unnecessary copies and/or you're not sure the parameter will be iterable. (If you know the paramater will either be an array OR a non-iterable, and you don't mind making a copy, `[].concat(thing)` is more concise.)"
 const ensureArray = (thing) =>
   Array.isArray(thing) ? thing
   : isIterable(thing) ? [...thing]
   : [thing]
 
-myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value. NOTE: if the original function is recursive, it must be saved to the same variable (`someFunc = memoize(someFunc)`) or wrapped in a closure first to be memoized properly."
+myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value. NOTE: if the original function is anonymous and recursive, it must be set to the same variable--`someFunc = memoize(someFunc)`--or wrapped in a closure first--`memoized = memoize( (() => someFunc)() )`--to be memoized properly."
 // TODO: fix 'new name must be old name' thing...somehow?
 const memoize = (func) => {
   const cache = new MultiMap()
