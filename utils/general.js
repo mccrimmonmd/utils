@@ -159,13 +159,14 @@ const indexWrapify = (obj) => {
     return prop
   }
   return new Proxy(obj, {
-    get(target, prop) {
+    get(target, prop, receiver) {
       prop = wrapIndex(target, prop)
-      return Reflect.get(target, prop)
+      return Reflect.get(target, prop, receiver)
+    },
+    set(target, prop, value, receiver) {
+      prop = wrapIndex(target, prop)
+      return Reflect.set(target, prop, value, receiver)
     }
-    set(target, prop, value) {
-      prop = wrapIndex(target, prop)
-      return Reflect.set(target, prop, value)
   })
 }
 
