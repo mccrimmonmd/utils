@@ -32,19 +32,25 @@ const merge = (
   return merged
 }
 
-myself.recombine = "Sort of like Python's 'zip' function, generalized for Objects. Haven't come up with a good way to describe it except by example (see source)."
+myself.recombine = "Sort of like Python's 'zip' function, generalized for Objects. Or: sort of like an Excel pivot table, generalized for JSON. Haven't come up with a better way to describe it except by example (see source)."
 ;`
 > data = [{ id: xid, xKey: xVal1 }, { id: xid, xKey: xVal2, xKey2: xVal3 }, { id: yid, yKey: yVal1 }, ...]
 > recombine(data, (obj) => obj.id)
-[{ id: xid, xKey: [xVal1, xVal2, ...], xKey2: [xVal3, ...] }, { id: yid, yKey: [yVal1, ...] }, ...]
+{ xid: { xKey: [xVal1, xVal2, ...], xKey2: [xVal3, ...] }, yid: { yKey: [yVal1, ...] }, ...}
 ;`
-const recombine = (listOfObjects, getKey, showDuplicates = true) => {
-  const mapped = listOfObjects.reduce((allGroups, obj) => {
-    const groupKey = getKey(obj)
+const recombine = (
+  listOfObjects,
+  keyGetter,
+  {
+    showDuplicates = true,
+    preserveIds = false,
+  } = {}
+) => {
+  return listOfObjects.reduce((allGroups, obj) => {
+    const groupKey = keyGetter(obj)
     const group = allGroups[groupKey] ?? {}
     for (const [key, val] of Object.entries(obj)) {
-      if (val === groupKey) {
-        group[key] = val
+      if (val === groupKey && !preserveIds) {
         continue
       }
       let bucket = group[key] ?? []
@@ -54,7 +60,6 @@ const recombine = (listOfObjects, getKey, showDuplicates = true) => {
     allGroups[groupKey] = group
     return allGroups
   }, {})
-  return Object.values(mapped)
 }
 
 myself.allValues = "Returns an array of every unique value set to the given key among the provided list of objects."
