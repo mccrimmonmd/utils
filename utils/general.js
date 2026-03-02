@@ -367,9 +367,9 @@ const beforeDate = (things, date, dateify) => {
 "Not exported or used, just here as a reminder."
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
-const id = (thing) => thing
 myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default: identity). Returns a Map. (Yet another function I worked super hard on that's already in the spec, lol)"
-const makeGroups = (iterable, idFunc = id) => Map.groupBy(iterable, idFunc)
+const makeGroups = (iterable, idFunc = (thing) => thing) =>
+  Map.groupBy(iterable, idFunc)
 
 myself.makeWeakGroups = "Same as makeGroups, except it returns an Object instead of a map. For when the 'bucket' names can safely be coerced to strings."
 const makeWeakGroups = (iterable, idFunc = id) => Object.groupBy(iterable, idFunc)
