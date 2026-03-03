@@ -14,7 +14,7 @@ const stringToBytes = (string) => new Uint8Array(arrayify(
   (i) => string.charCodeAt(i), string.length
 ))
 
-const mix = (key, iVec, state, N = 1) => {
+const mix = (key, state, N = 1) => {
   assert(state[-1] === state[state.length - 1])
   let j = 0
   for (const _ of range(N)) {
@@ -27,6 +27,7 @@ const mix = (key, iVec, state, N = 1) => {
 }
 
 const crypt = (bytes, state) => {
+  assert(state[-1] === state[state.length - 1])
   const output = new Uint8Array(bytes.length)
   let j = 0
   for (const [k, cByte] of bytes.entries()) {
@@ -51,7 +52,7 @@ const keyText = 'asdfg' // TODO: ditto
 const key = new Uint8Array([...stringToBytes(keyText), ...iVec])
 const state = indexWrapify([...range(256)])
 
-mix(key, iVec, state)
+mix(key, state)
 const output = crypt(cipher, state)
 
 console.log(bytesToString(
