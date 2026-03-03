@@ -7,7 +7,7 @@ const {
     randInt
   },
   op,
-} = require('C:/Users/malcolm.mccrimmon/Documents/Git/utils/utils')
+} = require('./utils')
 
 const bytesToString = (bytes) => String.fromCharCode(...bytes)
 const stringToBytes = (string) => new Uint8Array(arrayify(
