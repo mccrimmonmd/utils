@@ -467,6 +467,8 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
 }
 
 myself.arrayify = "Returns 'howMany' copies of 'item' (which can be a generator function). If 'item' is copy-by-value (e.g. a primitive), this is equivalent to Array(howMany).fill(item)"
+// TODO: refactor to accept any class with a static 'from' method (default Array)
+// rename to 'fromify' or sth
 const arrayify = (item, howMany = 1) => Array.from({ length: howMany }, (_, i) => {
   if (typeof item === 'function') return item(i)
   else if (typeof item === 'object') return structuredClone(item)
