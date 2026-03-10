@@ -40,15 +40,16 @@ const crypt = (bytes, state) => {
   return new Uint8Array(output)
 }
 
-// TODO: load from file or take as parameter
+// TODO: load these from files and/or take as parameters
 const cipherbytes = stringToBytes('=SomE eXample(1)(!)[?]')
+const keyText = 'asdfg'
+
 const iVec =
   encoding ?
     new Uint8Array(arrayify(() => randInt(256), 10))
   : cipherbytes.slice(0, 10)
 const cipher = encoding ? cipherbytes : cipherbytes.slice(10)
 
-const keyText = 'asdfg' // TODO: ditto
 const key = new Uint8Array([...stringToBytes(keyText), ...iVec])
 const state = indexWrapify([...range(256)])
 
