@@ -19,8 +19,7 @@ const mix = (key, state, N = 1) => {
   let j = 0
   for (const _ of range(N)) {
     for (const i of range(256)) {
-      let n = i % key.length
-      j += state[i] + key[n]
+      j += state[i] + key[i % key.length]
       swap(state, i, j)
     }
   }
