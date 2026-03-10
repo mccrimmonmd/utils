@@ -27,16 +27,17 @@ const mix = (key, state, N = 1) => {
 
 const crypt = (bytes, state) => {
   assert(state[-1] === state[state.length - 1])
-  const output = new Uint8Array(bytes.length)
+  const output = []
+  let i = 0
   let j = 0
-  for (const [k, cByte] of bytes.entries()) {
-    const i = k + 1
+  for (const cByte of bytes) {
+    i += 1
     j += state[i]
     swap(state, i, j)
     let n = state[i] + state[j]
-    output[k] = state[n] ^ cByte
+    output.push(state[n] ^ cByte)
   }
-  return output
+  return new Uint8Array(output)
 }
 
 // TODO: load from file or take as parameter
