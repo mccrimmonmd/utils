@@ -29,5 +29,6 @@ set shiftwidth=2 smarttab
 set expandtab
 set tabstop=8 softtabstop=0
 
+" auto-save when tab or window loses focus (a la VS Code)
 autocmd BufLeave,FocusLost * silent! wall
 
