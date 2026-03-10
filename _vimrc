@@ -1,11 +1,10 @@
 unlet! skip_defaults_vim
 source $VIMRUNTIME/defaults.vim
 
+inoremap jj <ESC>
 
 set relativenumber
 
-inoremap jj <ESC>
-nnoremap <silent> <C-l> :nohlsearch<CR><C-l>
 let mapleader = " "
 
 noremap <Leader>s :mks! ~/Documents/session.vim
@@ -17,6 +16,8 @@ noremap <Leader>d :w !diff % - <CR>
 " cnoreabbrev H vert bo h
 " let &t_SI = "\e[0 q"
 
+" search settings
+nnoremap <silent> <C-l> :nohlsearch<CR><C-l>
 set hlsearch
 set ignorecase
 set smartcase
