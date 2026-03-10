@@ -1,12 +1,16 @@
 unlet! skip_defaults_vim
 source $VIMRUNTIME/defaults.vim
 
-" let mapleader = ","
 
 set relativenumber
 
 inoremap jj <ESC>
 nnoremap <silent> <C-l> :nohlsearch<CR><C-l>
+let mapleader = " "
+
+noremap <Leader>s :mks! ~/Documents/session.vim
+noremap <Leader>l :so ~/Documents/session.vim
+noremap <Leader>d :w !diff % - <CR>
 
 " these don't work?
 " nnoremap ; :
