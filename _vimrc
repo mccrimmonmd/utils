@@ -32,3 +32,8 @@ set tabstop=8 softtabstop=0
 " auto-save when tab or window loses focus (a la VS Code)
 autocmd BufLeave,FocusLost * silent! wall
 
+" *** GVIM SETTINGS ***
+" set guifont=Cascadia\ Code:h12
+" autocmd BufLeave,FocusLost * silent! wall
+" autocmd VimEnter * :so ~/Documents/session.vim
+
