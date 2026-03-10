@@ -2,6 +2,9 @@ unlet! skip_defaults_vim
 source $VIMRUNTIME/defaults.vim
 
 inoremap jj <ESC>
+nnoremap <C-j> i<CR><ESC>
+nnoremap <C-o> o<ESC>
+nnoremap <A-o> O<ESC>
 
 set relativenumber
 
