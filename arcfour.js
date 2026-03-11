@@ -43,12 +43,13 @@ const crypt = (bytes, state) => {
 // TODO: load these from files and/or take as parameters
 const cipherbytes = stringToBytes('=SomE eXample(1)(!)[?]')
 const keyText = 'asdfg'
+const encode = true
 
 const iVec =
-  encoding ?
+  encode ?
     arrayify(() => randInt(256), 10)
   : cipherbytes.slice(0, 10)
-const cipher = encoding ? cipherbytes : cipherbytes.slice(10)
+const cipher = encode ? cipherbytes : cipherbytes.slice(10)
 
 const key = new Uint8Array([...stringToBytes(keyText), ...iVec])
 const state = indexWrapify([...range(256)])
@@ -57,7 +58,7 @@ mix(key, state)
 const output = crypt(cipher, state)
 
 console.log(bytesToString(
-  encoding ?
+  encode ?
     new Uint8Array([...iVec, ...output])
   : output
 ))
