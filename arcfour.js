@@ -10,9 +10,9 @@ const {
 } = require('./utils')
 
 const bytesToString = (bytes) => String.fromCharCode(...bytes)
-const stringToBytes = (string) => new Uint8Array(arrayify(
-  (i) => string.charCodeAt(i), string.length
-))
+const stringToBytes = (string) => new Uint8Array(
+  arrayify( (i) => string.charCodeAt(i), string.length )
+)
 
 const mix = (key, state, N = 1) => {
   assert(state[-1] === state[state.length - 1])
