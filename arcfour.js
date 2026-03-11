@@ -46,7 +46,7 @@ const keyText = 'asdfg'
 
 const iVec =
   encoding ?
-    new Uint8Array(arrayify(() => randInt(256), 10))
+    arrayify(() => randInt(256), 10)
   : cipherbytes.slice(0, 10)
 const cipher = encoding ? cipherbytes : cipherbytes.slice(10)
 
