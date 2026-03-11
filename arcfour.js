@@ -62,6 +62,7 @@ console.log(bytesToString(
   : output
 ))
 
+/*
 for (const i of range(256)) {
   state[i] = undefined
   key[i] = undefined
@@ -76,3 +77,4 @@ delete cipherbytes
 delete cipher
 delete output
 delete cipherbytes
+*/
