@@ -36,4 +36,5 @@ autocmd BufLeave,FocusLost * silent! wall
 " set guifont=Cascadia\ Code:h12
 " autocmd BufLeave,FocusLost * silent! wall
 " autocmd VimEnter * :so ~/Documents/session.vim
+" autocmd VimLeave * :mks! ~/Documents/session.vim
 
