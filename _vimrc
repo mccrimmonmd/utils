@@ -35,6 +35,9 @@ autocmd BufLeave,FocusLost * silent! wall
 " *** GVIM SETTINGS ***
 " set guifont=Cascadia\ Code:h11
 " autocmd BufLeave,FocusLost * silent! wall
+
+" TODO: figure out how to get these to apply only to 'canon' instance
+" (otherwise, you can't have more than one window open at a time)
 " autocmd VimEnter * :so ~/Documents/session.vim
 " autocmd VimLeave * :mks! ~/Documents/session.vim
 
