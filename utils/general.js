@@ -1,4 +1,5 @@
 // TODO: pull some of these functions out into new submodule "iterable"
+// ("sequences"?)
 const myself = {
   aboutMe: "TODO: General 'utils' documentation goes here."
 } // TODO: transition to JSDoc
@@ -147,7 +148,7 @@ const TypeCheckedArray = class extends Array {
   }
 }
 
-myself.indexWrapify = "Takes an array-like object and returns a Proxy that 'wraps around' indicies outside the array's bounds to a valid index. More precisely, the index is taken modulo the array's length, and if the result is negative the array's length is added to it. Thus, arr[-1] will return the last element, arr[arr.length] will return the first element, and so on."
+myself.indexWrapify = "Takes an array-like object and returns a Proxy that 'wraps around' indicies outside the array's bounds to a valid index. More precisely, the index is taken modulo the array's length, and if the result is negative the array's length is added to it: arr[-1] will return the last element, arr[arr.length] will return the first element, and so on."
 const indexWrapify = (obj) => {
   const wrapIndex = (arr, prop) => {
     if (['number', 'bigint', 'string'].includes(typeof prop)) {
@@ -368,9 +369,9 @@ const beforeDate = (things, date, dateify) => {
 "Not exported or used, just here as a reminder."
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
-const id = (thing) => thing
 myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default: identity). Returns a Map. (Yet another function I worked super hard on that's already in the spec, lol)"
-const makeGroups = (iterable, idFunc = id) => Map.groupBy(iterable, idFunc)
+const makeGroups = (iterable, idFunc = (thing) => thing) =>
+  Map.groupBy(iterable, idFunc)
 
 myself.makeWeakGroups = "Same as makeGroups, except it returns an Object instead of a map. For when the 'bucket' names can safely be coerced to strings."
 const makeWeakGroups = (iterable, idFunc = id) => Object.groupBy(iterable, idFunc)
@@ -467,6 +468,9 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
 }
 
 myself.arrayify = "Returns 'howMany' copies of 'item' (which can be a generator function). If 'item' is copy-by-value (e.g. a primitive), this is equivalent to Array(howMany).fill(item)"
+// TODO: refactor to accept any class with a static 'from' method (default Array)
+// rename to 'fromify' or sth
+// arrayFrom, *repeat*, arrRepeat, duplicate, makeArray, ...
 const arrayify = (item, howMany = 1) => Array.from({ length: howMany }, (_, i) => {
   if (typeof item === 'function') return item(i)
   else if (typeof item === 'object') return structuredClone(item)
@@ -524,29 +528,33 @@ const iterEquals = (a, b) => {
   )
   // prematurely-optimized version:
   a = [...a]
-  let i, val
-  for ([ i, val ] of entries(b)) {
+  let i = 0
+  for (const val of b) {
     if (val !== a[i]) return false
+    i += 1
   }
-  return i + 1 === a.length
+  return a.length === i
 }
 
 myself.iterEqualsUnordered = "Tests two iterables to see if they are equal. Ignores ordering (different permutations of the same elements are considered equal)."
 const iterEqualsUnordered = (a, b) => {
   a = makeGroups(a)
   b = makeGroups(b)
-  return (a.size === b.size) && a.entries().every(
+  return (a.size === b.size) &&
+    a.entries().every(
       ([ key, aGroup ]) => b.has(key) && b.get(key).length === aGroup.length
     )
-  // prematurely-optimized(?) version:
+  // prematurely-optimized version:
   a = makeGroups(a)
+  let bSize = 0
   for (const val of b) {
     if (!a.has(val)) return false
     let group = a.get(val)
     if (group.length === 0) return false
     group.pop()
+    if (group.length === 0) bSize += 1
   }
-  return a.values().every(group => group.length === 0)
+  return a.size === bSize
 }
 
 // TODO: document, export
