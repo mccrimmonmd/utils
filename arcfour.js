@@ -6,7 +6,6 @@ const {
   random: {
     randInt
   },
-  op,
 } = require('./utils')
 
 const bytesToString = (bytes) => String.fromCharCode(...bytes)
