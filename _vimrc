@@ -33,7 +33,7 @@ set tabstop=8 softtabstop=0
 autocmd BufLeave,FocusLost * silent! wall
 
 " *** GVIM SETTINGS ***
-" set guifont=Cascadia\ Code:h12
+" set guifont=Cascadia\ Code:h11
 " autocmd BufLeave,FocusLost * silent! wall
 " autocmd VimEnter * :so ~/Documents/session.vim
 " autocmd VimLeave * :mks! ~/Documents/session.vim
