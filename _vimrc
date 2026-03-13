@@ -10,8 +10,8 @@ set relativenumber
 
 let mapleader = " "
 
-noremap <Leader>s :mks! ~/Documents/session.vim
-noremap <Leader>l :so ~/Documents/session.vim
+noremap <Leader>s :mks! ~/Documents/session.vim<CR>
+noremap <Leader>l :so ~/Documents/session.vim<CR>
 noremap <Leader>d :w !diff % - <CR>
 
 " these don't work?
