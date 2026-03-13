@@ -15,7 +15,7 @@ const stringToBytes = (string) => new Uint8Array(
 )
 
 const mix = (key, state, N = 1) => {
-  assert(state[-1] === state[state.length - 1])
+  console.assert(state[-1] === state[state.length - 1])
   let j = 0
   for (const _ of range(N)) {
     for (const i of range(256)) {
@@ -26,7 +26,7 @@ const mix = (key, state, N = 1) => {
 }
 
 const crypt = (bytes, state) => {
-  assert(state[-1] === state[state.length - 1])
+  console.assert(state[-1] === state[state.length - 1])
   const output = []
   let i = 0
   let j = 0
