@@ -1,3 +1,4 @@
+const fs = require('fs')
 const {
   range,
   arrayify,
@@ -22,7 +23,8 @@ const parseDec = (strings) => new Uint8Array(arrayify(
   strings.length
 ))
 
-const mix = (key, state, N = 1) => {
+const setup = (key, N) => {
+  const state = indexWrapify([...range(256)])
   console.assert(state[-1] === state[state.length - 1])
   let j = 0
   for (const _ of range(N)) {
@@ -31,6 +33,7 @@ const mix = (key, state, N = 1) => {
       swap(state, i, j)
     }
   }
+  return state
 }
 
 const crypt = (bytes, state) => {
@@ -48,7 +51,49 @@ const crypt = (bytes, state) => {
   return new Uint8Array(output)
 }
 
-// TODO: load input from files and/or take as parameters
+const saber = (input, keyText, N, encode) => {
+  // TODO: use async readFile
+  const cipherbytes = new Uint8Array(fs.readFileSync(input))
+
+  const [iVec, cipher] =
+    encode ?
+      [arrayify(() => randInt(256), 10), cipherbytes]
+    : [cipherbytes.slice(0, 10), cipherbytes.slice(10)]
+//  const cipher = encode ? cipherbytes : cipherbytes.slice(10)
+
+  const key = new Uint8Array([...stringToBytes(keyText), ...iVec])
+
+  const state = setup(key, N)
+  const output = crypt(cipher, state)
+
+  // TODO: write to file (./output.cs) instead of console
+  console.log(
+    encode ?
+      new Uint8Array([...iVec, ...output])
+    : bytesToString(output)
+  )
+
+  return output
+}
+
+module.exports = {
+  encode: (key, input = './input.cs', output = './output.cs', N = 1) =>
+    saber(input, output, key, N, true),
+  decode: (key, input = './input.cs', output = './output.cs', N = 1) =>
+    saber(input, output, key, N, false),
+}
+
+// test:
+;(() => {
+  saber(
+    'C:/Users/malcolm.mccrimmon/Downloads/cstest/CKNIGHT.CS1',
+    'ThomasJefferson',
+    1,
+    false,
+  )
+})()
+
+/*
 const encode = false
 const rawText = '=SomE eXample(1)(!)[?]'
 const rawBytes = parseHex(`
@@ -132,30 +177,7 @@ B3 2B 0D 52 66 17 A6 21 04 97 FA 93 3A 9E
  65, 140,  83, 136, 159, 198, 214,  25,
  75,  69,  66, 157,   4, 169, 204, 121
 `
-
-const cipherbytes =
-  encode ?
-    stringToBytes(rawText)
-  : rawBytes
-if (encode) console.assert(bytesToString(cipherbytes) === rawText)
 //const keyText = 'asdfg'
 const keyText = 'SecretMessageforCongress'
-
-const iVec =
-  encode ?
-    arrayify(() => randInt(256), 10)
-  : cipherbytes.slice(0, 10)
-const cipher = encode ? cipherbytes : cipherbytes.slice(10)
-
-const key = new Uint8Array([...stringToBytes(keyText), ...iVec])
-const state = indexWrapify([...range(256)])
-
-mix(key, state)
-const output = crypt(cipher, state)
-
-console.log(
-  encode ?
-    new Uint8Array([...iVec, ...output])
-  : bytesToString(output)
-)
+*/
 
