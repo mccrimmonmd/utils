@@ -153,9 +153,9 @@ const state = indexWrapify([...range(256)])
 mix(key, state)
 const output = crypt(cipher, state)
 
-console.log(bytesToString(
+console.log(
   encode ?
     new Uint8Array([...iVec, ...output])
-  : output
-))
+  : bytesToString(output)
+)
 
