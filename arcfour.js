@@ -13,14 +13,12 @@ const bytesToString = (bytes) => String.fromCharCode(...bytes)
 const stringToBytes = (string) => new Uint8Array(
   arrayify( (i) => string.charCodeAt(i), string.length )
 )
-const parseHex = (strings) => new Uint8Array(arrayify(
-  (i) => Number('0x' + strings[i]),
-  strings.length
-))
-const parseDec = (strings) => new Uint8Array(arrayify(
-  (i) => Number(strings[i]),
-  strings.length
-))
+const parseHex = (strings) => new Uint8Array(
+  [...strings].map( (s) => Number('0x' + s) )
+)
+const parseDec = (strings) => new Uint8Array(
+  [...strings].map(Number)
+)
 
 const mix = (key, state, N = 1) => {
   console.assert(state[-1] === state[state.length - 1])
