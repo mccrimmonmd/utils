@@ -2,7 +2,8 @@
 // ("sequences"?)
 const myself = {
   aboutMe: "TODO: General 'utils' documentation goes here."
-}
+} // TODO: transition to JSDoc
+
 const { max, min, flatten } = require('./reducers')
 // const { range, entries, isIterable, ensureIterable } = require('./iterable') // for re-export
 
