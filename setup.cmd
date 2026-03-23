@@ -1,4 +1,5 @@
 REM TODO: set up WSL
+REM TODO: set registry to disable after-snap (Win+direction) popup
 
 REM If WinGet isn't already installed (PowerShell):
 REM Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
