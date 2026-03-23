@@ -30,7 +30,7 @@ set expandtab
 set tabstop=8 softtabstop=0
 
 " auto-save when tab or window loses focus (a la VS Code)
-autocmd BufLeave,FocusLost * silent! wall
+" autocmd BufLeave,FocusLost * silent! wall
 
 " *** GVIM SETTINGS ***
 " set guifont=Cascadia\ Code:h11
