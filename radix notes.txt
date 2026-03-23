@@ -169,4 +169,59 @@ undefined
 12.499999999999702
 > `102.01300211200110100202200001...`
 '102.01300211200110100202200001...'
+> fromBase = (radix, intDigits = [], fracDigits = []) => {
+| let result = 0
+| for (const [i, digit] of intDigits.entries()) {
+| }
+| var fromBase = (radix, intDigits, fracDigits) => {
+| var result = 0
+| for (const [i, digit] of intDigits.reverse().entries()) {
+| result += digit * (radix ** i)
+| }
+| for (const [i, digit] of fracDigits.entries()) {
+| result += digit * (radix ** -i)
+| }
+| return result
+| }
+|
+|
+|
+|
+| }}}}}
+}}}}}
+ ^
+
+Uncaught SyntaxError: Unexpected token '}'
+> fromBase = (radix, wholes = [], parts = []) => {
+| let result = 0
+| for (const [i, digit] of wholes.reverse().entries()) {
+| result += digit * (radix ** i)
+| }
+| for (const [i, digit] of parts.entries()) {
+| result += digit * (radix ** -i)
+| }
+| return result
+| }
+[Function: fromBase]
+> fromBase(2, '1100'.split())
+1100
+> fromBase(2, '1100'.split(''))
+12
+> fromBase(2, '1100'.split(''), [1])
+13
+> fromBase(2, '1100'.split(''), [0,1])
+12.5
+> fromBase = (radix, wholes = [], parts = []) => {
+| let result = 0
+| for (const [i, digit] of wholes.reverse().entries()) {
+| result += digit * (radix ** i)
+| }
+| for (const [i, digit] of [0].concat(parts).entries()) {
+| result += digit * (radix ** -i)
+| }
+| return result
+| }
+[Function: fromBase]
+> fromBase(2, '1100'.split(''), [1])
+12.5
 >
