@@ -10,8 +10,6 @@ set relativenumber
 
 let mapleader = " "
 
-noremap <Leader>s :mks! ~/Documents/session.vim<CR>
-noremap <Leader>l :so ~/Documents/session.vim<CR>
 noremap <Leader>d :w !diff % - <CR>
 
 " these don't work?
@@ -29,15 +27,33 @@ set shiftwidth=2 smarttab
 set expandtab
 set tabstop=8 softtabstop=0
 
-" auto-save when tab or window loses focus (a la VS Code)
-" autocmd BufLeave,FocusLost * silent! wall
+augroup malVimrc
+  autocmd!
+  " auto-save when tab or window loses focus (a la VS Code)
+  " autocmd BufLeave,FocusLost * silent! wall
+augroup END
 
 " *** GVIM SETTINGS ***
 " set guifont=Cascadia\ Code:h11
-" autocmd BufLeave,FocusLost * silent! wall
-
-" TODO: figure out how to get these to apply only to 'canon' instance
-" (otherwise, you can't have more than one window open at a time)
-" autocmd VimEnter * :so ~/Documents/session.vim
-" autocmd VimLeave * :mks! ~/Documents/session.vim
+"
+" noremap <Leader>ss :mks ~/Documents/sessions/
+" noremap <Leader>sm :mks! ~/Documents/sessions/main.vim <CR>
+" noremap <Leader>sc :mks! ~/Documents/sessions/coding.vim <CR>
+" noremap <Leader>ls :so ~/Documents/sessions/
+" noremap <Leader>lm :so ~/Documents/sessions/main.vim <CR>
+" noremap <Leader>lc :so ~/Documents/sessions/coding.vim <CR>
+"
+" TODO:
+"   - figure out how to load a session only when opening a 'null' window
+"   - figure out how to automatically load .vim files as sessions (while
+"   still allowing them to be edited somehow)
+"   - use `M/C/E/n` options on exit to save session as main, coding, or new
+"
+" augroup malGvimrc
+"   autocmd!
+"   autocmd BufLeave,FocusLost * silent! wall
+"   autocmd VimEnter *.vim :so <afile>
+"   autocmd VimLeavePre * let g:save_session=input("Save session? (Y/n) ")
+"   autocmd VimLeave * if g:save_session == "Y" | :mks! ~/Documents/sessions/main.vim | endif
+" augroup END
 
