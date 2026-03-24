@@ -224,4 +224,58 @@ Uncaught SyntaxError: Unexpected token '}'
 [Function: fromBase]
 > fromBase(2, '1100'.split(''), [1])
 12.5
+> fromBase = (radix, intDigits = [], mantissa = []) => {
+...   let result = 0
+...   for (const [i, digit] of intDigits.reverse().entries()) {
+...     if (digit >= radix) console.warn(`${digit} is supposed to be less than ${radix}, dummy`)
+...     result += digit * (radix ** i)
+...   }
+...   for (const [i, digit] of [0].concat(mantissa).entries()) {
+...     if (digit >= radix) console.warn(`${digit} is supposed to be less than ${radix}, dummy`)
+...     result += digit * (radix ** -i)
+...   }
+...   return result
+... }
+undefined
+> fromBase(Math.PI, [1, 0, 2], [1, 3, 0, 0, 2, 1, 1, 2, 0, 0, 1, 1, 0, 1])
+12.499999991983813
+> fromBase(-10, [1, 9, 2])
+2 is supposed to be less than -10, dummy
+9 is supposed to be less than -10, dummy
+1 is supposed to be less than -10, dummy
+0 is supposed to be less than -10, dummy
+12
+> fromBase(-10, [1, 9, 2], [5])
+2 is supposed to be less than -10, dummy
+9 is supposed to be less than -10, dummy
+1 is supposed to be less than -10, dummy
+0 is supposed to be less than -10, dummy
+5 is supposed to be less than -10, dummy
+11.5
+> fromBase(-10, [1, 9, 3], [5])
+3 is supposed to be less than -10, dummy
+9 is supposed to be less than -10, dummy
+1 is supposed to be less than -10, dummy
+0 is supposed to be less than -10, dummy
+5 is supposed to be less than -10, dummy
+12.5
+> fromBase = (radix, intDigits = [], mantissa = []) => {
+...   let result = 0
+...   const absBase = Math.abs(radix)
+...   for (const [i, digit] of intDigits.reverse().entries()) {
+...     if (digit >= absBase) console.warn(`${digit} is supposed to be less than ${radix}, dummy`)
+...     result += digit * (radix ** i)
+...   }
+...   for (const [i, digit] of [0].concat(mantissa).entries()) {
+...     if (digit >= absBase) console.warn(`${digit} is supposed to be less than ${radix}, dummy`)
+...     result += digit * (radix ** -i)
+...   }
+...   return result
+... }
+[Function: fromBase]
+> fromBase(-10, [1, 9, 3], [5])
+12.5
+> fromBase(8, [1, 9, 3], [5])
+9 is supposed to be less than 8, dummy
+139.625
 >
