@@ -5,6 +5,51 @@ const { print, len, arrayify, range } = require('./general')
 const { sum, product, diffsCalculator } = require('./reducers')
 const op = require('./operators')
 
+myself.Complex = "Complex numbers. Why not??"
+const Complex = class {
+  constructor(...params) {
+    this.re = 0
+    this.im = 1
+    if (params.length) {
+      if (typeof params[0] === 'object') {
+        { re, im } = params[0]
+        this.re = re ?? 0
+        this.im = im ?? 1
+      }
+      else {
+        let [ re, im ] = params
+        this.re = re
+        this.im = im ?? 1
+      }
+    }
+  }
+
+  add(other) {
+    if (typeof other !== 'object') {
+      other = new Complex(Number(other), 0)
+    }
+    if ( !(other instanceof Complex) ) {
+      other = new Complex(other)
+    }
+    return new Complex(this.re + other.re, this.im + other.im)
+  }
+
+  sub(other) {
+    // same type checks...
+    return this.add(new Complex(-other.re, -other.im))
+  }
+
+  mult(other) {
+    // same type checks (better DRY that somehow)...
+    const [ f, o, i, l ] = [
+      new Complex(this.re * other.re, 0),
+      new Complex(0, this.re * other.im),
+      new Complex(0, this.im * other.re),
+      new Complex(-(this.im * other.im), 0),
+    ]
+    return f.add(o).add(i).add(l)
+}
+
 myself.sieve = "Sieve of Eratosthenes. Just for funsies. Might refactor into a bignum generator...somehow."
 const sieve = (n) => {
   n = Math.abs(n)
