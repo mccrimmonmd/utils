@@ -91,7 +91,7 @@ const msConverter = (
   return result 
 }
 
-myself.fromBase = "Computes the decimal equivalent of some other number, expressed as a radix (base) and two arrays of base-ten digits representing the characteristic and mantissa (before and after the decimal point). For example, 0xFF80 would be `fromBase(16, [15, 15, 8, 0])`. Supports negative and even fractional bases--for example, twelve and a half in base minus-ten is `193.5`, while the same in base Pi is approximated with `102.13002112001101...`"
+myself.fromBase = "Computes the decimal equivalent of some other number, given as a radix (base) and two arrays of numbers representing the digits of the characteristic and mantissa (a.k.a. the digits before and after the decimal point). For example, 0xFF80 would be `fromBase(16, [15, 15, 8, 0])`. Supports negative and even fractional bases--for example, twelve and a half in base minus-ten is `193.5`, while the same in base Pi is approximately `102.13002112001101...`"
 // TODO: support complex numbers, somehow
 const fromBase = (radix, intDigits = [], mantissa = []) => {
   let result = 0
