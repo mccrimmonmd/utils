@@ -9,10 +9,15 @@ const {
   },
 } = require('./utils')
 
+// TODO: use async readFile
+const fileToBytes = (path) => new Uint8Array(fs.readFileSync(path))
+
 const bytesToString = (bytes) => String.fromCharCode(...bytes)
+
 const stringToBytes = (string) => new Uint8Array(
   arrayify( (i) => string.charCodeAt(i), string.length )
 )
+
 const parseHex = (strings) => new Uint8Array(
   [...strings].map( (s) => Number('0x' + s) )
 )
@@ -34,7 +39,7 @@ const setup = (key, N) => {
 }
 
 const crypt = (bytes, state) => {
-  console.assert(state[-1] === state[state.length - 1])
+  console.assert(state[state.length] === state[0])
   const output = []
   let i = 0
   let j = 0
@@ -48,50 +53,36 @@ const crypt = (bytes, state) => {
   return new Uint8Array(output)
 }
 
-const saber = (input, keyText, N, encode) => {
-  // TODO: use async readFile
-  const cipherbytes = new Uint8Array(fs.readFileSync(input))
-
-  const [iVec, cipher] =
-    encode ?
-      [arrayify(() => randInt(256), 10), cipherbytes]
-    : [cipherbytes.slice(0, 10), cipherbytes.slice(10)]
-//  const cipher = encode ? cipherbytes : cipherbytes.slice(10)
-
+const saber = (iVec, cipher, keyText, N, encode) => {
   const key = new Uint8Array([...stringToBytes(keyText), ...iVec])
-
   const state = setup(key, N)
-  const output = crypt(cipher, state)
-
-  // TODO: write to file (./output.cs) instead of console
-  console.log(
-    encode ?
-      new Uint8Array([...iVec, ...output])
-    : bytesToString(output)
-  )
-
-  return output
+  return crypt(cipher, state)
 }
 
 module.exports = {
-  encode: (key, input = './input.cs', output = './output.cs', N = 1) =>
-    saber(input, output, key, N, true),
-  decode: (key, input = './input.cs', output = './output.cs', N = 1) =>
-    saber(input, output, key, N, false),
+  // TODO: write to file (./output.cs) instead of console (unless output == null)
+  encode: (key, { N = 1, input = './input.cs', output } = {}) => {
+    const cipher = new Uint8Array(fs.readFileSync(input))
+    const iVec = arrayify(() => randInt(256), 10)
+    console.log(new Uint8Array([...iVec, ...saber(iVec, cipher, key, N)]))
+  }
+  decode: (key, { N = 1, input = './input.cs', output } = {}) => {
+    const cipher = new Uint8Array(fs.readFileSync(input))
+    console.log(
+      bytesToString(saber(cipher.slice(0, 10) cipher.slice(10), key, N))
+    )
+  }
 }
 
 // test:
 ;(() => {
-  saber(
-    'C:/Users/malcolm.mccrimmon/Downloads/cstest/CKNIGHT.CS1',
+  module.exports.decode(
     'ThomasJefferson',
-    1,
-    false,
+    { input: 'C:/Users/malcolm.mccrimmon/Downloads/cstest/CKNIGHT.CS1' },
   )
 })()
 
 /*
-const encode = false
 const rawText = '=SomE eXample(1)(!)[?]'
 const rawBytes = parseHex(`
 D4 BB 4D 31 68 07 91 2A 6A 79 A7 29 FA 94 92 FE
