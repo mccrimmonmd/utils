@@ -48,6 +48,7 @@ augroup END
 "   - figure out how to automatically load .vim files as sessions (while
 "   still allowing them to be edited somehow)
 "   - use `M/C/E/n` options on exit to save session as main, coding, or new
+"   - save sessions to ~/Documents/Git/utils/sessions by default, for sync
 "
 " augroup malGvimrc
 "   autocmd!
