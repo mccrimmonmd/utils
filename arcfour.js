@@ -65,13 +65,13 @@ module.exports = {
     const cipher = new Uint8Array(fs.readFileSync(input))
     const iVec = arrayify(() => randInt(256), 10)
     console.log(new Uint8Array([...iVec, ...saber(iVec, cipher, key, N)]))
-  }
+  },
   decode: (key, { N = 1, input = './input.cs', output } = {}) => {
     const cipher = new Uint8Array(fs.readFileSync(input))
     console.log(
-      bytesToString(saber(cipher.slice(0, 10) cipher.slice(10), key, N))
+      bytesToString(saber(cipher.slice(0, 10), cipher.slice(10), key, N))
     )
-  }
+  },
 }
 
 // test:
