@@ -145,12 +145,20 @@ myself.fromBase = "Computes the decimal equivalent of some other number, given a
 // TODO: support complex radixes, somehow
 const fromBase = (radix, intDigits = [], mantissa = []) => {
   let result = 0
+  // use BigInts if possible
+  if (mantissa.length === 0 && isInt(radix)) {
+    result = 0n
+    radix = BigInt(radix)
+    intDigits = intDigits.map(digit => BigInt(digit))
+  }
   const absBase = Math.abs(radix)
   for (const [i, digit] of intDigits.reverse().entries()) {
+    if (typeof radix === 'bigint') i = BigInt(i)
     if (digit >= absBase) console.warn(`${digit} is supposed to be less than ${radix}, dummy`)
     result += digit * (radix ** i)
   }
   for (const [i, digit] of [0].concat(mantissa).entries()) {
+    if (typeof radix === 'bigint') i = BigInt(i)
     if (digit >= absBase) console.warn(`${digit} is supposed to be less than ${radix}, dummy`)
     result += digit * (radix ** -i)
   }
