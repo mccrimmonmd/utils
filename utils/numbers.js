@@ -9,17 +9,17 @@ myself.Complex = "Complex numbers. Why not??"
 const Complex = class {
   constructor(...params) {
     this.re = 0
-    this.im = 1
+    this.im = 0
     if (params.length) {
       if (typeof params[0] === 'object') {
         { re, im } = params[0]
         this.re = re ?? 0
-        this.im = im ?? 1
+        this.im = im ?? 0
       }
       else {
         let [ re, im ] = params
-        this.re = re
-        this.im = im ?? 1
+        this.re = Number(re)
+        this.im = Number(im ?? 0)
       }
     }
   }
