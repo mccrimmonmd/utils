@@ -24,23 +24,28 @@ const Complex = class {
     }
   }
 
-  add(other) {
+  #checkType(other) {
     if (typeof other !== 'object') {
       other = new Complex(Number(other), 0)
     }
     if ( !(other instanceof Complex) ) {
       other = new Complex(other)
     }
+    return other
+  }
+
+  add(other) {
+    other = this.#checkType(other)
     return new Complex(this.re + other.re, this.im + other.im)
   }
 
   sub(other) {
-    // same type checks...
+    other = this.#checkType(other)
     return this.add(new Complex(-other.re, -other.im))
   }
 
   mult(other) {
-    // same type checks (better DRY that somehow)...
+    other = this.#checkType(other)
     const [ f, o, i, l ] = [
       new Complex(this.re * other.re, 0),
       new Complex(0, this.re * other.im),
