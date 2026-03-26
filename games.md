@@ -58,6 +58,7 @@
   - Undertale
   - Deltarune+
   - Inscryption
+  - Earthbound+
 
 ^=NSFW
 +=not played/finished
