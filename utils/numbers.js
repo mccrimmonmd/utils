@@ -12,7 +12,7 @@ const Complex = class {
     this.im = 0
     if (params.length) {
       if (typeof params[0] === 'object') {
-        { re, im } = params[0]
+        let { re, im } = params[0]
         this.re = re ?? 0
         this.im = im ?? 0
       }
