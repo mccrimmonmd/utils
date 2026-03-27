@@ -44,13 +44,12 @@ const Complex = class {
 
   mult(other) {
     other = this.#checkType(other)
-    const [ f, o, i, l ] = [
-      new Complex(this.re * other.re, 0),
-      new Complex(0, this.re * other.im),
-      new Complex(0, this.im * other.re),
-      new Complex(-(this.im * other.im), 0),
+    const [ re, im ] = [
+      (this.re * other.re) - (this.im * other.im),
+      (this.re * other.im) + (this.im * other.re),
     ]
-    return f.add(o).add(i).add(l)
+    return new Complex({ re, im })
+  }
 }
 
 myself.sieve = "Sieve of Eratosthenes. Just for funsies. Might refactor into a bignum generator...somehow."
