@@ -25,13 +25,11 @@ const Complex = class {
   }
 
   #checkType(other) {
+    if (other instanceof Complex) return other
     if (typeof other !== 'object') {
-      other = new Complex(Number(other), 0)
+      return new Complex(Number(other), 0)
     }
-    if ( !(other instanceof Complex) ) {
-      other = new Complex(other)
-    }
-    return other
+    return new Complex(other)
   }
 
   add(other) {
