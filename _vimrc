@@ -36,12 +36,12 @@ augroup END
 " *** GVIM SETTINGS ***
 " set guifont=Cascadia\ Code:h11
 "
-" noremap <Leader>ss :mks ~/Documents/Git/utils/sessions/
-" noremap <Leader>sm :mks! ~/Documents/Git/utils/sessions/main.vim <CR>
-" noremap <Leader>sc :mks! ~/Documents/Git/utils/sessions/coding.vim <CR>
-" noremap <Leader>ll :so ~/Documents/Git/utils/sessions/
-" noremap <Leader>lm :so ~/Documents/Git/utils/sessions/main.vim <CR>
-" noremap <Leader>lc :so ~/Documents/Git/utils/sessions/coding.vim <CR>
+" noremap <Leader>ss :mks ~/Documents/sessions/
+" noremap <Leader>sm :mks! ~/Documents/sessions/main.vim <CR>
+" noremap <Leader>sc :mks! ~/Documents/sessions/coding.vim <CR>
+" noremap <Leader>ls :so ~/Documents/sessions/
+" noremap <Leader>lm :so ~/Documents/sessions/main.vim <CR>
+" noremap <Leader>lc :so ~/Documents/sessions/coding.vim <CR>
 "
 " TODO:
 "   - figure out how to load a session only when opening a 'null' window
@@ -54,6 +54,6 @@ augroup END
 "   autocmd BufLeave,FocusLost * silent! wall
 "   autocmd VimEnter *.vim :so <afile>
 "   autocmd VimLeavePre * let g:save_session=input("Save session? (Y/n) ")
-"   autocmd VimLeave * if g:save_session == "Y" | :mks! ~/Documents/Git/utils/sessions/main.vim | endif
+"   autocmd VimLeave * if g:save_session == "Y" | :mks! ~/Documents/sessions/main.vim | endif
 " augroup END
 
