@@ -99,43 +99,65 @@ const stdDeviation = (values, isSample = true) => {
   return Math.sqrt(variance)
 }
 
-myself.msConverter = "Converts milliseconds into other common units, or vice versa."
-const msConverter = (
+myself.timeConverter = "Converts between different units of time (default: converts to ms)."
+const timeConverter = (
   time,
-  rawUnits = 'seconds',
-  fromMs = true,
-  verbose = true,
+  fromUnits,
+  toUnits = 'ms',
+  verbose = false,
 ) => {
-  let units = rawUnits.toLowerCase()
-  if (!units.endsWith('s')) units += 's'
+  const allUnits = [
+    'ms',
+    'seconds',
+    'minutes',
+    'hours',
+    'days',
+    'years'
+  ]
+  const codifyUnits = (rawUnits) => {
+    let units = rawUnits.toLowerCase()
+    if (!units.endsWith('s')) units += 's'
+    if (units === 'milliseconds') units = 'ms'
+    index = allUnits.indexOf(units)
+    if (index < 0) throw new TypeError(`Time unit '${rawUnits}' invalid or unimplemented`)
+    return index
+  }
+  const getFactor = (units) => {
+    switch (units) {
+      case 'years':
+        return 365.25
+      case 'days':
+        return 24
+      case 'hours':
+        return 60
+      case 'minutes':
+        return 60
+      case 'seconds':
+        return 1_000
+      default:
+        throw new Error(`Time unit '${units}' incorrectly implemented`)
+    }
+  }
+  const result = (time, factors = [1], operator = 'id') => {
+    const factored = op(operator)(time, ...factors)
+    if (verbose) {
+      console.log(`timeConverter: ${time} ${fromUnits} -> ${factored} ${toUnits}`)
+    }
+    return factored 
+  }
+
+  let fUnits = codifyUnits(fromUnits)
+  let tUnits = codifyUnits(toUnits)
+  let unitDiff = fUnits - tUnits
   const factors = []
-
-  if (units === 'years') {
-    factors.push(365.25)
-    units = 'days'
+  if (unitDiff === 0) return result(time)
+  const [ greater, lesser ] =
+    unitDiff < 0 ? [ tUnits, fUnits ] : [ fUnits, tUnits ]
+  while (greater > lesser) {
+    factors.push(getFactor(allUnits[greater]))
+    greater -= 1
   }
-  switch (units) {
-    case 'weeks':
-      factors.push(7)
-    case 'days':
-      factors.push(24)
-    case 'hours':
-      factors.push(60)
-    case 'minutes':
-      factors.push(60)
-    case 'seconds':
-      factors.push(1_000)
-      break
-    default:
-      throw new TypeError(`Time unit '${rawUnits}' invalid or unimplemented`)
-  }
-
-  const result = op(fromMs ? 'div' : 'mult')(time, ...factors)
-  if (verbose) {
-    const [ fromUnit, toUnit ] = fromMs ? [ 'ms', units ] : [ units, 'ms' ]
-    console.log(`msConverter: ${time} ${fromUnit} -> ${result} ${toUnit}`)
-  }
-  return result 
+  return result(time, factors, unitDiff < 0 ? 'mult' : 'div')
 }
 
 myself.fromBase = "Computes the decimal equivalent of some other number, given as a radix (base) and two arrays of Numbers representing the digits of the characteristic and mantissa (a.k.a. the digits before and after the decimal point). For example, 0xFF80 would be `fromBase(16, [15, 15, 8, 0])`. Supports negative and even fractional bases--for example, twelve and a half in base minus-ten is `193.5`, while the same in base Pi is approximately `102.13002112001101...`"
@@ -174,6 +196,6 @@ module.exports = {
   arithmeticMean,
   diffsCalculator,
   stdDeviation,
-  msConverter,
+  timeConverter,
   fromBase,
 }
