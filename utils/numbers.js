@@ -138,7 +138,7 @@ const timeConverter = (
         throw new Error(`Time unit '${units}' incorrectly implemented`)
     }
   }
-  const result = (time, factors = [1], operator = 'id') => {
+  const result = (time, factors = [1], operator = 'first') => {
     const factored = op(operator)(time, ...factors)
     if (verbose) {
       console.log(`timeConverter: ${time} ${fromUnits} -> ${factored} ${toUnits}`)

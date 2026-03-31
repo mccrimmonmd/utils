@@ -19,6 +19,7 @@ const opFuncs = {
   // non-chaining operators //
 
   id: (thing) => thing, // the identity function
+  first: (...things) => things[0],
   err: (message, errType = Error) => (() => { throw new errType(message) })(),
 
   loop: (cond, exec, params = []) => {
