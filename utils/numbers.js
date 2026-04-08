@@ -184,6 +184,10 @@ const fromBase = (radix, intDigits = [], mantissa = []) => {
   return result
 }
 
+myself.epochToDuration = "Recently encountered an API that mistakenly interpreted durations (number of milliseconds) as timestamps. This function is a wrapper for Date.parse, translating those mistaken dates back into ms."
+const epochToDuration = (dateString) =>
+  Date.parse(dateString.replace(' ', 'T'))
+
 module.exports = {
   // docs: () => print(myself),
   aboutMe: () => myself.aboutMe,
