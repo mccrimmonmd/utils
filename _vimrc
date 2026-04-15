@@ -39,7 +39,7 @@ augroup END
 " noremap <Leader>ss :mks ~/Documents/Git/utils/sessions/
 " noremap <Leader>sm :mks! ~/Documents/Git/utils/sessions/main.vim <CR>
 " noremap <Leader>sc :mks! ~/Documents/Git/utils/sessions/coding.vim <CR>
-" noremap <Leader>ls :so ~/Documents/Git/utils/sessions/
+" noremap <Leader>ll :so ~/Documents/Git/utils/sessions/
 " noremap <Leader>lm :so ~/Documents/Git/utils/sessions/main.vim <CR>
 " noremap <Leader>lc :so ~/Documents/Git/utils/sessions/coding.vim <CR>
 "
