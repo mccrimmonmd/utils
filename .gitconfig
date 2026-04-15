@@ -42,9 +42,8 @@
   su = push --set-upstream origin HEAD
   ap = add --patch
   fa = fetch --all
-  pr = fetch --prune
-  fe = fetch --all --prune
-  prt = fetch --prune --prune-tags
+  pr = fetch --prune --prune-tags
+  fe = fetch --all --prune --prune-tags
   delete-local = branch -d
   delete-remote = push -d origin
   gol = log --reverse
