@@ -103,8 +103,10 @@ myself.timeConverter = "Converts between different units of time (default: conve
 const timeConverter = (
   time,
   fromUnits,
-  toUnits = 'ms',
-  verbose = false,
+  {
+    toUnits = 'ms',
+    verbose = false,
+  } = {}
 ) => {
   const allUnits = [
     'ms',
