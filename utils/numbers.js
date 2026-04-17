@@ -146,18 +146,18 @@ const timeConverter = (
     return factored 
   }
 
-  let fUnits = codifyUnits(fromUnits)
-  let tUnits = codifyUnits(toUnits)
-  let unitDiff = fUnits - tUnits
+  const fUnits = codifyUnits(fromUnits)
+  const tUnits = codifyUnits(toUnits)
+  const unitDiff = fUnits - tUnits
   const factors = []
   if (unitDiff === 0) return result(time)
-  const [ greater, lesser ] =
-    unitDiff < 0 ? [ tUnits, fUnits ] : [ fUnits, tUnits ]
+  let [ lesser, greater ] =
+    unitDiff < 0 ? [ fUnits, tUnits ] : [ tUnits, fUnits ]
   while (greater > lesser) {
     factors.push(getFactor(allUnits[greater]))
     greater -= 1
   }
-  return result(time, factors, unitDiff < 0 ? 'mult' : 'div')
+  return result(time, factors, unitDiff < 0 ? 'div' : 'mult')
 }
 
 myself.fromBase = "Computes the decimal equivalent of some other number, given as a radix (base) and two arrays of Numbers representing the digits of the characteristic and mantissa (a.k.a. the digits before and after the decimal point). For example, 0xFF80 would be `fromBase(16, [15, 15, 8, 0])`. Supports negative and even fractional bases--for example, twelve and a half in base minus-ten is `193.5`, while the same in base Pi is approximately `102.13002112001101...`"
