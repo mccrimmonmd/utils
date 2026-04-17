@@ -9,8 +9,10 @@ const {
   },
 } = require('./utils')
 
-// TODO: use async readFile
+// TODO: use async
 const fileToBytes = (path) => new Uint8Array(fs.readFileSync(path))
+
+const bytesToFile = (bytes, path) => fs.writeFileSync(bytes, path)
 
 const bytesToString = (bytes) => String.fromCharCode(...bytes)
 
@@ -60,17 +62,20 @@ const saber = (iVec, cipher, keyText, N, encode) => {
 }
 
 module.exports = {
-  // TODO: write to file (./output.cs) instead of console (unless output == null)
   encode: (key, { N = 1, input = './input.cs', output } = {}) => {
-    const cipher = new Uint8Array(fs.readFileSync(input))
+    const cipher = fileToBytes(input)
     const iVec = arrayify(() => randInt(256), 10)
-    console.log(new Uint8Array([...iVec, ...saber(iVec, cipher, key, N)]))
+    const outputBytes = new Uint8Array([...iVec, ...saber(iVec, cipher, key, N)])
+    console.log(outputBytes)
+    if (output != null) fs.writeFileSync(outputBytes, output)
   },
   decode: (key, { N = 1, input = './input.cs', output } = {}) => {
-    const cipher = new Uint8Array(fs.readFileSync(input))
-    console.log(
-      bytesToString(saber(cipher.slice(0, 10), cipher.slice(10), key, N))
+    const cipher = fileToBytes(input)
+    const outputString =
+      bytesToString(saber(cipher.slice(0, 10), cipher.slice(10), key, N)
     )
+    console.log(outputString)
+    if (output != null) fs.writeFileSync(outputString, output)
   },
 }
 
