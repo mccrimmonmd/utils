@@ -108,38 +108,26 @@ const timeConverter = (
     verbose = false,
   } = {}
 ) => {
-  const allUnits = [
-    'ms',
-    'seconds',
-    'minutes',
-    'hours',
-    'days',
-    'years'
-  ]
+  const allUnits = {
+    ms: 1,
+    seconds: 1_000,
+    minutes: 60,
+    hours: 60,
+    days: 24,
+    years: 365.25,
+  }
+  const unitNames = Object.keys(allUnits)
+
   const codifyUnits = (rawUnits) => {
     let units = rawUnits.toLowerCase()
     if (!units.endsWith('s')) units += 's'
     if (units === 'milliseconds') units = 'ms'
-    index = allUnits.indexOf(units)
-    if (index < 0) throw new TypeError(`Time unit '${rawUnits}' invalid or unimplemented`)
-    return index
-  }
-  const getFactor = (units) => {
-    switch (units) {
-      case 'years':
-        return 365.25
-      case 'days':
-        return 24
-      case 'hours':
-        return 60
-      case 'minutes':
-        return 60
-      case 'seconds':
-        return 1_000
-      default:
-        throw new Error(`Time unit '${units}' incorrectly implemented`)
+    if (allUnits[units] == null) {
+      throw new TypeError(`Time unit '${rawUnits}' invalid or unimplemented`)
     }
+    return units
   }
+  
   const result = (time, factors = [1], operator = 'first') => {
     const factored = op(operator)(time, ...factors)
     if (verbose) {
@@ -148,15 +136,17 @@ const timeConverter = (
     return factored 
   }
 
-  const fUnits = codifyUnits(fromUnits)
-  const tUnits = codifyUnits(toUnits)
-  const unitDiff = fUnits - tUnits
+  fromUnits = codifyUnits(fromUnits)
+  toUnits = codifyUnits(toUnits)
+  const fIndex = unitNames.indexOf(fromUnits)
+  const tIndex = unitNames.indexOf(toUnits)
+  const unitDiff = fIndex - tIndex
   const factors = []
   if (unitDiff === 0) return result(time)
   let [ lesser, greater ] =
-    unitDiff < 0 ? [ fUnits, tUnits ] : [ tUnits, fUnits ]
-  while (greater > lesser) {
-    factors.push(getFactor(allUnits[greater]))
+    unitDiff < 0 ? [ fIndex, tIndex ] : [ tIndex, fIndex ]
+  while (lesser < greater) {
+    factors.push(allUnits[unitNames[greater]])
     greater -= 1
   }
   return result(time, factors, unitDiff < 0 ? 'div' : 'mult')
