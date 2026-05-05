@@ -1,4 +1,4 @@
-const fs = require('fs')
+const fsp = require('fs').promises
 const {
   range,
   arrayify,
@@ -8,11 +8,6 @@ const {
     randInt
   },
 } = require('./utils')
-
-// TODO: use async
-const fileToBytes = (path) => new Uint8Array(fs.readFileSync(path))
-
-const bytesToFile = (bytes, path) => fs.writeFileSync(bytes, path)
 
 const bytesToString = (bytes) => String.fromCharCode(...bytes)
 
@@ -29,6 +24,7 @@ const parseDec = (strings) => new Uint8Array(
 
 const setup = (key, N) => {
   const state = indexWrapify([...range(256)])
+  console.assert(state[state.length] === state[0])
   console.assert(state[-1] === state[state.length - 1])
   let j = 0
   for (const _ of range(N)) {
@@ -41,7 +37,6 @@ const setup = (key, N) => {
 }
 
 const crypt = (bytes, state) => {
-  console.assert(state[state.length] === state[0])
   const output = []
   let i = 0
   let j = 0
@@ -55,33 +50,33 @@ const crypt = (bytes, state) => {
   return new Uint8Array(output)
 }
 
-const saber = (iVec, cipher, keyText, N, encode) => {
+const saber = (iVec, cipher, keyText, N) => {
   const key = new Uint8Array([...stringToBytes(keyText), ...iVec])
   const state = setup(key, N)
   return crypt(cipher, state)
 }
 
 module.exports = {
-  encode: (key, { N = 1, input = './input.cs', output } = {}) => {
-    const cipher = fileToBytes(input)
+  encode: async (key, { N = 1, input = './input.cs', output } = {}) => {
+    const cipher = new Uint8Array(await fsp.readFile(input))
     const iVec = arrayify(() => randInt(256), 10)
     const outputBytes = new Uint8Array([...iVec, ...saber(iVec, cipher, key, N)])
     console.log(outputBytes)
-    if (output != null) fs.writeFileSync(outputBytes, output)
+    if (output != null) await fsp.writeFile(outputBytes, output)
   },
-  decode: (key, { N = 1, input = './input.cs', output } = {}) => {
-    const cipher = fileToBytes(input)
+  decode: async (key, { N = 1, input = './input.cs', output } = {}) => {
+    const cipher = new Uint8Array(await fsp.readFile(input))
     const outputString =
       bytesToString(saber(cipher.slice(0, 10), cipher.slice(10), key, N)
     )
     console.log(outputString)
-    if (output != null) fs.writeFileSync(outputString, output)
+    if (output != null) await fsp.writeFile(outputString, output)
   },
 }
 
 // test:
-;(() => {
-  module.exports.decode(
+;(async () => {
+  await module.exports.decode(
     'ThomasJefferson',
     { input: 'C:/Users/malcolm.mccrimmon/Downloads/cstest/CKNIGHT.CS1' },
   )
