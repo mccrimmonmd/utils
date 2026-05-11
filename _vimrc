@@ -33,6 +33,13 @@ augroup malVimrc
   " autocmd BufLeave,FocusLost * silent! wall
 augroup END
 
+call plug#begin()
+  Plug 'rust-lang/rust.vim'
+call plug#end()
+
+syntax enable
+filetype plugin indent on
+
 " *** GVIM SETTINGS ***
 " set guifont=Cascadia\ Code:h11
 "
