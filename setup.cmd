@@ -10,9 +10,12 @@ winget install vim.vim
 winget install node.js
 winget install python.python.3.13
 winget install chocolatey
+REM install vim-plug
 REM install vscode
 REM install duckduckgo(?)
 REM ...
+winget update
+winget upgrade
 
 REM For PowerShell, use ~ instead--no variable that works in both :'(
 mkdir %USERPROFILE%\Documents\Git
@@ -20,6 +23,7 @@ cd %USERPROFILE%\Documents\Git
 git clone https://github.com/mccrimmonmd/utils.git
 cd utils
 copy .gitconfig %USERPROFILE%\
+copy .prettierrc %USERPROFILE%\
 copy _vimrc %USERPROFILE%\
 REM copy <.ps config file> %USERPROFILE%\
 

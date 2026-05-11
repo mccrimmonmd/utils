@@ -35,6 +35,9 @@ augroup END
 
 call plug#begin()
   Plug 'rust-lang/rust.vim'
+  Plug 'prettier/vim-prettier', {
+  \ 'do': 'npm install -g',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'] }
 call plug#end()
 
 syntax enable
