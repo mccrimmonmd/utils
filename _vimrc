@@ -52,7 +52,7 @@ filetype plugin indent on
 "
 " TODO:
 "   - figure out how to load a session only when opening a 'null' window
-"   - figure out how to automatically load .vim files as sessions (while
+"   - ~~figure out how to automatically load .vim files as sessions~~ (while
 "   still allowing them to be edited somehow)
 "   - use `M/C/E/n` options on exit to save session as main, coding, or new
 "
