@@ -29,8 +29,8 @@ set tabstop=8 softtabstop=0
 
 augroup malVimrc
   autocmd!
-  " auto-save when tab or window loses focus (a la VS Code)
-  " autocmd BufLeave,FocusLost * silent! wall
+  " run Prettier when tab or window loses focus(?) on JS files(?)
+  " autocmd BufLeave,FocusLost *.js Prettier
 augroup END
 
 call plug#begin()
