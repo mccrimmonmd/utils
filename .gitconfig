@@ -48,7 +48,9 @@
   delete-remote = push -d origin
   gol = log --reverse
   low = log -5
+  logf = log --name-status
   loo = log --oneline
+  lof = log --oneline --name-status
   ool = log --oneline --reverse
   lo = log --oneline -16
   gloo = log --oneline --graph
