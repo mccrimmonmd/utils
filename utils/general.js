@@ -500,17 +500,24 @@ myself.flattener = "Flattens the given array to the specified depth. Depth must 
 // to shorter arrays. So, it's superior to the built-in only when flattening an 
 // array nested thousands of layers deep, but containing only a handful 
 // (hundreds?) of elements per layer. (Y'know, just in case that ever comes up.)
-// (I wonder if I could get the best of both worlds by combining a plain loop 
+// TODO: test (I wonder if I could get the best of both worlds by combining a plain loop 
 // with a call to Array.prototype.flat?)
+// TODO: 'batch' calls to flat in groups of 1000 or so for speed? i.e.:
+// for (const _ of range(0n, depth, 1000n) {
+//   if (...) {
+//     array = array.flat(1000)
+//   }
+// else ...
 const flattener = (array, depth = 1) => {
-  // if (!isNum(depth) || depth === Infinity) {
-  if (!['number', 'bigint'].includes(typeof depth) || depth === Infinity) {
-    throw new RangeError('Depth must be finite')
+  if (!['number', 'bigint'].includes(typeof depth)) {
+    throw new TypeError('Depth must be a number')
   }
   if (!array.length) return array
-  for (const _ of range(depth)) {
+  if (depth < 5000) return array.flat(depth)
+  array = [...array]
+  for (const _ of range(0n, depth)) {
     if (array.some(value => Array.isArray(value))) {
-      array = array.reduce(flatten)
+      array = array.flat()
     }
     else break
   }
