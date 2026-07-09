@@ -32,8 +32,6 @@ set tabstop=8 softtabstop=0
 
 augroup malVimrc
   autocmd!
-  " run Prettier when tab or window loses focus(?) on JS files(?)
-  " autocmd BufLeave,FocusLost *.js Prettier
   " change .swp files to the actual file (no accidentally opening swap files)
   " autocmd VimEnter *.swp :e (...)
 augroup END
@@ -59,13 +57,15 @@ filetype plugin indent on
 " noremap <Leader>lc :so ~/Documents/Git/utils/sessions/coding.vim <CR>
 "
 " TODO:
+"   - ~~figure out how to automatically load .vim files as sessions~~ (while
+"   still allowing them to be edited somehow)
 "   - figure out how to load a session only when opening a 'null' window
 "   (otherwise, edit it)
 "   - do the same for .swp files (but only in gVim, so console vim sessions
-"   still edit the original)
-"   - ~~figure out how to automatically load .vim files as sessions~~ (while
-"   still allowing them to be edited somehow)
+"   still edit the non-swap file)
 "   - use `M/C/E/n` options on exit to save session as main, coding, or new
+"   - run Prettier when tab/window loses focus(?) on JS files(?) in gVim(?)
+"   `autocmd BufLeave,FocusLost *.js Prettier`
 "
 " augroup malGvimrc
 "   autocmd!
