@@ -6,6 +6,9 @@ nnoremap <C-j> i<CR><ESC>
 nnoremap <C-o> o<ESC>
 nnoremap <A-o> O<ESC>
 
+nnoremap <C-PageUp> <C-PageDown>
+nnoremap <C-PageDown> <C-PageUp>
+
 set relativenumber
 
 let mapleader = " "
