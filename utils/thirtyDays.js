@@ -3,6 +3,32 @@ const { roundDecimal, arithmeticMean } = require('./numbers')
 const { rollDice } = require('./random')
 const { sum } = require('./reducers')
 
+const DIFFICULTY_LEVELS = [ 'blue', 'green', 'yellow', 'orange', 'red', 'black' ]
+const baseSettings = {
+  baseScore: 2,
+  highDie: 5,
+  highDieScore: 1,
+  singlesScore: 0,
+  tripScore: 1,
+  pairScore: 4,
+  pairDays: 1,
+  perfectScore: 7,
+  perfectDays: 7,
+}
+const DIFFICULTY_SETTINGS = {
+  blue: {
+    ...baseSettings,
+    baseScore: 0,
+    highDieScore: 0,
+  },
+  // ...etc.
+  green: {},
+  yellow: {},
+  orange: baseSettings,
+  red: {},
+  black: {},
+}
+
 const playGame = (rounds = 6, days = 30, options = {}) => {
   options = {
     verbose: false,
@@ -30,7 +56,12 @@ const playGame = (rounds = 6, days = 30, options = {}) => {
   // const variation  = initObject()
   
   timeIt(() => {
-    for (const _ of range(rounds)) {
+    for (const round of range(rounds)) {
+      options = {
+        difficulty: DIFFICULTY_LEVELS[round],
+        ...options
+      }
+      if (options.verbose) console.log(`*** ROUND ${round + 1} - difficulty: ${options.difficulty.toUpperCase()} ***`)
       const results = playRound(days, options)
       for (const [key, value] of Object.entries(results)) {
         stats[key].avg.push(value)
@@ -48,21 +79,15 @@ const playGame = (rounds = 6, days = 30, options = {}) => {
 
 const playRound = (
   days = 30,
-  options = {},
-) => {
   options = {
     verbose: true,
     players: 2,
     dice: 4,
-    baseScore: 2,
-    highDie: 5,
-    highDieScore: 1,
-    singlesScore: 0,
-    tripScore: 1,
-    pairScore: 4,
-    pairDays: 1,
-    perfectScore: 7,
-    perfectDays: 7,
+    difficulty: 'orange'
+  },
+) => {
+  options = {
+    ...DIFFICULTY_SETTINGS[options.difficulty],
     ...options
   }
   const names = [
