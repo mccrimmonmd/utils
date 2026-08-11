@@ -19,14 +19,26 @@ const DIFFICULTY_SETTINGS = {
   blue: {
     ...baseSettings,
     baseScore: 0,
-    highDieScore: 0,
+    highDie: 6,
   },
-  // ...etc.
-  green: {},
-  yellow: {},
+  green: {
+    ...baseSettings,
+    baseScore: 0,
+  },
+  yellow: {
+    ...baseSettings,
+    baseScore: 1,
+  },
   orange: baseSettings,
-  red: {},
-  black: {},
+  red: {
+    ...baseSettings,
+    baseScore: 3,
+  },
+  black: {
+    ...baseSettings,
+    baseScore: 3,
+    highDie: 4
+  },
 }
 
 const playGame = (rounds = 6, days = 30, options = {}) => {
