@@ -37,6 +37,7 @@
   si = switch
   sb = switch -
   sm = switch main
+  sd = switch dev
   nb = switch -c
   ch = checkout
   su = push --set-upstream origin HEAD
