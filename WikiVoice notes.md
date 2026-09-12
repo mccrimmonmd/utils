@@ -6,3 +6,7 @@
 
 real-time Bulletin == Forum
 real-time Soapbox == Conference
+
+## Thoughts On "Real-time" Chat
+
+A big part of the problem with text-based communication isn't just lack of tone or expression (emojis and punctuation can compensate a remarkable amount for that); it's the *speed.* A live "back-and-forth" isn't really, because both speakers are listening continuously, and opportunities to interject are also (to an extent) continuous, "negotiated" in real- both aurally and non-verbally (via social conventions, the conversation topic, how well the speakers know each other, etc.) A chat app where both participants can see what the other *is currently typing* in real time would much better approximate a live conversation than taking turns sending discrete, atomic "messages".
