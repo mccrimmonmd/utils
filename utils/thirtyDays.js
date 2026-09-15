@@ -69,10 +69,13 @@ const playGame = (rounds = 6, days = 30, options = {}) => {
   
   timeIt(() => {
     for (const round of range(rounds)) {
-      options = {
-        difficulty: DIFFICULTY_LEVELS[round],
-        ...options
-      }
+      options =
+        rounds === DIFFICULTY_LEVELS.length ?
+          {
+            difficulty: DIFFICULTY_LEVELS[round],
+            ...options
+          }
+      : options
       if (options.verbose) console.log(`*** ROUND ${round + 1} - difficulty: ${options.difficulty.toUpperCase()} ***`)
       const results = playRound(days, options)
       for (const [key, value] of Object.entries(results)) {
