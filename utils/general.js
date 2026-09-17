@@ -398,7 +398,6 @@ const findUniques = (iterable, identifier) => {
 }
 
 myself.getSorter = "Returns a sorting function that behaves more sanely than the default (specifically: mixed-case text, text with diacritics, and numbers sort the way you would expect; Objects are sorted with util.inspect; and mixed-type arrays are sorted by type first, then value). Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties)."
-// TODO: OH NO NaN RUINS EVERYTHING
 const getSorter = (sortOn, sortOrder = 'ascending') => {
   // In addition to a saner sort order, this function has a secondary goal of
   // sorting arbitrary permutations *unambiguously.* That is, for any given
@@ -439,10 +438,19 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
     if (a === null) return [ 1, b === undefined ? 2 : 0 ]
     if (b === null) return [ a === undefined ? 2 : 0, 1 ]
 
+    // for similar reasons, NaN is sorted to the end of the numbers
     const [ aType, bType ] = [ typeof a, typeof b ]
     if (aType !== bType) return [ aType, bType ]
-    if (['number', 'bigint'].includes(aType)) return [ a, b ]
-    
+    if (aType === 'bigint') return [ a, b ]
+    if (aType === 'number') {
+      if (isNaN(a) || isNaN(b)) {
+        if (!isNaN(a)) return [ 'NaN', a ]
+        if (!isNaN(b)) return [ 'NaN', b ]
+        return [ 'NaN', 'NaN' ]
+      }
+      else return [ a, b ]
+    }
+
     if (aType === 'object') {
       return [
         util.inspect(a, { depth: null }),
