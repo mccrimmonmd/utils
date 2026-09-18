@@ -395,10 +395,10 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
   const descending =
     ['descending', 'desc', '-', false].includes(sortOrder) ||
     (['number', 'bigint'].includes(typeof sortOrder) && sortOrder < 0)
-    
+
   const [ifLess, ifMore] = descending ? [1, -1] : [-1, 1]
   const sorters = ensureIterable(sortOn)
-  
+
   const resolve = (aObj, bObj, sorter) => {
     switch (typeof sorter) {
       case 'function':
@@ -413,7 +413,7 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
         throw new Error(`Unexpected type '${typeof sorter}' for sorter parameter`)
     }
   }
-  
+
   const makeComparable = (aObj, bObj, sortBy) => {
     let [ a, b ] = resolve(aObj, bObj, sortBy)
     if (a === b) return [ a, b ]
