@@ -1,7 +1,9 @@
 // TODO: pull some of these functions out into new submodule "iterable"
 // ("sequences"?)
 const myself = {
-  aboutMe: "TODO: General 'utils' documentation goes here."
+  aboutMe: `A collection of ECMAScript functions for many common (and some uncommon) development tasks. The 'general' module contains functions focused on debugging, simple tests, and metaprogramming, along with a few 'just for fun'/niche/miscellaneous functions. Some especially common/useful functions are re-exported from other modules.
+
+  Run \`allAboutMe()\` within any module to see documentation of its functions.`
 } // TODO: transition to JSDoc
 
 const { max, min, flatten } = require('./reducers')
