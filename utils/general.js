@@ -7,7 +7,9 @@ const myself = {
 } // TODO: transition to JSDoc
 
 const { max, min, flatten } = require('./reducers')
-// const { range, entries, isIterable, ensureIterable } = require('./iterable') // for re-export
+// const { ... } = require('./sequences') // for re-export
+// alternatively, make 'common' module for top-level and rename 'general'
+// (to...? 'development'? 'meta'? 'misc'?)
 
 const backToWork = require('./BACK TO WORK')
 myself.backToWork = backToWork
@@ -574,7 +576,7 @@ const iterEqualsUnordered = (a, b) => {
   return a.size === bSize
 }
 
-// TODO: document, export
+// TODO: rename, document
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#set_composition>
 const compareItersBy = (type) => (a, b) => [...new Set(a)[type](new Set(b))]
 const getIter = {
@@ -660,10 +662,10 @@ module.exports = {
   aboutMe: () => myself.aboutMe,
   allAboutMe: () => myself,
   backToWork,
-  len,
-  range,
-  zip,
-  entries,
+  len, // seq
+  range, // seq (re-export)
+  zip, // seq
+  entries, // seq
   print,
   printFn,
   printVar,
@@ -671,27 +673,27 @@ module.exports = {
   pluralize,
   ifFunc,
   TypeCheckedArray,
-  indexWrapify,
+  indexWrapify, // seq
   isTruthy,
   isIterable,
   isEmpty,
-  ensureIterable,
-  ensureArray ,
+  ensureIterable, // seq
+  ensureArray, // seq
   memoize,
   timeIt,
-  makeGroups,
-  makeWeakGroups,
-  deDup,
-  findDupes,
-  findUniques,
-  getSorter,
-  arrayify,
+  makeGroups, // seq (re-export)
+  makeWeakGroups, // seq
+  deDup, // seq
+  findDupes, // seq
+  findUniques, // seq
+  getSorter, // seq(?)
+  arrayify, // seq (re-export)
   stringify,
-  swap,
-  flattener,
-  iterEquals,
-  iterEqualsUnordered,
-  getIter,
+  swap, // seq
+  flattener, // seq
+  iterEquals, // seq
+  iterEqualsUnordered, // seq
+  getIter, // seq
   multilineRegex,
   fetchAll,
 } // = require('./general')
