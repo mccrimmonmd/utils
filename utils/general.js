@@ -248,17 +248,16 @@ const MultiMap = class extends Map {
   #traverse (argumentsList, ...newValue) {
     const mutating = newValue.length
     const value = mutating && newValue[0]
-    const single = argumentsList.length <= 1
+    const singleArgument = argumentsList.length === 1
+    const noArgument = argumentsList.length === 0
     const first =
-      single ?
-        argumentsList.length ?
-          argumentsList[0]
-        : this.#noArgsKey
+      singleArgument ? argumentsList[0]
+      : noArgument ? this.#noArgsKey
       : this.#rootKey
 
     let hasKey = super.has(first)
     let oldValue = super.get(first)
-    if (single) {
+    if (singleArgument || noArgument) {
       if (mutating) super.set(first, value)
       return { hasKey, value: oldValue }
     }
