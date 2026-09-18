@@ -127,29 +127,29 @@ const timeConverter = (
     }
     return units
   }
-  
-  const result = (time, factors = [1], operator = 'first') => {
-    const factored = op(operator)(time, ...factors)
-    if (verbose) {
-      console.log(`timeConverter: ${time} ${fromUnits} -> ${factored} ${toUnits}`)
-    }
-    return factored 
-  }
-
   fromUnits = codifyUnits(fromUnits)
   toUnits = codifyUnits(toUnits)
+
+  const log = (result) => {
+    if (verbose) {
+      console.log(`timeConverter: ${time} ${fromUnits} -> ${result} ${toUnits}`)
+    }
+    return result 
+  }
+
   const fIndex = unitNames.indexOf(fromUnits)
   const tIndex = unitNames.indexOf(toUnits)
   const unitDiff = fIndex - tIndex
+  if (unitDiff === 0) return log(time)
   const factors = []
-  if (unitDiff === 0) return result(time)
   let [ lesser, greater ] =
     unitDiff < 0 ? [ fIndex, tIndex ] : [ tIndex, fIndex ]
   while (lesser < greater) {
     factors.push(allUnits[unitNames[greater]])
     greater -= 1
   }
-  return result(time, factors, unitDiff < 0 ? 'div' : 'mult')
+  const factored = op(unitDiff < 0 ? 'div' : 'mult')(time, ...factors)
+  return log(factored)
 }
 
 myself.fromBase = "Computes the decimal equivalent of some other number, given as a radix (base) and two arrays of Numbers representing the digits of the characteristic and mantissa (a.k.a. the digits before and after the decimal point). For example, 0xFF80 would be `fromBase(16, [15, 15, 8, 0])`. Supports negative and even fractional bases--for example, twelve and a half in base minus-ten is `193.5`, while the same in base Pi is approximately `102.13002112001101...`"
