@@ -156,6 +156,13 @@ const TypeCheckedArray = class extends Array {
 }
 
 myself.indexWrapify = "Takes an array-like object and returns a Proxy that 'wraps around' indicies outside the array's bounds to a valid index. More precisely, the index is taken modulo the array's length, and if the result is negative the array's length is added to it: arr[-1] will return the last element, arr[arr.length] will return the first element, and so on."
+// TODO:
+// const IndexModuloArray = class extends Array {
+//   constructor (...params) {
+//     super(...params)
+//     return indexWrapify(this)
+//   }
+// }
 const indexWrapify = (obj) => {
   const wrapIndex = (arr, prop) => {
     if (['number', 'bigint', 'string'].includes(typeof prop)) {
