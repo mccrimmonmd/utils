@@ -1,10 +1,13 @@
+// TODO: switch to deno, test
+// TODO: transition to JSDoc
 // TODO: pull some of these functions out into new submodule "iterable"
 // ("sequences"?)
+
 const myself = {
-  aboutMe: `A collection of ECMAScript functions for many common (and some uncommon) development tasks. The 'general' module contains functions focused on debugging, simple tests, and metaprogramming, along with a few 'just for fun'/niche/miscellaneous functions. Some especially common/useful functions are re-exported from other modules.
+  aboutMe: `A collection of ECMAScript functions for many common (and some uncommon) development tasks. The 'general' module contains functions focused on debugging, simple tests, and metaprogramming, along with a few 'just for fun'/niche/miscellaneous functions. Some especially common/useful functions are re-exported from more specialized modules.
 
   Run \`allAboutMe()\` within any module to see documentation of its functions.`
-} // TODO: transition to JSDoc
+} 
 
 const { max, min, flatten } = require('./reducers')
 // const { ... } = require('./sequences') // for re-export
@@ -314,7 +317,7 @@ const timeIt = (
 
 myself.dateFilter = "TODO: use with upcoming Temporal object to make utils for searching and filtering dates."
 // TODO: parse dates/get 'today' with Temporal instead of moment
-// TODO: export all
+// TODO: export all (possibly in separate module)
 ;`
 const inRange = (things, startDate, endDate, dateify = op('id')) => {
   things = [].concat(things)
@@ -390,8 +393,8 @@ myself.getSorter = "Returns a sorting function that behaves more sanely than the
 const getSorter = (sortOn, sortOrder = 'ascending') => {
   // In addition to a saner sort order, this function has a secondary goal of
   // sorting arbitrary permutations *unambiguously.* That is, for any given
-  // Array arr, `shuffle(arr).sort(getSorter())` should result in the same
-  // permutation every time it's called (this may or may not be possible).
+  // Array arr, `shuffle(arr).sort(getSorter())` should return the same
+  // permutation every time (this may or may not be possible).
   const descending =
     ['descending', 'desc', '-', false].includes(sortOrder) ||
     (['number', 'bigint'].includes(typeof sortOrder) && sortOrder < 0)
