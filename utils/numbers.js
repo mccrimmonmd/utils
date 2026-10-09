@@ -152,6 +152,26 @@ const timeConverter = (
   return log(factored)
 }
 
+// TODO: export
+myself.niceNumber = "Makes numbers a bit nicer to read with SI prefixes, or time units if the number provided represents milliseconds."
+const niceNumber = (num, isMilliseconds = false) => {
+  const postfixes =
+    isMilliseconds ?
+      [ 'ms', 'seconds', 'minutes', 'hours', 'days', 'years' ]
+    : [ '', 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y', 'R' ]
+  let factor = 0
+  while (num >= 1000 && factor < postfixes.length) {
+    factor += 1
+    num /= 100
+  }
+  num = roundDecimal(num)
+  const strNum = 
+    isMilliseconds ?
+      timeConverter(num, 'ms', { toUnits: postfixes[factor] })
+    : num + postfixes[factor]
+  return strNum
+}
+
 myself.fromBase = "Computes the decimal equivalent of some other number, given as a radix (base) and two arrays of Numbers representing the digits of the characteristic and mantissa (a.k.a. the digits before and after the decimal point). For example, 0xFF80 would be `fromBase(16, [15, 15, 8, 0])`. Supports negative and even fractional bases--for example, twelve and a half in base minus-ten is `193.5`, while the same in base Pi is approximately `102.13002112001101...`"
 // TODO: support complex radixes, somehow
 const fromBase = (radix, intDigits = [], mantissa = []) => {
