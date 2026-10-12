@@ -8,47 +8,36 @@ const op = require('./operators')
 myself.Complex = "Complex numbers. Why not??"
 const Complex = class {
   constructor(...params) {
-    this.re = 0
-    this.im = 0
-    if (params.length) {
-      if (typeof params[0] === 'object') {
-        let { re, im } = params[0]
-        this.re = re ?? 0
-        this.im = im ?? 0
-      }
-      else {
-        let [ re, im ] = params
-        this.re = Number(re)
-        this.im = Number(im ?? 0)
-      }
+    if (params.length === 1 && typeof params[0] === 'object') {
+      params = [ params[0].r, params[0].i ]
     }
+    const [ r, i ] = params
+    this.r = Number(r ?? 0)
+    this.i = Number(i ?? 0)
   }
 
   #checkType(other) {
     if (other instanceof Complex) return other
-    if (typeof other !== 'object') {
-      return new Complex(Number(other), 0)
-    }
-    return new Complex(other)
+    else return new Complex(other)
   }
 
-  add(other) {
+  plus(other) {
     other = this.#checkType(other)
-    return new Complex(this.re + other.re, this.im + other.im)
+    return new Complex(this.r + other.r, this.i + other.i)
   }
 
-  sub(other) {
+  minus(other) {
     other = this.#checkType(other)
-    return this.add(new Complex(-other.re, -other.im))
+    return new Complex(this.r - other.r, this.i - other.i)
   }
 
   mult(other) {
     other = this.#checkType(other)
-    const [ re, im ] = [
-      (this.re * other.re) - (this.im * other.im),
-      (this.re * other.im) + (this.im * other.re),
+    const [ r, i ] = [
+      (this.r * other.r) - (this.i * other.i),
+      (this.r * other.i) + (this.i * other.r),
     ]
-    return new Complex({ re, im })
+    return new Complex(r, i)
   }
 }
 
@@ -191,12 +180,12 @@ const fromBase = (radix, intDigits = [], mantissa = []) => {
   const absBase = Math.abs(radix)
   for (const [i, digit] of intDigits.reverse().entries()) {
     if (typeof radix === 'bigint') i = BigInt(i)
-    if (digit >= absBase) console.warn(`${digit} is supposed to be less than ${radix}, dummy`)
+    if (digit >= absBase) console.warn(`${digit} is supposed to be less than ${absBase}, dummy`)
     result += digit * (radix ** i)
   }
   for (const [i, digit] of [0].concat(mantissa).entries()) {
     if (typeof radix === 'bigint') i = BigInt(i)
-    if (digit >= absBase) console.warn(`${digit} is supposed to be less than ${radix}, dummy`)
+    if (digit >= absBase) console.warn(`${digit} is supposed to be less than ${absBase}, dummy`)
     result += digit * (radix ** -i)
   }
   return result
