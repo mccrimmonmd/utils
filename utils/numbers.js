@@ -52,25 +52,28 @@ const Complex = class {
   }
 }
 
-myself.sieve = "Sieve of Eratosthenes. Just for funsies. Might refactor into a bignum generator...somehow."
+myself.sieve = "Sieve of Eratosthenes. Just for funsies."
 const sieve = (n) => {
   n = Math.abs(n)
-  const isPrime = Array(n + 1).fill(true)
-  isPrime[0] = false
-  isPrime[1] = false
+  const numbers = Array(n + 1).fill(true)
+  numbers[0] = false
+  numbers[1] = false
   let candidate = 2
   while (candidate ** 2 <= n) {
-    while (!isPrime[candidate]) candidate += 1
-    for (const i of range(candidate * 2, n + 1, candidate)) {
-      isPrime[i] = false
+    while (!numbers[candidate]) candidate += 1
+    for (const i of range(candidate ** 2, n + 1, candidate)) {
+      numbers[i] = false
     }
     candidate += 1
   }
-  return isPrime
+  return numbers.reduce((primes, isPrime, i) => {
+    if (isPrime) primes.add(i)
+    return primes
+  }, new Set())
 }
 
 myself.isPrime = "Also just for funsies. Will replace with fancier test (e.g. Miller-Rabin) later."
-const isPrime = (n) => sieve(n)[n]
+const isPrime = (n) => sieve(n).has(n)
 
 myself.isNum = "Checks the type of the given value against both 'number' and 'bigint'"
 const isNum = (thing) => ['number', 'bigint'].includes(typeof thing)
