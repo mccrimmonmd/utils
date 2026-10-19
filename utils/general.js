@@ -613,7 +613,12 @@ const stringConverter = (thing, depth = null) => {
       // integer test
       if (/^[+-]?\d+n?$/.test(thing)) {
         const smallInt = Number(thing)
-        return thing.endsWith('n') || smallInt > Number.MAX_SAFE_INTEGER || smallInt < Number.MIN_SAFE_INTEGER ?
+        return (
+          thing.endsWith('n')
+            || smallInt > Number.MAX_SAFE_INTEGER
+            || smallInt < Number.MIN_SAFE_INTEGER 
+            || !Number.isInteger(smallInt)
+        ) ?
             BigInt(thing)
           : smallInt
       }
