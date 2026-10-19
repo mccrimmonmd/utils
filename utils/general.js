@@ -582,9 +582,9 @@ const getIter = {
 }
 
 myself.stringConverter = "Like msConverter in the numbers module, but for strings (not yet exported). 95% sure this will never be useful."
-const stringConverter = (thing) => {
+const stringConverter = (thing, depth = null) => {
   if (typeof thing !== 'string') {
-    if (typeof thing === 'object') return util.inspect(thing, {depth: null})
+    if (typeof thing === 'object') return util.inspect(thing, { depth })
     else return `${thing}`
   }
   switch (thing) {
