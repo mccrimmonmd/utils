@@ -605,13 +605,9 @@ const stringConverter = (thing) => {
     case '-Infinity':
       return -Infinity
     default: {
-      // object test
-      if ( /function.*{.*}/.test(thing)
-        || /=>/.test(thing)
-        || /\[.*\]/.test(thing)
-        || /{.*}/.test(thing)
-      ) { // TODO: some kind of JSON test so non-dangerous objects can be parsed
-        console.log(`Warning: I can't let you convert objects, Dave. Returning ${thing} as-is.`)
+      // don't try to parse objects
+      if (/function|=>|\[.*\]|{.*}/.test(thing)) {
+        console.warn(`I can't let you convert objects, Dave. Returning input as-is: ${thing}`)
         return thing
       }
       // integer test
