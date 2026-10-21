@@ -61,13 +61,18 @@ const zip = (arrays, ...padding) => {
   return zipped
 }
 
-// TODO
-const zipIter = function* (iters, ...padding) {
-  // determine stopping criterion
-  // get the first element of every iterable
-  // if necessary, add padding if an iterable is empty
-  // yield the elements as an array
-  // repeat until the criterion is met
+// TODO: document, export
+const zipIter = function* (iterables, ...padding) {
+  const padResults = padding.length !== 0
+  padding = padding[0]
+
+  const iterators = iterables.map(iterable => iterable[Symbol.iterator]())
+  const getNext = () => iterators.map(iter => iter.next())
+  let entries = getNext()
+  while (entries[padResults ? 'some' : 'every'](entry => !entry.done)) {
+    yield entries.map(entry => entry.done ? padding : entry.value))
+    entries = getNext()
+  }
 }
 
 myself.entries = "A generic version of Array.prototype.entries that works with any iterable."
