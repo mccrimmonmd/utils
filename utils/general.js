@@ -158,7 +158,7 @@ const TypeCheckedArray = class extends Array {
 
 myself.indexWrapify = "Takes an array-like object and returns a Proxy that 'wraps around' indicies outside the array's bounds to a valid index. More precisely, the index is taken modulo the array's length, and if the result is negative the array's length is added to it: arr[-1] will return the last element, arr[arr.length] will return the first element, and so on."
 // TODO:
-// const IndexModuloArray = class extends Array {
+// const WrappedBoundsArray = class extends Array {
 //   constructor (...params) {
 //     super(...params)
 //     return indexWrapify(this)
@@ -222,7 +222,7 @@ const isEmpty = (value) => {
   return !value
 }
 
-myself.ensureIterable = "Wraps the given parameter in an array, unless it's already iterable."
+myself.ensureIterable = "Wraps the parameter in an array, unless it's already iterable."
 const ensureIterable = (thing) => isIterable(thing) ? thing : [thing]
 
 myself.ensureArray = "Wraps the parameter in an array and returns it. If the parameter is iterable, it spreads it into the array before returning it. If the parameter is already an array, it is returned as-is. For when you want to avoid making unnecessary copies and/or you're not sure the parameter will be iterable. (If you know the paramater will either be an array OR a non-iterable, and you don't mind making a copy, `[].concat(thing)` is more concise.)"
@@ -233,6 +233,10 @@ const ensureArray = (thing) =>
 
 myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value. NOTE: if the original function is anonymous and recursive, it must be set to the same variable--`someFunc = memoize(someFunc)`--or wrapped in a closure first--`memoized = memoize( (() => someFunc)() )`--to be memoized properly."
 // TODO: fix 'new name must be old name' thing...somehow?
+// ASSUMES that 'func' is an actual function! In particular:
+// - When called with the same arguments, it must return the same result
+// - it may have any number of arguments, as long as it's the *same* number
+//   each time it's called (default arguments might cause problems!)
 const memoize = (func) => {
   const cache = new MultiMap()
   return new Proxy(func, {
@@ -351,10 +355,10 @@ const daysAway = (things, days, from, dateify = op('id')) => {
     }
     let diff = date.diff(from, 'days')
     if (days >= 0) {
-      return diff >= 0 && diff <= days // from ==days_after==>
+      return diff >= 0 && diff <= days // from --days-after-->
     }
     else {
-      return diff < 0 && diff >= days // <==days_before== from
+      return diff < 0 && diff >= days // <--days-before-- from
     }
   })
 }
