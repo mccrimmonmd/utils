@@ -1,4 +1,4 @@
-// TODO: switch to deno, test
+// TODO: switch to deno (deno no more???), test
 // TODO: transition to JSDoc
 // TODO: pull some of these functions out into new submodule "iterable"
 // ("sequences"?)
