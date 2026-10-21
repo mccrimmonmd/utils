@@ -317,9 +317,9 @@ const timeIt = (
     me = this,
   } = {}
 ) => {
-  const start = Date.now()
+  const start = performance.now()
   const result = func.apply(me, params)
-  const time = Date.now() - start
+  const time = performance.now() - start
   if (!silent) console.log(`Time taken: ${time / 1_000} seconds`)
   return {
     result,
