@@ -586,13 +586,18 @@ const getIter = {
   biDiff: compareItersBy('symmetricDifference'),
 }
 
-myself.stringConverter = "Like msConverter in the numbers module, but for strings (not yet exported). 95% sure this will never be useful."
-const stringConverter = (thing, depth = null) => {
-  if (typeof thing !== 'string') {
-    if (typeof thing === 'object') return util.inspect(thing, { depth })
-    else return `${thing}`
+// TODO: document, export
+const convertToString = (thing, depth = null) => {
+  if (typeof thing === 'object') {
+    return util.inspect(thing, { depth })
   }
-  switch (thing) {
+  return String(thing)
+}
+// TODO: export
+myself.convertFromString = "Like msConverter in the numbers module, but for strings (not yet exported). 95% sure this will never be useful."
+const convertFromString = (str) => {
+  if (typeof str !== 'string') return `${str}`
+  switch (str) {
     case '':
       return ''
     case 'null':
