@@ -271,8 +271,8 @@ const MultiMap = class extends Map {
       : this.#rootKey
 
     let hasKey = super.has(first)
-    let oldValue = super.get(first)
     if (singleArgument || noArgument) {
+      let oldValue = super.get(first)
       if (mutating) super.set(first, value)
       return { hasKey, value: oldValue }
     }
