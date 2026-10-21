@@ -55,11 +55,7 @@ const zip = (arrays, ...padding) => {
     .map(array => array.length)
     .reduce(padResults ? max : min)
   for (const i of range(zippedLen)) {
-    let group = []
-    for (const array of arrays) {
-      let val = i < array.length ? array[i] : padding
-      group.push(val)
-    }
+    let group = arrays.map(array => i < array.length ? array[i] : padding)
     zipped.push(group)
   }
   return zipped
