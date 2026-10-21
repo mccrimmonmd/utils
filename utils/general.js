@@ -610,46 +610,56 @@ const stringConverter = (thing, depth = null) => {
     case '-Infinity':
       return -Infinity
     default: {
-      // don't try to parse objects
-      if (/function|=>|\[.*\]|{.*}/.test(thing)) {
-        console.warn(`I can't let you convert objects, Dave. Returning input as-is: ${thing}`)
-        return thing
+      // don't try to parse objects (unsafe)
+      if (/function|=>|\[.*\]|{.*}/.test(str)) {
+        console.warn(`I can't let you convert objects, Dave. Returning input as-is: ${str}`)
+        return str
       }
       // integer test
-      if (/^[+-]?\d+n?$/.test(thing)) {
-        const smallInt = Number(thing)
+      if (/^[+-]?\d+n?$/.test(str)) {
+        const smallInt = Number(str)
         return (
-          thing.endsWith('n')
+          str.endsWith('n')
+            || !Number.isInteger(smallInt)
             || smallInt > Number.MAX_SAFE_INTEGER
             || smallInt < Number.MIN_SAFE_INTEGER 
-            || !Number.isInteger(smallInt)
         ) ?
-            BigInt(thing)
+            BigInt(str)
           : smallInt
       }
       // float test
-      if (/^[+-]?(?:\d*\.?\d+)|(?:\d+\.\d*)(?:e[+-]?\d+)?$/.test(thing)) {
-        return Number.parseFloat(thing)
+      if (multilineRegex(
+        /^[+-]?/, // sign
+        /(?:\.?\d+|\d+\.\d*)/, // digits
+        /(?:e[+-]?\d+)?$/, // in sci. notation?
+      ).test(str)) {
+        return Number.parseFloat(str)
       }
     }
   }
-  console.log(`Warning: could not infer type of string ${thing}; returning as-is.`)
-  return thing
+  console.log(`Warning: could not infer type of input string; returning as-is: ${str}`)
+  return str
 }
 
 myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be commented)."
-// Source: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
-const multilineRegex = (parts, flags = '') =>
-  new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
+// <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
+const multilineRegex = (...parts) => {
+  let flags = ''
+  if (Array.isArray(parts[0])) {
+    flags = parts[1]
+    parts = parts[0]
+  }
+  return new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
+}
 
 myself.fetchAll = "A convenience function for working with paginated APIs."
-const fetchAll = async (uri, getNext = (json) => json.links.next) => {
+const fetchAll = async (uri, getNext, getData = (json) => json.data) => {
   const allData = []
   let next = uri
   while (next != null) {
     const result = await fetch(next)
     const json = await result.json()
-    allData.push(...json.data)
+    allData.push(...getData(json))
     next = getNext(json)
   }
   return allData
