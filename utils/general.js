@@ -217,7 +217,7 @@ const isEmpty = (value) => {
     for (const _ of value) return false
     return true
   }
-  if (typeof value === 'object' && Object.keys(value).length === 0) return true
+  if (typeof value === 'object') return Object.keys(value).length === 0
   // TODO: anything else to test?
   return !value
 }
