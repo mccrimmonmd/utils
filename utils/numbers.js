@@ -102,12 +102,12 @@ const stdDeviation = (values, isSample = true) => {
   return Math.sqrt(variance)
 }
 
-myself.timeConverter = "Converts between different units of time (default: converts to ms)."
+myself.timeConverter = "Converts between different units of time. By default, it converts from ms to the smallest unit that gives a result < 100, or the largest supported unit if none do."
 const timeConverter = (
   time,
-  fromUnits,
+  fromUnits = 'ms',
   {
-    toUnits = 'ms',
+    toUnits,
     verbose = false,
   } = {}
 ) => {
@@ -121,6 +121,13 @@ const timeConverter = (
   }
   const unitNames = Object.keys(allUnits)
 
+  const log = (result, to = toUnits) => {
+    if (verbose) {
+      console.log(`timeConverter: ${time} ${fromUnits} -> ${result} ${to}`)
+    }
+    return result
+  }
+
   const codifyUnits = (rawUnits) => {
     let units = rawUnits.toLowerCase()
     if (!units.endsWith('s')) units += 's'
@@ -130,15 +137,16 @@ const timeConverter = (
     }
     return units
   }
-  fromUnits = codifyUnits(fromUnits)
-  toUnits = codifyUnits(toUnits)
 
-  const log = (result) => {
-    if (verbose) {
-      console.log(`timeConverter: ${time} ${fromUnits} -> ${result} ${toUnits}`)
+  fromUnits = codifyUnits(fromUnits)
+  if (toUnits == null) {
+    verbose = true
+    for (const unit of unitNames) {
+      const result = timeConverter(time, fromUnits, { toUnits: unit, verbose: false })
+      if (result < 100 || unit === unitNames.at(-1)) return log(result, unit)
     }
-    return result 
   }
+  toUnits = codifyUnits(toUnits)
 
   const fIndex = unitNames.indexOf(fromUnits)
   const tIndex = unitNames.indexOf(toUnits)
