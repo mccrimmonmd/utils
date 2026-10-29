@@ -99,7 +99,6 @@ const statsInit = (value) => {
 }
 
 module.exports = {
-  // docs: () => print(myself), 
   aboutMe: () => myself.aboutMe,
   allAboutMe: () => myself,
   flatten,

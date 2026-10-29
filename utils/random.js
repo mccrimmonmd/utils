@@ -41,22 +41,8 @@ const shuffle = (arr) => {
 
 myself.shuffled = "Returns a shuffled copy of the given array."
 const shuffled = (arr) => shuffle([...arr])
-// Alternate implementation - slower, but more intuitive
-// (also works on sparse arrays)
-//   let oldDeck = arr
-//   let pickACard = Object.keys(oldDeck)
-//   let newDeck = []
-//   while (pickACard.length) {
-//     let anyCard = randInt(pickACard.length)
-//     let pick = pickACard[anyCard]
-//     newDeck.push(oldDeck[pick])
-//     pickACard.splice(anyCard, 1)
-//   }
-//   return newDeck
-// }
 
 module.exports = {
-  // docs: () => print(myself),
   aboutMe: () => myself.aboutMe,
   allAboutMe: () => myself,
   coinFlip,

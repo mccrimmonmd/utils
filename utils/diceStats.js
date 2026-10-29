@@ -163,7 +163,6 @@ const runStatsTest = (
 // runStatsTest({ verbose: true })
 
 module.exports = {
-  // docs: () => print(myself),
   aboutMe: () => myself.aboutMe,
   allAboutMe: () => myself,
   rollDie,

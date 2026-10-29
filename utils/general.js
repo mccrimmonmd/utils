@@ -670,11 +670,7 @@ const fetchAll = async (uri, getNext, getData = (json) => json.data) => {
   return allData
 }
 
-// TODO: new array/iterable submodule 'iters'
-// array object { swap, last, etc. } *and* iterable submodule?
-// also include getSorter
 module.exports = {
-  // docs: () => print(myself),
   aboutMe: () => myself.aboutMe,
   allAboutMe: () => myself,
   backToWork,
@@ -714,11 +710,3 @@ module.exports = {
   fetchAll,
 } // = require('./general')
 
-// for organization? (future):
-// module.exports = {
-  // ...textStuff,
-  // ...someOtherGroupOfStuffNotBigEnoughToBeAModule,
-  // other,
-  // miscellaneous,
-  // functions,
-// }

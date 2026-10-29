@@ -66,7 +66,6 @@ const animate = (sequence, defaultDelay = 1000) => {
 }
 
 module.exports = {
-  // docs: () => print(myself),
   aboutMe: () => myself.aboutMe,
   allAboutMe: () => myself,
   draw,

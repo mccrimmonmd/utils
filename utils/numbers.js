@@ -196,7 +196,6 @@ const epochToDuration = (dateString) =>
   Date.parse(dateString.replace(' ', 'T'))
 
 module.exports = {
-  // docs: () => print(myself),
   aboutMe: () => myself.aboutMe,
   allAboutMe: () => myself,
   sieve,

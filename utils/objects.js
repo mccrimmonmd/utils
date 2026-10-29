@@ -5,7 +5,6 @@ const myself = {
   aboutMe: "Functions for working with objects, especially JSON."
 }
 const {
-  print,
   isEmpty,
   isIterable,
   getSorter,
@@ -228,7 +227,6 @@ const excludeOpts = { includeOnMatch: false }
 const excludeValOpts = { filterOn: 'values', includeOnMatch: false }
 
 module.exports = {
-  // docs: () => print(myself),
   aboutMe: () => myself.aboutMe,
   allAboutMe: () => myself,
   merge,
