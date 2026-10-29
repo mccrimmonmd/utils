@@ -15,6 +15,7 @@ const parityError = (opType, n = 2) => opFuncs.err(
 
 const opFuncs = {
   aboutMe: myself.aboutMe,
+  allAboutMe: (function () { return Object.keys(this) })()
 
   // non-chaining operators //
 
@@ -68,7 +69,7 @@ const opFuncs = {
     return result
   },
 
-  // chaining operators //
+  // chaining operators (numeric) //
 
   add: (...params) => params.reduce(sum, 0),
   sub: (...params) => {
@@ -88,8 +89,8 @@ const opFuncs = {
 
   pow: (...params) => params.reduce((a, b) => a ** b),
 
-  // logical operators (all short-circuiting) //
-  // (actually not short-circuiting, since parameters are evaluated at call time?)
+  // chaining operators (logical) (short-circuiting) //
+  // (actually not short-circuiting? since parameters are evaluated at call time?)
 
   // 'choose' does not short-circuit by default, but it's easy to implement:
   // just pass functions and call the result 👇

@@ -61,7 +61,7 @@ const zip = (arrays, ...padding) => {
   return zipped
 }
 
-// TODO: document, export
+myself.zipIter = "Same as zip, but accepts a list of any iterables as input and returns a generator instead of an Array."
 const zipIter = function* (iterables, ...padding) {
   const padResults = padding.length !== 0
   padding = padding[0]
@@ -199,15 +199,15 @@ const isEmpty = (value) => {
   if (['boolean', 'number', 'bigint'].includes(typeof value)) return false
   if (typeof value === 'function') {
     // this will probably never be useful, but it was a fun regex exercise
-    const arrowRegex = multilineRegex([
-      /^\(\)=>({;*)?/,               // () => [ { [ ; ] ]
-      /(return)?(undefined)?;*}?$/   // [ return ][ undefined ][ ; ][ } ]
-    ])
-    const funcRegex = multilineRegex([
-      /^function([\w]*)\(\){/,       // function [ name ] () {
-      /;*(return(undefined)?;*)?/,   // [ ; ][ return [ undefined ][ ; ] ]
-      /}$/                           // }
-    ])
+    const arrowRegex = multilineRegex( // regex parts paraphrased below:
+      /^\(\)=>(?:{;*)?/,               // () => { ;*
+      /(?:return)?(?:undefined)?;*}?$/ // return? undefined? ;* }
+    )
+    const funcRegex = multilineRegex(
+      /^function(?:\*?[\w]*)\(\){/,    // function *? name? () {
+      /;*(?:return(?:undefined)?;*)?/, // ;* return? undefined? ;*
+      /}$/                             // }
+    )
     const valueString = value.toString().replaceAll(/\s/g, '')
     return arrowRegex.test(valueString) || funcRegex.test(valueString)
   }
@@ -235,7 +235,7 @@ myself.memoize = "Wraps a (possibly expensive) function in a closure that memoiz
 // TODO: fix 'new name must be old name' thing...somehow?
 // ASSUMES that 'func' is an actual function! In particular:
 // - When called with the same arguments, it must return the same result
-// - it may have any number of arguments, as long as it's the *same* number
+// - It may have any number of arguments, as long as it's the *same* number
 //   each time it's called (default arguments might cause problems!)
 const memoize = (func) => {
   const cache = new MultiMap()
@@ -448,6 +448,7 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
     if (aType === 'bigint') return [ a, b ]
     if (aType === 'number') {
       if (isNaN(a) || isNaN(b)) {
+      // TODO: I don't think this will work, actually
         if (!isNaN(a)) return [ 'NaN', a ]
         if (!isNaN(b)) return [ 'NaN', b ]
         return [ 'NaN', 'NaN' ]
@@ -647,7 +648,7 @@ const convertFromString = (str) => {
 }
 
 myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be commented)."
-// <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
+// Derived from: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
 const multilineRegex = (...parts) => {
   let flags = ''
   if (Array.isArray(parts[0])) {
@@ -677,6 +678,7 @@ module.exports = {
   len, // seq
   range, // seq (re-export)
   zip, // seq
+  zipIter, // seq
   entries, // seq
   print,
   printFn,

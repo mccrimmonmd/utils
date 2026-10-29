@@ -1,11 +1,12 @@
 const myself = {
-  aboutMe: "Functions for working with numbers, especially lists of numbers."
+  aboutMe: "Functions for working with numbers and sequences of numbers."
 }
 const { print, len, arrayify, range } = require('./general')
 const { sum, product, diffsCalculator } = require('./reducers')
 const op = require('./operators')
 
 myself.Complex = "Complex numbers. Why not??"
+// TODO: make immutable
 const Complex = class {
   constructor(...params) {
     if (params.length === 1 && typeof params[0] === 'object') {
@@ -42,7 +43,8 @@ const Complex = class {
 }
 
 myself.sieve = "Sieve of Eratosthenes. Just for funsies."
-const sieve = (n) => {
+// TODO: add (partially-)precalculated Array/Set parameter
+const sieve = (n, /* precalc = [false, false, true] <-like-a-dis */) => {
   n = Math.abs(n)
   const numbers = Array(n + 1).fill(true)
   numbers[0] = false
@@ -67,7 +69,7 @@ const isPrime = (n) => sieve(n).has(n)
 myself.isNum = "Checks the type of the given value against both 'number' and 'bigint'"
 const isNum = (thing) => ['number', 'bigint'].includes(typeof thing)
 
-myself.isInt = "Checks if the given value is an integer (bigint OR number)."
+myself.isInt = "Checks if the given value is an integer (BigInt OR Number)."
 const isInt = (thing) => typeof thing === 'bigint' || Number.isInteger(thing)
 
 myself.roundDecimal = "Rounds (towards zero) to a given number of decimal places."
@@ -152,7 +154,7 @@ const timeConverter = (
   return log(factored)
 }
 
-myself.niceNumber = "Makes numbers a bit nicer to read by appending their (short-XXXX) names, but reduces precision in the process."
+myself.niceNumber = "Makes numbers a bit nicer to read by appending their short-form names (but reduces precision)."
 const niceNumber = (num) => {
   const postfixes =
     [
@@ -167,8 +169,10 @@ const niceNumber = (num) => {
   return roundDecimal(num) + postfixes[factor]
 }
 
-myself.fromBase = "Computes the decimal equivalent of some other number, given as a radix (base) and two arrays of Numbers representing the digits of the characteristic and mantissa (a.k.a. the digits before and after the decimal point). For example, 0xFF80 would be `fromBase(16, [15, 15, 8, 0])`. Supports negative and even fractional bases--for example, twelve and a half in base minus-ten is `193.5`, while the same in base Pi is approximately `102.13002112001101...`"
-// TODO: support complex radixes, somehow
+myself.fromBase = "Computes the decimal equivalent of some other number, given as a radix (base) and two arrays of nonnegative integers representing the digits of the characteristic and mantissa (a.k.a. the digits before and after the decimal point). For example, 0xFF80 would be `fromBase(16, [15, 15, 8, 0])` (which correctly returns 65408). Supports negative and even fractional bases--for example, `fromBase(-10, [1, 9, 3], [5])` reveals that twelve and a half in base minus-ten is 193.5, while the same in base Pi is approximately 102.13002112001101..."
+// TODO: support complex radixes, somehow?
+// TODO: implement inverse function that translates a decimal number into
+// an arbitrary-base representation (to some finite precision)
 const fromBase = (radix, intDigits = [], mantissa = []) => {
   let result = 0
   // use BigInts if possible
@@ -191,6 +195,7 @@ const fromBase = (radix, intDigits = [], mantissa = []) => {
   return result
 }
 
+// TODO: test, export
 myself.epochToDuration = "Recently encountered an API that mistakenly interpreted durations (number of milliseconds) as timestamps. This function is a wrapper for Date.parse, translating those mistaken dates back into ms."
 const epochToDuration = (dateString) =>
   Date.parse(dateString.replace(' ', 'T'))

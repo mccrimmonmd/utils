@@ -68,7 +68,7 @@ const allValues = (listOfObjects, field) => {
 
 myself.allKeys = "Returns an array of every unique key among the objects provided. Takes an optional regular expression to filter the results."
 const allKeys = (listOfObjects, regex = /(?:)/) => {
-  // The empty regex /(?:)/ matches any string
+  // The empty regex `/(?:)/` matches any string
   const uniqueKeys = new Set(listOfObjects.flatMap(Object.keys))
   return [...uniqueKeys.values().filter(key => regex.test(key))]
 }
@@ -125,7 +125,7 @@ const compareBoth   = compareBy('intersection')
 const compareEither = compareBy('union')
 const compareXor    = compareBy('biDiff')
 
-myself.extractNested = "Flattens (by one) the given object, returning the flattened values and, separately, any remaining nested values."
+myself.extractNested = "Separates the given object's contents into 'flat' primitives and nested objects (including Arrays, but not including null)."
 const extractNested = (obj) => {
   let flat = {}
   let nested = {}
@@ -186,12 +186,12 @@ const toCsv = (
   return output
 }
 
-myself.count = "Calculates the total of a list of objects. The number each object represents is determined by the given function (default Number())."
-const count = (listOfObjects, getValue = (obj) => Number(obj)) =>
+myself.count = "Calculates the total of a list of objects. The number each object represents is determined by the given function (default: Number())."
+const count = (listOfObjects, getValue = Number) =>
   listOfObjects.map(getValue).reduce(sum, 0)
 
 myself.multiply = "Same as count, but with multiplication instead of addition."
-const multiply = (listOfObjects, getValue = (obj) => Number(obj)) =>
+const multiply = (listOfObjects, getValue = Number) =>
   listOfObjects.map(getValue).reduce(product, 1)
 
 myself.remap = "Array.prototype.map, generalized for other iterable and non-iterable objects."

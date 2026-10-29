@@ -1,8 +1,8 @@
 const myself = {
-  aboutMe: "Functions intended as the callback to Array.prototype.reduce."
+  aboutMe: "Functions to be provided as the callback to Array.prototype.reduce."
 }
 
-myself.flatten = "Concatenates two items that may or may not be arrays, using push instead of concat for speed. You should probably just use Array.prototype.flat instead."
+myself.flatten = "Concatenates two items that may or may not be Arrays, using push instead of concat for speed. (You should probably just use Array.prototype.flat instead.)"
 const flatten = (flattened, bump, i) => {
   if (!Array.isArray(flattened)) flattened = [flattened]
   else if (i === 1) {
@@ -58,7 +58,7 @@ const max = (a, b) => Math.max(a, b)
 myself.min = "See documentation for 'max'"
 const min = (a, b) => Math.min(a, b)
 
-myself.stats = "Calculates min, max, total, and count. Can be used in one pass with a single array, or in a loop to accumulate statistics incrementally."
+myself.stats = "Calculates min, max, total, and count. Can be used in one pass with a single array, or in a loop to accumulate statistics incrementally (see source for examples)."
 const stats = (totalStats, value) => {
   // initial value when collecting stats from multiple arrays
   if (totalStats == null) {
@@ -76,20 +76,21 @@ const stats = (totalStats, value) => {
     count: count + 1,
   }
 }
-;`
-statsInit: Helper function for 'stats' that allows it to be used incrementally:
 
-  let consolidatedStats
-  while (collectingData) {
-    let newData = collectMoreData()
-    consolidatedStats = newData.reduce(stats, consolidatedStats)
-  }
-
-or in a single pass:
-
-  let consolidatedStats = allTheRawData.reduce(stats)
-;`
 const statsInit = (value) => {
+  ;`
+  Helper function for 'stats' that allows it to be used incrementally:
+
+      let consolidatedStats
+      while (collectingData) {
+        let newData = collectMoreData()
+        consolidatedStats = newData.reduce(stats, consolidatedStats)
+      }
+
+  or in a single pass:
+
+      const consolidatedStats = allTheRawData.reduce(stats)
+  ;`
   return {
     max: value,
     min: value,

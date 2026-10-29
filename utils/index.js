@@ -9,7 +9,7 @@ const myself = {
 const moduleNames = [
   "diceStats",
   "drawing",
-  // "iterable",
+  // "sequences",
   "numbers",
   "objects",
   "random",
