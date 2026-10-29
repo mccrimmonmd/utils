@@ -13,6 +13,9 @@ const { max, min, flatten } = require('./reducers')
 // const { ... } = require('./sequences') // for re-export
 // alternatively, make 'common' module for top-level and rename 'general'
 // (to...? 'development'? 'meta'? 'misc'?)
+// alternate alternatively, move functions used by many other modules to
+// private 'essential/noDeps' module (to avoid import cycles), re-export
+// those functions to toplevel/wherever needed
 
 const backToWork = require('./BACK TO WORK')
 myself.backToWork = backToWork
