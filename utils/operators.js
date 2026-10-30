@@ -51,7 +51,7 @@ const compare = (type, params) => {
 
 const opFuncs = {
   aboutMe: myself.aboutMe,
-  allAboutMe: (function () { return Object.keys(this) })()
+  allAboutMe: (function () { return Object.keys(this) })(),
 
   // non-chaining operators //
 
