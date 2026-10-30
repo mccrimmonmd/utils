@@ -71,10 +71,10 @@ const zipIter = function* (iterables, ...padding) {
 
   const iterators = iterables.map(iterable => iterable[Symbol.iterator]())
   const getNext = () => iterators.map(iter => iter.next())
-  let entries = getNext()
-  while (entries[padResults ? 'some' : 'every'](entry => !entry.done)) {
-    yield entries.map(entry => entry.done ? padding : entry.value))
-    entries = getNext()
+  let results = getNext()
+  while (results[padResults ? 'some' : 'every'](result => !result.done)) {
+    yield results.map(result => result.done ? padding : result.value)
+    results = getNext()
   }
 }
 
