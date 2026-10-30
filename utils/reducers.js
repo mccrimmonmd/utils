@@ -29,7 +29,7 @@ const boolReduce = (func, type) => {
     throw new TypeError(`'type' should be one of 'and' or 'or'; got ${type}`)
   }
   const afterFirstIter = Symbol()
-  return (params, b, i, obj) => {
+  return (params, b, i, arr) => {
     let { bool, a } =
       params[afterFirstIter] ? params : { bool: type === 'and', a: params }
     const shouldShortCircuit = type === 'or' === bool
@@ -37,7 +37,7 @@ const boolReduce = (func, type) => {
       bool = func(a, b)
       a = b
     }
-    if (i === obj.length - 1) return bool // final iteration
+    if (i === arr.length - 1) return bool // final iteration
     else return { [afterFirstIter]: true, bool, a }
   }
 }
