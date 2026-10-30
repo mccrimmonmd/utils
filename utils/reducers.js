@@ -4,14 +4,13 @@ const myself = {
 
 myself.flatten = "Concatenates two items that may or may not be Arrays, using push instead of concat for speed. (You should probably just use Array.prototype.flat instead.)"
 const flatten = (flattened, bump, i) => {
-  if (!Array.isArray(flattened)) flattened = [flattened]
-  else if (i === 1) {
-    // If we're not given an initial value, 'flattened' will be an element of
-    // the array being reduced, which we want to avoid mutating, but if we copy
-    // on every iteration we lose the speedup gained from using push. We take
-    // the first iteration to be i === 1, not 0, because i only equals 0 when
-    // an initial value *is* provided.
-    flattened = [...flattened]
+  if (i === 1) {
+    // If the first value was not user-provided, we should either wrap it in
+    // an Array if it isn't one, or copy it if it is (to avoid mutating the
+    // Array being flattened). The first iteration is taken to be i === 1,
+    // not 0, because i only equals 0 when an initial value *is* provided.
+    if (Array.isArray(flattened)) flattened = [...flattened]
+    else flattened = [flattened]
   }
   if (Array.isArray(bump)) flattened.push(...bump)
   else flattened.push(bump)
