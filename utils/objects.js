@@ -198,8 +198,10 @@ myself.remap = "Array.prototype.map, generalized for other iterable and non-iter
 const remap = (obj, mapper) => {
   if (isIterable(obj)) return [...obj].map(mapper)
   const remapped = {}
+  let i = 0
   for (const key of Object.keys(obj)) {
-    remapped[key] = mapper(obj[key])
+    remapped[key] = mapper(obj[key], i, obj)
+    i += 1
   }
   return remapped
 }
