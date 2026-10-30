@@ -182,25 +182,28 @@ myself.fromBase = "Computes the decimal equivalent of some other number, given a
 // TODO: implement inverse function that translates a decimal number into
 // an arbitrary-base representation (to some finite precision)
 const fromBase = (radix, intDigits = [], mantissa = []) => {
-  let result = 0
-  // use BigInts if possible
-  if (mantissa.length === 0 && isInt(radix)) {
-    result = 0n
-    radix = BigInt(radix)
-    intDigits = intDigits.map(digit => BigInt(digit))
-  }
   const absBase = Math.abs(radix)
+  let result = 0
   for (const [i, digit] of intDigits.reverse().entries()) {
-    if (typeof radix === 'bigint') i = BigInt(i)
     if (digit >= absBase) console.warn(`${digit} is supposed to be less than ${absBase}, dummy`)
     result += digit * (radix ** i)
   }
   for (const [i, digit] of [0].concat(mantissa).entries()) {
-    if (typeof radix === 'bigint') i = BigInt(i)
     if (digit >= absBase) console.warn(`${digit} is supposed to be less than ${absBase}, dummy`)
     result += digit * (radix ** -i)
   }
   return result
+}
+
+myself.fromBaseBigInt = "fromBase, but uses BigInts."
+const fromBaseBigInt = (radix, intDigits = []) => {
+  const absBase = absolute(radix)
+  let result = 0n
+  for (const [i, digit] of intDigits.reverse().entries()) {
+    i = BigInt(i)
+    if (digit >= absBase) console.warn(`${digit} is supposed to be less than ${absBase}, dummy`)
+    result += digit * (radix ** i)
+  }
 }
 
 // TODO: test, export
@@ -223,4 +226,5 @@ module.exports = {
   timeConverter,
   niceNumber,
   fromBase,
+  fromBaseBigInt,
 }
