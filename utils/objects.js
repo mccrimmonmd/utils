@@ -13,18 +13,14 @@ const {
 const { sum, product } = require('./reducers')
 
 myself.merge = "Merges a secondary or 'fallback' object into a primary or 'reference' object. Returns a new object that matches the primary, plus all non-empty values from the secondary that are empty in the primary. Uses general.isEmpty to determine what counts as empty."
-const merge = (
-  primary, secondary,
-  {
-    alwaysEmpty = ['undefined', 'null'],
-    neverEmpty = [0],
-  } = {}
-) => {
+const merge = (primary, secondary) => {
+  const empty = (thing) => (
+    ['undefined', 'null'].contains(thing) || isEmpty(thing)
+  )
   if (primary == null || secondary == null) return primary ?? secondary
   let merged = { ...primary }
-  let options = [alwaysEmpty, neverEmpty]
   for (const [key, val] of Object.entries(secondary)) {
-    if (isEmpty(merged[key], ...options) && !isEmpty(val, ...options)) {
+    if (empty(merged[key]) && !empty(val)) {
       merged[key] = val
     }
   }
