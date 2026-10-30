@@ -114,15 +114,18 @@ const timeConverter = (
     years: 365.25,
   }
   const unitNames = Object.keys(allUnits)
+  fromUnits = codifyUnits(fromUnits)
+  toUnits = codifyUnits(toUnits)
 
-  const log = (result, to = toUnits) => {
-    if (verbose) {
+  const log = (result, to = toUnits, v = verbose) => {
+    if (v) {
       console.log(`timeConverter: ${time} ${fromUnits} -> ${result} ${to}`)
     }
     return result
   }
 
   const codifyUnits = (rawUnits) => {
+    if (rawUnits == null) return rawUnits
     let units = rawUnits.toLowerCase()
     if (!units.endsWith('s')) units += 's'
     if (units === 'milliseconds') units = 'ms'
@@ -132,17 +135,14 @@ const timeConverter = (
     return units
   }
 
-  fromUnits = codifyUnits(fromUnits)
   if (toUnits == null) {
-    verbose = true
     for (const unit of unitNames) {
       const result = timeConverter(time, fromUnits, { toUnits: unit, verbose: false })
       if (result < 100 || unit === unitNames.at(-1)) {
-        return log(result, unit)
+        return log(result, unit, true)
       }
     }
   }
-  toUnits = codifyUnits(toUnits)
 
   const fIndex = unitNames.indexOf(fromUnits)
   const tIndex = unitNames.indexOf(toUnits)
