@@ -39,6 +39,12 @@ myself.andReduce = "Same as orReduce, except it returns true iff the function re
 const andReduce = (things, func, ...initialValue) =>
   !orReduce(things, (a, b) => !func(a, b), ...initialValue)
 
+myself.anyDefault = "`Un petit` helper function for when you have a parameter that (1) could be *anything* (including undefined, null, false, empty strings and arrays, etc.), AND (2) it's optional, AND (3) you need to know whether a value was provided. One of the most common uses for this function is when you don't use the option unless it's provided, so you don't have to provide an explicit default--but if you do, it will use it. Use like so: `(some, parameters, ...withOption) => { const [ wasProvided, theResult ] = anyDefault(withOption, 42); ...`"
+const anyDefault = (param, deef) => {
+  const wasProvided = param.length > 0
+  return [ wasProvided, wasProvided ? param[0] : deef ]
+}
+
 myself.diffsCalculator = "Intended as a helper function for numbers.stdDeviation, but can also be used by itself. The function it returns is the callback for Array.prototype.reduce."
 const diffsCalculator = (mean) => 
   (diffs, value) => diffs.concat((value - mean) ** 2)
@@ -106,6 +112,7 @@ module.exports = {
   orReduce,
   andReduce,
   diffsCalculator,
+  anyDefault,
   sum,
   product,
   average,
