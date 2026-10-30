@@ -38,6 +38,21 @@ myself.andReduce = "Same as orReduce, except it returns true iff the function re
 const andReduce = (things, func, ...initialValue) =>
   !orReduce(things, (a, b) => !func(a, b), ...initialValue)
 
+myself.iterReducer = "A function for reducing an iterable without having to convert it to an Array first. (In preparation of orReduce/andReduce refactor.)"
+const iterReducer = (iter, func, ...initialValue) => {
+  const [ hasInitial, initial ] = anyDefault(initialValue)
+  let reduced = initial
+  let i = 0
+  for (const item of iter) { // TODO: use generic 'entries' function
+    reduced =
+      i === 0 ?
+        hasInitial ? func(initial, item, i, iter) : item
+      : func(reduced, item, i, iter)
+    i += 1
+  }
+  return reduced
+}
+
 myself.anyDefault = "`Un petit` helper function for when you have a parameter that (1) could be *anything* (including undefined, null, false, empty strings and arrays, etc.), AND (2) it's optional, AND (3) you need to know whether a value was provided. One of the most common uses for this function is when you don't use the option unless it's provided, so you don't have to provide an explicit default--but if you do, it will use it. Use like so: `(some, parameters, ...withOption) => { const [ wasProvided, theResult ] = anyDefault(withOption, 42); ...`"
 const anyDefault = (param, deef) => {
   const wasProvided = param.length > 0
@@ -110,6 +125,7 @@ module.exports = {
   flatten,
   orReduce,
   andReduce,
+  iterReducer,
   diffsCalculator,
   anyDefault,
   sum,
