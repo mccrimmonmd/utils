@@ -2,7 +2,7 @@ const myself = {
   aboutMe: "Functional equivalents of JavaScript's native operators."
 }
 const { pluralize } = require('./general')
-const { orReduce, andReduce, sum, product } = require('./reducers')
+const { orReduce, andReduce, iterReducer, sum, product } = require('./reducers')
 
 const op = (opType) => opFuncs[opType] ?? opFuncs.err(
   `Unsupported or invalid operator '${opType}'`,
@@ -119,17 +119,11 @@ const opFuncs = {
     return andReduce(params, (a, b) => a === b, params[0])
   },
 
-  any: (paramIter, test = (a) => !!a) => orReduce(
-    paramIter,
-    (_, thing) => test(thing),
-    null
-  ),
 
-  all: (paramIter, test = (a) => !!a) => andReduce(
-    paramIter,
-    (_, thing) => test(thing),
-    null
-  ),
+  any: (iter, test = (a) => !!a) =>
+    iterReducer(iter, (soFar, thing) => soFar || test(thing), false),
+  all: (iter, test = (a) => !!a) =>
+    iterReducer(iter, (soFar, thing) => soFar && test(thing), true),
 }
 
 module.exports = op
