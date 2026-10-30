@@ -67,11 +67,11 @@ const allKeys = (listOfObjects, regex = /(?:)/) => {
 }
 
 myself.filter = {
-  object: "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a single value to match, an iterable of possible matches, or a regular expression."
+  object: "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a single value to match, a function that returns a boolean, an iterable of possible matches, or a regular expression. By default, it filters out falsy keys."
 }
 const filterObject = (
   obj,
-  filter,
+  filter = (value) => !!value,
   {
     filterOn = 'keys',
     includeOnMatch = true,
@@ -79,18 +79,23 @@ const filterObject = (
 ) => {
   if (obj == null) return obj
   let passesFilter
-  if (isIterable(filter)) {
-    filter = new Set(filter)
-    passesFilter = (value) => filter.has(value) === includeOnMatch
+  if (typeof filter === 'function') {
+    passesFilter = (value) => filter(value) === includeOnMatch
   }
   else if (filter instanceof RegExp) {
     passesFilter = (value) => filter.test(value) === includeOnMatch
   }
+  else if (isIterable(filter)) {
+    filter = new Set(filter)
+    passesFilter = (value) => filter.has(value) === includeOnMatch
+  }
   else {
+    ;`
     if (filter === undefined) {
       console.warn("filter is 'undefined'; this is likely unintentional")
       console.warn("pass a value, iterable, or regex to match against as the second parameter")
     }
+    ;`
     passesFilter = (value) => (value === filter) === includeOnMatch
   }
   const filtered = Object.entries(obj).filter(
