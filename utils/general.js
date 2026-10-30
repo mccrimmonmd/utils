@@ -159,14 +159,14 @@ const TypeCheckedArray = class extends Array {
   }
 }
 
-myself.indexWrapify = "Takes an array-like object and returns a Proxy that 'wraps around' indicies outside the array's bounds to a valid index. More precisely, the index is taken modulo the array's length, and if the result is negative the array's length is added to it: arr[-1] will return the last element, arr[arr.length] will return the first element, and so on."
-// TODO:
-// const WrappedBoundsArray = class extends Array {
-//   constructor (...params) {
-//     super(...params)
-//     return indexWrapify(this)
-//   }
-// }
+myself.WrappedBoundsArray = "A subclass of Array that 'wraps around' indicies outside its bounds. More precisely, the index is taken modulo the array's length, and if the result is negative the array's length is added to it: `arr[-1]` will return the last element, `arr[arr.length]` will return the first element, and so on."
+const WrappedBoundsArray = class extends Array {
+  constructor (...params) {
+    super(...params)
+    return indexWrapify(this)
+  }
+}
+"A helper function for WrappedBoundsArray. I considered exporting it, but it seems more idiomatic to just do something like `const wrappedArray = new WrappedBoundsArray(...arrayIWantToWrap)` instead. I should probably integrate it into the object's constructor at some point."
 const indexWrapify = (obj) => {
   const wrapIndex = (arr, prop) => {
     if (['number', 'bigint', 'string'].includes(typeof prop)) {
@@ -689,8 +689,8 @@ module.exports = {
   printVars,
   pluralize,
   ifFunc,
-  TypeCheckedArray,
-  indexWrapify, // seq
+  TypeCheckedArray, // seq
+  WrappedBoundsArray, // seq
   isTruthy,
   isIterable,
   isEmpty,
