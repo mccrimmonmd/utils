@@ -49,9 +49,7 @@ const recombine = (
     const groupKey = keyGetter(obj)
     const group = allGroups[groupKey] ?? {}
     for (const [key, val] of Object.entries(obj)) {
-      if (val === groupKey && !preserveIds) {
-        continue
-      }
+      if (val === groupKey && !preserveIds) continue
       let bucket = group[key] ?? []
       if (showDuplicates || !bucket.includes(val)) bucket.push(val)
       group[key] = bucket
@@ -62,9 +60,8 @@ const recombine = (
 }
 
 myself.allValues = "Returns an array of every unique value set to the given key among the provided list of objects."
-const allValues = (listOfObjects, field) => {
-  return [ ...new Set(listOfObjects.map(obj => obj[field])) ]
-}
+const allValues = (listOfObjects, field) =>
+  [ ...new Set(listOfObjects.map(obj => obj[field])) ]
 
 myself.allKeys = "Returns an array of every unique key among the objects provided. Takes an optional regular expression to filter the results."
 const allKeys = (listOfObjects, regex = /(?:)/) => {
@@ -95,7 +92,7 @@ const filterObject = (
   }
   else {
     if (filter === undefined) {
-      console.warn("filter is 'undefined'; this may be unintentional")
+      console.warn("filter is 'undefined'; this is likely unintentional")
       console.warn("pass a value, iterable, or regex to match against as the second parameter")
     }
     passesFilter = (value) => (value === filter) === includeOnMatch
@@ -154,9 +151,9 @@ const toCsv = (
     sortHeader = false
   } = {}
 ) => {
-  const makeLine = (header, obj = null) => {
-    return header.map(key => escapeCsvEntry(obj ? obj[key] : key)).join(',')
-  }
+  const makeLine = (header, obj = null) =>
+    header.map(key => escapeCsvEntry(obj ? obj[key] : key)).join(',')
+  
   let header = []
   let body = []
   if (listOfObjects.length === 0) {
@@ -169,11 +166,12 @@ const toCsv = (
   }
   let output = [makeLine(header), ...body]
   if (fileName != null && filePath != null) {
+    const destination = path.join(filePath, fileName)
     try {
-      fs.writeFileSync(path.join(filePath, fileName), output.join('\n'))
+      fs.writeFileSync(destination, output.join('\n'))
     }
     catch (err) {
-      console.log(`Error writing data to '${fileName}': ${err}`)
+      console.log(`Error writing data to '${destination}': ${err}`)
       let extra = output.length - 100
       let elided = ''
       if (extra > 0) {
@@ -209,14 +207,14 @@ const makeEnum = (...names) => {
   if (names.length === 1 && isIterable(names[0])) {
     names = names[0]
   }
-  const en = {
+  const enumerable = {
     allNames: () => [...names]
   }
   for (const name of names) {
     if (name === 'allNames') throw new Error('Enums reserve the name "allNames" for enumerating their values; please choose a different name')
-    en[name] = Symbol()
+    enumerable[name] = Symbol()
   }
-  return en
+  return enumerable
 }
 
 myself.filter.many = "Convenience function for mapping filter.object to a list of multiple objects."

@@ -43,7 +43,7 @@ const range = function* (start = 0, stop, step = 1) {
   }
   if (start < stop && step <= 0) return
   if (start > stop && step >= 0) return
-  for (let i = start; (start < stop ? i < stop : i > stop); i += step) {
+  for (let i = start; start < stop ? i < stop : i > stop; i += step) {
     yield i
   }
 }
@@ -563,8 +563,8 @@ myself.iterEqualsUnordered = "Tests two iterables to see if they are equal. Igno
 const iterEqualsUnordered = (a, b) => {
   a = makeGroups(a)
   b = makeGroups(b)
-  return (a.size === b.size) &&
-    a.entries().every(
+  return (a.size === b.size)
+    && a.entries().every(
       ([ key, aGroup ]) => b.has(key) && b.get(key).length === aGroup.length
     )
   // prematurely-optimized version:
@@ -600,7 +600,7 @@ const convertToString = (thing, depth = null) => {
 // TODO: export
 myself.convertFromString = "Like msConverter in the numbers module, but for strings (not yet exported). 95% sure this will never be useful."
 const convertFromString = (str) => {
-  if (typeof str !== 'string') return `${str}`
+  if (typeof str !== 'string') return str
   switch (str) {
     case '':
       return ''
@@ -621,7 +621,7 @@ const convertFromString = (str) => {
     default: {
       // don't try to parse objects (unsafe)
       if (/function|=>|\[.*\]|{.*}/.test(str)) {
-        console.warn(`I can't let you convert objects, Dave. Returning input as-is: ${str}`)
+        console.warn(`Sorry Dave, I can't let you convert objects. Returning input as-is: ${str}`)
         return str
       }
       // integer test
@@ -637,16 +637,18 @@ const convertFromString = (str) => {
           : smallInt
       }
       // float test
-      if (multilineRegex(
-        /^[+-]?/, // sign
-        /(?:\.?\d+|\d+\.\d*)/, // digits
-        /(?:e[+-]?\d+)?$/, // in sci. notation?
-      ).test(str)) {
+      if (
+        multilineRegex(
+          /^[+-]?/, // sign
+          /(?:\.?\d+|\d+\.\d*)/, // digits
+          /(?:e[+-]?\d+)?$/, // in sci. notation?
+        ).test(str)
+      ) {
         return Number.parseFloat(str)
       }
     }
   }
-  console.log(`Warning: could not infer type of input string; returning as-is: ${str}`)
+  console.warn(`Could not infer type of input string. Returning as-is: ${str}`)
   return str
 }
 
@@ -658,7 +660,9 @@ const multilineRegex = (...parts) => {
     flags = parts[1]
     parts = parts[0]
   }
-  return new RegExp(parts.map(x => (x instanceof RegExp) ? x.source : x).join(''), flags)
+  return new RegExp(parts.map(
+    (x) => (x instanceof RegExp) ? x.source : x
+  ).join(''), flags)
 }
 
 myself.fetchAll = "A convenience function for working with paginated APIs."

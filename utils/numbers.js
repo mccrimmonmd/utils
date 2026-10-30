@@ -134,7 +134,9 @@ const timeConverter = (
     verbose = true
     for (const unit of unitNames) {
       const result = timeConverter(time, fromUnits, { toUnits: unit, verbose: false })
-      if (result < 100 || unit === unitNames.at(-1)) return log(result, unit)
+      if (result < 100 || unit === unitNames.at(-1)) {
+        return log(result, unit)
+      }
     }
   }
   toUnits = codifyUnits(toUnits)
@@ -166,7 +168,7 @@ const niceNumber = (num) => {
     factor += 1
     num /= 1000
   }
-  return roundDecimal(num) + postfixes[factor]
+  return '' + roundDecimal(num) + postfixes[factor]
 }
 
 myself.fromBase = "Computes the decimal equivalent of some other number, given as a radix (base) and two arrays of nonnegative integers representing the digits of the characteristic and mantissa (a.k.a. the digits before and after the decimal point). For example, 0xFF80 would be `fromBase(16, [15, 15, 8, 0])` (which correctly returns 65408). Supports negative and even fractional bases--for example, `fromBase(-10, [1, 9, 3], [5])` reveals that twelve and a half in base minus-ten is 193.5, while the same in base Pi is approximately 102.13002112001101..."
