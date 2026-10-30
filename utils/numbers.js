@@ -9,8 +9,11 @@ myself.Complex = "Complex numbers. Why not??"
 // TODO: make immutable
 const Complex = class {
   constructor(...params) {
-    if (params.length === 1 && typeof params[0] === 'object') {
-      params = [ params[0].r, params[0].i ]
+    if (params.length === 1) {
+      const param = params[0]
+      if (param != null && typeof param === 'object') {
+        params = [ param.r, param.i ]
+      }
     }
     const [ r, i ] = params
     this.r = Number(r ?? 0)
