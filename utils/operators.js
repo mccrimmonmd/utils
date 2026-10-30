@@ -56,7 +56,9 @@ const opFuncs = {
   // non-chaining operators //
 
   id: (thing) => thing, // the identity function
+  identity: (function () { return this.id })(),
   first: (...things) => things[0],
+  last: (...things) => things.at(-1),
   err: (message, errType = Error) => (() => { throw new errType(message) })(),
 
   loop: (cond, exec, params = []) => {
