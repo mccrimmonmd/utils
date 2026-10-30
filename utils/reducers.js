@@ -17,28 +17,32 @@ const flatten = (flattened, bump, i) => {
   return flattened
 }
 
-myself.orReduce = "Takes an iterable and a function that compares two objects to yield a boolean. Returns true iff the function returns true for any adjacent pair in the iterable. Used in operators.js for chaining."
-const orReduce = (things, func, ...initialValue) => {
-  let firstIter = true
-  let prev
-  for (const thing of things) {
-    if (firstIter) {
-      firstIter = false
-      if (initialValue.length && func(initialValue[0], thing)) return true
-      prev = thing
-      continue
-    }
-    if (func(prev, thing)) return true
-    prev = thing
+myself.andReducer = "Takes a function that compares two objects and returns a boolean; returns a callback that tests every adjacent pair in the array and returns true iff every test returns true. Used in operators.js for chaining."
+const andReducer = (func) => boolReduce(func, 'and')
+
+myself.orReducer = "Same as andReducer, except the callback returns true iff *any* adjacent pair passes its test."
+const orReducer = (func) => boolReduce(func, 'or')
+
+"Private helper function for orReducer/andReducer"
+const boolReduce = (func, type) => {
+  if (!['or', 'and'].includes(type)) {
+    throw new TypeError(`'type' should be one of 'and' or 'or'; got ${type}`)
   }
-  return false
+  const afterFirstIter = Symbol()
+  return (params, b, i, obj) => {
+    let { bool, a } =
+      params[afterFirstIter] ? params : { bool: type === 'and', a: params }
+    const shouldShortCircuit = type === 'or' === bool
+    if (!shouldShortCircuit) {
+      bool = func(a, b)
+      a = b
+    }
+    if (i === obj.length - 1) return bool // final iteration
+    else return { [afterFirstIter]: true, bool, a }
+  }
 }
 
-myself.andReduce = "Same as orReduce, except it returns true iff the function returns true for *every* adjacent pair in the iterable."
-const andReduce = (things, func, ...initialValue) =>
-  !orReduce(things, (a, b) => !func(a, b), ...initialValue)
-
-myself.iterReducer = "A function for reducing an iterable without having to convert it to an Array first. (In preparation of orReduce/andReduce refactor.)"
+myself.iterReducer = "A function for reducing an iterable without having to convert it to an Array first."
 const iterReducer = (iter, func, ...initialValue) => {
   const [ hasInitial, initial ] = anyDefault(initialValue)
   let reduced = initial
@@ -123,8 +127,8 @@ module.exports = {
   aboutMe: () => myself.aboutMe,
   allAboutMe: () => myself,
   flatten,
-  orReduce,
-  andReduce,
+  andReducer,
+  orReducer,
   iterReducer,
   diffsCalculator,
   anyDefault,

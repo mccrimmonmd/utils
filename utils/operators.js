@@ -2,7 +2,7 @@ const myself = {
   aboutMe: "Functional equivalents of JavaScript's native operators."
 }
 const { pluralize } = require('./general')
-const { orReduce, andReduce, iterReducer, sum, product } = require('./reducers')
+const { orReducer, andReducer, iterReducer, sum, product } = require('./reducers')
 
 const op = (opType) => opFuncs[opType] ?? opFuncs.err(
   `Unsupported or invalid operator '${opType}'`,
@@ -12,6 +12,42 @@ const parityError = (opType, n = 2) => opFuncs.err(
   `Operator '${opType}' requires at least ${n} ${pluralize('argument', n)}`,
   TypeError,
 )
+
+const compare = (type, params) => {
+  let func
+  switch (type) {
+    case 'lt':
+      func = (a, b) => (a < b)
+      break
+    case 'lte':
+      func = (a, b) => (a <= b)
+      break
+    case 'gt':
+      func = (a, b) => (a > b)
+      break
+    case 'gte':
+      func = (a, b) => (a >= b)
+      break
+    case 'eq':
+      func = (a, b) => (a === b)
+      break
+    default:
+      return opFuncs.err(
+        `Unsupported or invalid comparison operator '${type}'`,
+        TypeError
+      )
+  }
+  return (...params) => {
+    if (type === 'eq') {
+      if (params.length < 1) return parityError('eq', 1)
+      return params.reduce(andReducer(func), params[0])
+    }
+    else {
+      if (params.length <= 1) return parityError(type)
+      return params.reduce(andReducer(func))
+    }
+  }
+}
 
 const opFuncs = {
   aboutMe: myself.aboutMe,
@@ -97,28 +133,11 @@ const opFuncs = {
   // `op('choose')(isSpam(x), () => doSpamThing(x), () => doEggsThing(x))()`
   choose: (cond, ifTrue, ifFalse) => cond ? ifTrue : ifFalse,
 
-  lt: (...params) => {
-    if (params.length <= 1) return parityError('lt')
-    return andReduce(params, (a, b) => (a < b))
-  },
-  lte: (...params) => {
-    if (params.length <= 1) return parityError('lte')
-    return andReduce(params, (a, b) => (a <= b))
-  },
-  gt: (...params) => {
-    if (params.length <= 1) return parityError('gt')
-    return andReduce(params, (a, b) => (a > b))
-  },
-  gte: (...params) => {
-    if (params.length <= 1) return parityError('gte')
-    return andReduce(params, (a, b) => (a >= b))
-  },
-  
-  eq: (...params) => {
-    if (params.length < 1) return parityError('eq', 1)
-    return andReduce(params, (a, b) => a === b, params[0])
-  },
-
+  lt: compare('lt'),
+  lte: compare('lte'),
+  gt: compare('gt'),
+  gte: compare('gte'),
+  eq: compare('eq'),
 
   any: (iter, test = (a) => !!a) =>
     iterReducer(iter, (soFar, thing) => soFar || test(thing), false),
