@@ -9,7 +9,7 @@ const myself = {
   Run \`allAboutMe()\` within any module to see documentation of its functions.`
 } 
 
-const { max, min, flatten } = require('./reducers')
+const { max, min, flatten, anyDefault } = require('./reducers')
 // const { ... } = require('./sequences') // for re-export
 // alternatively, make 'common' module for top-level and rename 'general'
 // (to...? 'development'? 'meta'? 'misc'?)
@@ -50,15 +50,13 @@ const range = function* (start = 0, stop, step = 1) {
 
 myself.zip = "Python-style zip function: combines a list of arrays into a list of pairs/triplets/etc. Takes an optional parameter for padding the results when the input arrays are different lengths; if none is provided, the output will be the length of the shortest input array."
 const zip = (arrays, ...padding) => {
-  const padResults = padding.length !== 0
-  padding = padding[0]
-  
+  const [ padResults, padWith ] = anyDefault(padding)
   const zipped = []
   const zippedLen = arrays
     .map(array => array.length)
     .reduce(padResults ? max : min)
   for (const i of range(zippedLen)) {
-    let group = arrays.map(array => i < array.length ? array[i] : padding)
+    let group = arrays.map(array => i < array.length ? array[i] : padWith)
     zipped.push(group)
   }
   return zipped
@@ -66,14 +64,12 @@ const zip = (arrays, ...padding) => {
 
 myself.zipIter = "Same as zip, but accepts a list of any iterables as input and returns a generator instead of an Array."
 const zipIter = function* (iterables, ...padding) {
-  const padResults = padding.length !== 0
-  padding = padding[0]
-
+  const [ padResults, padWith ] = anyDefault(padding)
   const iterators = iterables.map(iterable => iterable[Symbol.iterator]())
   const getNext = () => iterators.map(iter => iter.next())
   let results = getNext()
   while (results[padResults ? 'some' : 'every'](result => !result.done)) {
-    yield results.map(result => result.done ? padding : result.value)
+    yield results.map(result => result.done ? padWith : result.value)
     results = getNext()
   }
 }
@@ -264,8 +260,7 @@ const MultiMap = class extends Map {
   }
 
   #traverse (argumentsList, ...newValue) {
-    const mutating = newValue.length
-    const value = mutating && newValue[0]
+    const [ mutating, value ] = anyDefault(newValue)
     const singleArgument = argumentsList.length === 1
     const noArgument = argumentsList.length === 0
     const first =
