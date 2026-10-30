@@ -113,18 +113,18 @@ const opFuncs = {
   sub: (...params) => {
     if (params.length === 1) return -params[0]
     return params
-      .map((n, i) => i === 0 ? n : -n)
-      .reduce(sum, 0)
+      .slice(1)
+      .map((n) => -n)
+      .reduce(sum, params[0] ?? 0)
   },
-
   mult: (...params) => params.reduce(product, 1),
   div: (...params) => {
     if (params.length === 1) return 1 / params[0]
     return params
-      .map((n, i) => i === 0 ? n : 1 / n)
-      .reduce(product, 1)
+      .slice(1)
+      .map((n) => 1 / n)
+      .reduce(product, params[0] ?? 1)
   },
-
   pow: (...params) => params.reduce((a, b) => a ** b),
 
   // chaining operators (logical) (short-circuiting) //
