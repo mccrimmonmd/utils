@@ -61,15 +61,15 @@ const getFullName = (...source) => {
       return 'quints'
     case '4s':
       if (shortNamesArray.includes('2s')) return 'twoAndFour'
-      return 'quads'
+      else return 'quads'
     case '3s':
       if (count === 2) return 'twoTrips'
       else if (shortNamesArray.includes('2s')) return 'fullHouse'
-      return 'trips'
+      else return 'trips'
     case '2s':
       if (count === 3) return 'threePair'
       else if (count === 2) return 'twoPair'
-      return 'dubs'
+      else return 'dubs'
     default:
       console.warn(`unsupported short name ${shortName}; analysis functions may fail`)
       return shortName
