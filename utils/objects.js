@@ -125,17 +125,18 @@ const compareXor    = compareBy('biDiff')
 
 myself.extractNested = "Separates the given object's contents into 'flat' primitives and nested objects (including Arrays, but not including null)."
 const extractNested = (obj) => {
-  let flat = {}
-  let nested = {}
-  for (const [key, value] of Object.entries(obj)) {
-    if (value != null && typeof value === 'object') {
-      nested[key] = value
-    }
-    else {
-      flat[key] = value
-    }
-  }
-  return { flat, nested }
+  return Object.entries(obj).reduce(
+    ({ flat, nested }, [ key, value ]) => {
+      if (value != null && typeof value === 'object') {
+        nested[key] = value
+      }
+      else {
+        flat[key] = value
+      }
+      return { flat, nested }
+    },
+    { flat: {}, nested: {} }
+  )
 }
 
 myself.escapeCsvEntry = "Helper function for 'toCsv'. Converts an object to a string and escapes any quotes, commas, or newlines."
