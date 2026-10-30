@@ -75,6 +75,9 @@ const isNum = (thing) => ['number', 'bigint'].includes(typeof thing)
 myself.isInt = "Checks if the given value is an integer (BigInt OR Number)."
 const isInt = (thing) => typeof thing === 'bigint' || Number.isInteger(thing)
 
+myself.absolute = "Math.abs, but also works with BigInts."
+const absolute = (num) => num < 0 ? -num : num
+
 myself.roundDecimal = "Rounds (towards zero) to a given number of decimal places."
 const roundDecimal = (value, places = 2) => {
   if (typeof value !== 'number' || Number.isInteger(value)) return value
@@ -212,6 +215,7 @@ module.exports = {
   isPrime,
   isNum,
   isInt,
+  absolute,
   roundDecimal,
   arithmeticMean,
   diffsCalculator,
