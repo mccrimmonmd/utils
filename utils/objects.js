@@ -33,6 +33,9 @@ myself.recombine = "Sort of like Python's 'zip' function, generalized for Object
 > recombine(data, (obj) => obj.id)
 { xid: { xKey: [xVal1, xVal2, ...], xKey2: [xVal3, ...] }, yid: { yKey: [yVal1, ...] }, ...}
 ;`
+// TODO: refactor as 'remix', a more powerful version that can split as
+// well as merge sub-objects, for example if the new keys are derived from
+// a nested array of enum-like properties (e.g. ingredients in a recipe)
 const recombine = (
   listOfObjects,
   keyGetter,
