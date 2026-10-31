@@ -6,8 +6,10 @@ nnoremap <C-j> i<CR><ESC>
 nnoremap <C-o> o<ESC>
 nnoremap <A-o> O<ESC>
 
-nnoremap <C-PageUp> <C-PageDown>
-nnoremap <C-PageDown> <C-PageUp>
+inoremap <C-PageUp> <C-PageDown>
+inoremap <C-PageDown> <C-PageUp>
+noremap <C-PageUp> <C-PageDown>
+noremap <C-PageDown> <C-PageUp>
 
 set relativenumber
 
