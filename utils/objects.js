@@ -55,6 +55,16 @@ const recombine = (
   }, {})
 }
 
+myself.remap = "Array.prototype.map, generalized for other iterable and non-iterable objects."
+const remap = (obj, mapper) => {
+  if (isIterable(obj)) return [...obj].map(mapper)
+  const remapped = {}
+  for (const [key, value] of Object.entries(obj)) {
+    remapped[key] = mapper(value, key, obj)
+  }
+  return remapped
+}
+
 myself.allValues = "Returns an array of every unique value set to the given key among the provided list of objects."
 const allValues = (listOfObjects, field) =>
   [ ...new Set(listOfObjects.map(obj => obj[field])) ]
@@ -194,18 +204,6 @@ myself.multiply = "Same as count, but with multiplication instead of addition."
 const multiply = (listOfObjects, getValue = Number) =>
   listOfObjects.map(getValue).reduce(product, 1)
 
-myself.remap = "Array.prototype.map, generalized for other iterable and non-iterable objects."
-const remap = (obj, mapper) => {
-  if (isIterable(obj)) return [...obj].map(mapper)
-  const remapped = {}
-  let i = 0
-  for (const key of Object.keys(obj)) {
-    remapped[key] = mapper(obj[key], i, obj)
-    i += 1
-  }
-  return remapped
-}
-
 myself.makeEnum = "Factory for creating enum-like objects that associate Strings with Symbols."
 const makeEnum = (...names) => {
   if (names.length === 1 && isIterable(names[0])) {
@@ -233,6 +231,7 @@ module.exports = {
   allAboutMe: () => myself,
   merge,
   recombine,
+  remap,
   allValues,
   allKeys,
   filter: {
@@ -249,6 +248,5 @@ module.exports = {
   toCsv,
   count,
   multiply,
-  remap,
   makeEnum,
 }
