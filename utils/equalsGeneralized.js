@@ -21,12 +21,11 @@ module.exports = (
         return BigInt(objA) === objB
       }
     }
-
     return false
   }
 
-  if (typeOfA === 'number' && isNaN(objA)) {
-    return isNaN(objB)
+  if (isNaN(objA) || isNaN(objB)) {
+    return isNaN(objA) && isNaN(objB)
   }
 
   if (typeOfA === 'function') {
