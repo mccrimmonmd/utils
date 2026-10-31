@@ -232,10 +232,7 @@ const ensureArray = (thing) =>
 
 myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value. NOTE: if the original function is anonymous and recursive, it must be set to the same variable--`someFunc = memoize(someFunc)`--or wrapped in a closure first--`memoized = memoize( (() => someFunc)() )`--to be memoized properly."
 // TODO: fix 'new name must be old name' thing...somehow?
-// ASSUMES that 'func' is an actual function! In particular:
-// - When called with the same arguments, it must return the same result
-// - It may have any number of arguments, as long as it's the *same* number
-//   each time it's called (default arguments might cause problems!)
+// ASSUMES that 'func' is an actual function! In particular: When called with the same arguments, it must return the same result; and it should have no side effects (if a cached result is used, any side effects will be skipped!)
 const memoize = (func) => {
   const cache = new MultiMap()
   return new Proxy(func, {
@@ -481,7 +478,7 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
 myself.arrayify = "Returns 'howMany' copies of 'item' (which can be a generator function). If 'item' is copy-by-value (e.g. a primitive), this is equivalent to Array(howMany).fill(item)"
 // TODO: refactor to accept any class with a static 'from' method (default Array)
 // rename to 'fromify' or sth
-// arrayFrom, *repeat*, arrRepeat, duplicate, makeArray, ...
+// arrayFrom, repeat, arrRepeat, duplicate, *replicate, makeArray, ...
 const arrayify = (item, howMany = 1) => Array.from({ length: howMany }, (_, i) => {
   if (typeof item === 'function') return item(i)
   else if (typeof item === 'object') return structuredClone(item)
