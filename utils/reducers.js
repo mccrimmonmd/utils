@@ -35,8 +35,8 @@ const boolReduce = (func, type) => {
     const shouldShortCircuit = type === 'or' === bool
     if (!shouldShortCircuit) {
       bool = func(a, b)
-      a = b
     }
+    a = b
     if (i === arr.length - 1) return bool // final iteration
     else return { [afterFirstIter]: true, bool, a }
   }
