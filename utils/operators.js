@@ -1,10 +1,10 @@
 const myself = {
-  aboutMe: "Functional equivalents of JavaScript's native operators."
+  aboutMe: "Functional equivalents of JavaScript's native operators. Call 'allAboutMe' to get a list of all of them."
 }
 const { pluralize } = require('./general')
 const { orReducer, andReducer, iterReducer, sum, product } = require('./reducers')
 
-const op = (opType) => opFuncs[opType] ?? opFuncs.err(
+const op = (opType = 'aboutMe') => opFuncs[opType] ?? opFuncs.err(
   `Unsupported or invalid operator '${opType}'`,
   TypeError,
 )
@@ -56,7 +56,7 @@ const opFuncs = {
   // non-chaining operators //
 
   id: (thing) => thing, // the identity function
-  identity: (function () { return this.id })(),
+  identity: function (thing) { return this.id(thing) },
   first: (...things) => things[0],
   last: (...things) => things.at(-1),
   err: (message, errType = Error) => (() => { throw new errType(message) })(),
