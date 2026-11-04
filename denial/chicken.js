@@ -1,5 +1,11 @@
-const dice = require('../utils/diceStats')
-const { range, zip, arrayify, last } = require('/.general')
+const {
+  range,
+  zip,
+  arrayify,
+  diceStats: {
+    dice
+  },
+} = require('../utils')
 
 const multipleNames = [
   'dubs',
