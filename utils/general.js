@@ -156,6 +156,7 @@ const TypeCheckedArray = class extends Array {
 }
 
 myself.WrappedBoundsArray = "A subclass of Array that 'wraps around' indicies outside its bounds. More precisely, the index is taken modulo the array's length, and if the result is negative the array's length is added to it: `arr[-1]` will return the last element, `arr[arr.length]` will return the first element, and so on."
+// TODO: see how it handles mutating methods like 'push', as well as copying methods like 'concat' and '+'
 const WrappedBoundsArray = class extends Array {
   constructor (...params) {
     super(...params)
@@ -476,22 +477,22 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
 }
 
 myself.arrayify = "Returns 'howMany' copies of 'item' (which can be a generator function). If 'item' is copy-by-value (e.g. a primitive), this is equivalent to Array(howMany).fill(item)"
-// TODO: refactor to accept any class with a static 'from' method (default Array)
-// rename to 'fromify' or sth
-// arrayFrom, repeat, arrRepeat, duplicate, *replicate, makeArray, ...
+// TODO: refactor to accept any class with a static 'from' method (default Array)?
+// TODO: rename to 'replicate'
 const arrayify = (item, howMany = 1) => Array.from({ length: howMany }, (_, i) => {
   if (typeof item === 'function') return item(i)
   else if (typeof item === 'object') return structuredClone(item)
   else return item
 })
-myself.stringify = "arrayify but for Strings."
+myself.stringify = "arrayify/replicate, but for a string (or something you want converted to a string before replication). Accepts an additional parameter for what to join the replicates with (defaults to the enpty string)."
+// TODO: rename to 'replicate(As)String'
 const stringify = (snippet = ' ', n = 1, joinWith = '') => {
   return String(joinWith) === '' ?
       String(snippet).repeat(n)
     : arrayify(String(snippet), n).join(joinWith)
 }
 
-myself.swap = "Swaps two elements of an Array (in-place)."
+myself.swap = "Swaps two elements of an Array (in-place). Returns the modified array."
 const swap = (arr, i, j) => {
   // Source: <https://stackoverflow.com/questions/872310/swap-array-elements-in-javascript>
   ;[ arr[i], arr[j] ] = [ arr[j], arr[i] ]
@@ -549,6 +550,13 @@ const iterEquals = (a, b) => {
     i += 1
   }
   return a.length === i
+  // OR BETTER:
+  for (const [ aVal, bVal ] of zipIter([a, b], Symbol())) {
+    if (aVal !== bVal) {
+      return false
+    }
+  }
+  return true
 }
 
 myself.iterEqualsUnordered = "Tests two iterables to see if they are equal. Ignores ordering (different permutations of the same elements are considered equal)."
