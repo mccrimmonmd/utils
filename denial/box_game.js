@@ -139,7 +139,8 @@ const useUpTheBox = (box = openNewBox()) => {
   return box
 }
 
-useUpTheBox()
+const isModule = require.main !== module
+if (!isModule) useUpTheBox()
 
 module.exports = {
   useUpTheBox,
