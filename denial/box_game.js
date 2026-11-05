@@ -11,8 +11,8 @@ const {
 
 const _debug = true
 const ending = '-> '.repeat(3) + '()'
-const sep = '+'
-const sep2 = ' ==='
+const sep = '=> '
+const sep2 = ' {'
 
 const max = (a, b) => a >= b
 const min = (a, b) => a <= b
