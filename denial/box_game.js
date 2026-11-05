@@ -16,6 +16,7 @@ const sep2 = ' {'
 
 const max = (a, b) => a >= b
 const min = (a, b) => a <= b
+const maxNoZeroes = (a, b) => a === 0 || (b !== 0 && a >= b)
 const choose = (strat) => (a, b) => {
   return strat(a, b) ? [0, 1] : [1, 0]
 }
@@ -148,6 +149,7 @@ module.exports = {
   strats: {
     max,
     min,
+    maxNoZeroes,
     coinFlip,
   },
 } // = require('./box_game')
