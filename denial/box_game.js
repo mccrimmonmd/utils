@@ -1,5 +1,5 @@
 const {
-  arrayify,
+  arrayify: replicate,
   random: {
     coinFlip,
     randNum,
@@ -49,7 +49,7 @@ const renderBox = (contents, unused, size = contents.length) => {
   console.log('|', ' '.repeat(boxString.length), '|')
   if (contents?.show) {
     let { boxWidth, fullWidth, boxLength } = getDimensions(size)
-    let boxStrings = arrayify(
+    let boxStrings = replicate(
       (_, i) => {
         let row = contents.slice(boxWidth * i, boxWidth * (i + 1))
         let string = row.map(num => getPic(num) ?? '').join(' ')
@@ -98,7 +98,7 @@ const print = (options, indexes, contents, size) => {
 const openNewBox = (size = 12, pokeStrat = max, useStrat = min) => {
   let choosePoke = choose(pokeStrat)
   let chooseUse = choose(useStrat)
-  let contents = arrayify(0, size)
+  let contents = replicate(0, size)
   contents.show = _debug
   return {
     makeChoice: () => {
