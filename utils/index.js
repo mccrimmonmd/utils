@@ -7,9 +7,11 @@ const myself = {
 }
 
 const moduleNames = [
+  // "common",
   "diceStats",
   "drawing",
   // "sequences",
+  // "meta",
   "numbers",
   "objects",
   "random",
@@ -22,7 +24,7 @@ for (const [ name, module ] of moduleEntries) {
 }
 
 module.exports = {
-  ...general,
+  ...general, // ...common,
   aboutMe: () => myself,
   op,
   ...Object.fromEntries(moduleEntries)
@@ -30,5 +32,6 @@ module.exports = {
 
 /*
 var utils = require('./utils')
+.common
 */
 
