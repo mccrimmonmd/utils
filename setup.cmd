@@ -1,5 +1,7 @@
 REM TODO: set up WSL
 REM TODO: set registry to disable after-snap (Win+direction) popup
+REM TODO: create node 'startup' script (noodle?) for ps and bash, add to path
+REM     (Script would start a REPL with utils automatically loaded)
 
 REM If WinGet isn't already installed (PowerShell):
 REM Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
