@@ -1,5 +1,5 @@
 const myself = {
-  aboutMe: "Functional equivalents of JavaScript's native operators. Call 'allAboutMe' to get a list of all of them."
+  aboutMe: "Functional equivalents of JavaScript's native operators. Use 'allAboutMe' to get a list of all of them."
 }
 const { pluralize } = require('./general')
 const { orReducer, andReducer, iterReducer, sum, product } = require('./reducers')
