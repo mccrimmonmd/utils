@@ -10,9 +10,9 @@ const {
 } = require('../utils')
 
 const _debug = true
-const ending = '~o '.repeat(3) + '('
-const sep = String(8 === 3)
-const sep2 = ' ' + String(({}))
+const ending = '-> '.repeat(3) + '()'
+const sep = '+'
+const sep2 = ' ==='
 
 const max = (a, b) => a >= b
 const min = (a, b) => a <= b
