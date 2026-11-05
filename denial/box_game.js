@@ -38,7 +38,7 @@ const printBox = (contents, unused, size) => {
   console.log(renderBox(contents, unused, size))
 }
 const renderBox = (contents, unused, size = contents.length) => {
-  let strArr = []
+  // let strArr = []
   let boxString = getPic(unused) ?? '  '
   // strArr.push(`\n\\ ${' '.repeat(boxString.length)} /`)
   console.log()
@@ -67,7 +67,7 @@ const renderBox = (contents, unused, size = contents.length) => {
     console.log('', '-'.repeat(fullWidth + 2))
     console.log()
   }
-  return strArr.join('\n')
+  // return strArr.join('\n')
 }
 
 const print = (options, indexes, contents, size) => {
@@ -90,8 +90,8 @@ const print = (options, indexes, contents, size) => {
   // `\n${sep + used}\n`,
   // renderBox(contents, options[indexes.unused], size)
   // ], 5)
-  console.log()
-  console.log(sep + used) // + ('~o' * '.') + sep2 (or reverse/mixed order)
+  // console.log()
+  // console.log(sep + used) // + ('~o' * '.') + sep2 (or reverse/mixed order)
   renderBox(contents, options[indexes.unused], size)
 }
 
