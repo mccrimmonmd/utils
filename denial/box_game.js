@@ -118,7 +118,7 @@ const openNewBox = (size = 12, pokeStrat = max, useStrat = min) => {
       }
       let optionA = randRemove(contents)
       let optionB = randRemove(contents)
-      let options = optionA.concat(optionB)
+      let options = [ optionA, optionB ]
       print(options, {})
       let [poked, unpoked] = choosePoke(...options)
       options[poked]++
