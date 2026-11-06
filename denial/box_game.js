@@ -14,6 +14,9 @@ const ending = '-> '.repeat(3) + '()'
 const sep = '=> '
 const sep2 = ' {'
 
+const boxWidth = 6
+const fullWidth = boxWidth * 3 - 1
+
 const max = (a, b) => a >= b
 const min = (a, b) => a <= b
 const maxNoZeroes = (a, b) => a === 0 || (b !== 0 && a >= b)
@@ -21,23 +24,110 @@ const choose = (strat) => (a, b) => {
   return strat(a, b) ? [0, 1] : [1, 0]
 }
 
-const getPic = (num, isNew = false) => {
-  if (num == null) return null
-  if (isNew) num = num > 0 ? num - 1 : 0
-  let colons = ':'.repeat(Math.trunc(num / 2))
-  return `[${colons}${num % 2 === 0 ? '' : '.'}${isNew ? '*' : ''}]`
+const Square = class {
+  constructor(dots = 0) {
+    this.dots = dots
+    this.fresh = false
+  }
+  newDot() {
+    this.dots += howMany
+    this.fresh = true
+  }
+  getRender() {
+    const num = this.dots
+    if (this.fresh && num > 0) num = num - 1
+    const oldDots = ':'.repeat(Math.trunc(num / 2)) + num % 2 === 0 ? '' : '.'
+    const render = `[${oldDots}${this.fresh ? '*' : ''}]`
+    this.fresh = false
+    return render
+  }
 }
 
-const getDimensions = (size) => {
-  let boxWidth = 6
-  let fullWidth = boxWidth * 3 - 1
-  let boxLength = Math.ceil(size / boxWidth)
-  return { boxWidth, fullWidth, boxLength }
+const Box = class {
+  static 
+  static 
+
+  constructor(
+    {
+      size = 12,
+      pokeStrat = max,
+      useStrat = min,
+      showContents = _debug,
+    } = {}
+  ) {
+    this.contents = replicate(() => new Square(), size)
+    this.poke = pokeStrat
+    this.use = useStrat
+    this.showContents = showContents
+  }
+
+  renderChoice() {
+    // 'print' goes here...
+    const render = putBack?.getRender() ?? '  '
+    console.log()
+    console.log('\\', ' '.repeat(render.length), '/')
+    console.log('|', render, '|')
+    console.log('|', ' '.repeat(render.length), '|')
+    if (this.showContents) this.renderContents
+  }
+
+  renderContents() {
+    let render = replicate(
+      (i) => {
+        const row = this.contents.slice(boxWidth * i, boxWidth * (i + 1))
+        const string = row.map(square => square.getRender() ?? '').join(' ')
+        const padding = fullWidth - string.length
+        return string + ' '.repeat(padding > 0 ? padding : 0)
+      },
+      Math.ceil(this.contents.length / boxWidth)
+    )
+    render = drawing.makeRectangular(render)
+    const width = Math.max(render[0].length, fullWidth)
+    console.log('', '_'.repeat(width + 2))
+    for (const boxString of render) {
+      console.log('|', boxString, '|')
+    }
+    console.log('', '-'.repeat(width + 2))
+    console.log()
+  }
+
+  makeChoice() {
+    if (this.contents.length === 0) {
+      // print literally none?? lol
+      // printBox(contents)
+      console.log()
+      console.log(ending)
+      return
+    }
+    if (this.contents.length === 1) {
+      const last = this.contents[0]
+      print({ left: last })
+      this.contents.pop()
+      print(
+        { left: last + 1, pokedLeft: true, usedLeft: true },
+        this.contents,
+        this.showContents
+      )
+      return
+    }
+    const left = randRemove(this.contents)
+    const right = randRemove(this.contents)
+    const options = { left, right }
+    print(options)
+    const pokedLeft = this.poke(left.dots, right.dots) 
+    const usedLeft = this.use(left.dots, right.dots)
+    options[pokedLeft ? 'left' : 'right'].newDot()
+    this.contents.splice(
+      randInt(this.contents.length),
+      0,
+      options[usedLeft ? 'left' : 'right']
+    )
+    print({ left, right, pokedLeft, usedLeft }, this.contents, this.showContents)
+  }
 }
 
-const printBox = (contents, unused, size) => {
-  console.log(renderBox(contents, unused, size))
-}
+/* -------------------------- */
+
 const renderBox = (contents, unused, size = contents.length) => {
   // let strArr = []
   let boxString = getPic(unused) ?? '  '
