@@ -103,6 +103,8 @@ const Box = class {
       return
     }
     if (this.contents.length === 1) {
+      // OR: let 'none' be option here??
+      // (dots === Infinity?)
       const last = this.contents[0]
       print({ left: last })
       this.contents.pop()
