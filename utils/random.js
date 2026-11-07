@@ -30,6 +30,12 @@ const randChoice = (arr) => arr[randInt(arr.length)]
 myself.randRemove = "Removes (in-place) and returns a random element from the given array."
 const randRemove = (arr) => arr.splice(randInt(arr.length), 1)[0]
 
+myself.grabBag = "A simple closure for implementing removal without replacement."
+const grabBag = (contents) => {
+  contents = [...contents]
+  return () => randRemove(contents) 
+}
+
 myself.shuffle = "Shuffles (in-place) and returns the given array."
 const shuffle = (arr) => {
   for (let end = arr.length - 1; end > 0; end--) {
