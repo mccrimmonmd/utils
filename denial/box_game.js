@@ -19,7 +19,7 @@ const fullWidth = boxWidth * 3 - 1
 
 const max = (a, b) => a === b ? coinFlip() : a > b
 const min = (a, b) => a === b ? coinFlip() : a < b
-const maxNoZeroes = (a, b) =>
+const maxOrNew = (a, b) =>
   a === b ? coinFlip() : a === 0 || (b !== 0 && a > b)
 const maxOrOpposite = (a, b, rivalChoice = null) =>
   rivalChoice != null ?
@@ -245,7 +245,7 @@ module.exports = {
   strats: {
     max,
     min,
-    maxNoZeroes,
+    maxOrNew,
     maxOrOpposite,
     coinFlip,
   },
