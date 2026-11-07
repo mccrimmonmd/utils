@@ -50,9 +50,6 @@ const Square = class {
 }
 
 const Box = class {
-  static 
-  static 
-
   constructor(
     {
       size = 12,
