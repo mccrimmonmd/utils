@@ -21,9 +21,14 @@ const max = (a, b) => a === b ? coinFlip() : a > b
 const min = (a, b) => a === b ? coinFlip() : a < b
 const maxNoZeroes = (a, b) =>
   a === b ? coinFlip() : a === 0 || (b !== 0 && a > b)
-const choose = (strat) => (a, b) => {
-  return strat(a, b) ? [0, 1] : [1, 0]
-}
+const maxOrOpposite = (a, b, rivalChoice = null) =>
+  rivalChoice != null ?
+      rivalChoice ? b : a
+    : max(a, b)
+
+// const choose = (strat) => (a, b) => {
+//   return strat(a, b) ? [0, 1] : [1, 0]
+// }
 
 const Square = class {
   constructor(dots = 0) {
@@ -241,6 +246,7 @@ module.exports = {
     max,
     min,
     maxNoZeroes,
+    maxOrOpposite,
     coinFlip,
   },
 } // = require('./box_game')
