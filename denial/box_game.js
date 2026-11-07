@@ -122,6 +122,7 @@ const Box = class {
     let usedLeft
     if (firstChoice === 'poke') {
       pokedLeft = this.poke(left.dots, right.dots)
+      options[pokedLeft ? 'left' : 'right'].newDot()
     }
     usedLeft = this.use(
       left.dots,
@@ -134,8 +135,8 @@ const Box = class {
         right.dots,
         firstChoice === 'use' ? usedLeft : null
       )
+      options[pokedLeft ? 'left' : 'right'].newDot()
     }
-    options[pokedLeft ? 'left' : 'right'].newDot()
     this.contents.splice(
       randInt(this.contents.length),
       0,
