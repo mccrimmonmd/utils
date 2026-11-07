@@ -31,8 +31,8 @@ const maxOrOpposite = (a, b, rivalChoice = null) =>
 // }
 
 const Square = class {
-  constructor(dots = 0) {
-    this.dots = dots
+  constructor() {
+    this.dots = 0
     this.fresh = false
   }
   newDot() {
