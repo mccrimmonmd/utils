@@ -17,9 +17,10 @@ const sep2 = ' {'
 const boxWidth = 6
 const fullWidth = boxWidth * 3 - 1
 
-const max = (a, b) => a >= b
-const min = (a, b) => a <= b
-const maxNoZeroes = (a, b) => a === 0 || (b !== 0 && a >= b)
+const max = (a, b) => a === b ? coinFlip() : a > b
+const min = (a, b) => a === b ? coinFlip() : a < b
+const maxNoZeroes = (a, b) =>
+  a === b ? coinFlip() : a === 0 || (b !== 0 && a > b)
 const choose = (strat) => (a, b) => {
   return strat(a, b) ? [0, 1] : [1, 0]
 }
