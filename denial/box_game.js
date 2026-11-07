@@ -94,7 +94,7 @@ const Box = class {
     console.log()
   }
 
-  makeChoice() {
+  makeChoice(firstChoice = false) {
     if (this.contents.length === 0) {
       // print literally none?? lol
       // printBox(contents)
@@ -117,8 +117,24 @@ const Box = class {
     const right = randRemove(this.contents)
     const options = { left, right }
     print(options)
-    const pokedLeft = this.poke(left.dots, right.dots) 
-    const usedLeft = this.use(left.dots, right.dots)
+
+    let pokedLeft
+    let usedLeft
+    if (firstChoice === 'poke') {
+      pokedLeft = this.poke(left.dots, right.dots)
+    }
+    usedLeft = this.use(
+      left.dots,
+      right.dots,
+      pokedLeft
+    )
+    if (firstChoice !== 'poke') {
+      pokedLeft = this.poke(
+        left.dots,
+        right.dots,
+        firstChoice === 'use' ? usedLeft : null
+      )
+    }
     options[pokedLeft ? 'left' : 'right'].newDot()
     this.contents.splice(
       randInt(this.contents.length),
