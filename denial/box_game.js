@@ -23,8 +23,8 @@ const maxOrNew = (a, b) =>
   a === b ? coinFlip() : a === 0 || (b !== 0 && a > b)
 const maxOrOpposite = (a, b, rivalChoice = null) =>
   rivalChoice != null ?
-      rivalChoice ? b : a
-    : max(a, b)
+    rivalChoice ? b : a
+  : max(a, b)
 
 // const choose = (strat) => (a, b) => {
 //   return strat(a, b) ? [0, 1] : [1, 0]
