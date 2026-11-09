@@ -21,10 +21,11 @@ const backToWork = require('./BACK TO WORK')
 myself.backToWork = backToWork
 
 myself.len = "Python-style function for getting the length of an iterable in a null- and type-safe way (because I'm tired of writing `!arr?.length` over and over)."
-const len = (thing) => {
-  if (thing == null || !isIterable(thing)) return 0
-  return Array.isArray(thing) ? thing.length : [...thing].length
-}
+const len = (thing) =>
+  thing == null || !isIterable(thing) ? NaN
+  : thing.length != null ? thing.length
+  : thing.size != null ? thing.size
+  : [...thing].length
 
 myself.range = "Python-style range function (generator)."
 // Alternate version (source: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#sequence_generator_range>)
