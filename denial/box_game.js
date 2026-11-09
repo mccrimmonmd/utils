@@ -14,8 +14,8 @@ const ending = '-> '.repeat(3) + '()'
 const sep = '=> '
 const sep2 = ' {'
 
-const boxWidth = 6
-const fullWidth = boxWidth * 3 - 1
+const BOX_WIDTH = 6
+const FULL_WIDTH = BOX_WIDTH * 3 - 1
 
 const max = (a, b) => a === b ? coinFlip() : a > b
 const min = (a, b) => a === b ? coinFlip() : a < b
@@ -77,15 +77,15 @@ const Box = class {
   renderContents() {
     let render = replicate(
       (i) => {
-        const row = this.contents.slice(boxWidth * i, boxWidth * (i + 1))
-        const string = row.map(square => square.getRender() ?? '').join(' ')
-        const padding = fullWidth - string.length
+        const row = this.contents.slice(BOX_WIDTH * i, BOX_WIDTH * (i + 1))
+        const string = row.map((square) => square.getRender() ?? '').join(' ')
+        const padding = FULL_WIDTH - string.length
         return string + ' '.repeat(padding > 0 ? padding : 0)
       },
-      Math.ceil(this.contents.length / boxWidth)
+      Math.ceil(this.contents.length / BOX_WIDTH)
     )
     render = drawing.makeRectangular(render)
-    const width = Math.max(render[0].length, fullWidth)
+    const width = Math.max(render[0].length, FULL_WIDTH)
     console.log('', '_'.repeat(width + 2))
     for (const boxString of render) {
       console.log('|', boxString, '|')
@@ -161,23 +161,23 @@ const renderBox = (contents, unused, size = contents.length) => {
   // strArr.push(`| ${' '.repeat(boxString.length)} |`)
   console.log('|', ' '.repeat(boxString.length), '|')
   if (contents?.show) {
-    let { boxWidth, fullWidth, boxLength } = getDimensions(size)
+    let { BOX_WIDTH, FULL_WIDTH, boxLength } = getDimensions(size)
     let boxStrings = replicate(
       (_, i) => {
-        let row = contents.slice(boxWidth * i, boxWidth * (i + 1))
+        let row = contents.slice(BOX_WIDTH * i, BOX_WIDTH * (i + 1))
         let string = row.map(num => getPic(num) ?? '').join(' ')
-        let padding = fullWidth - string.length
+        let padding = FULL_WIDTH - string.length
         return string + ' '.repeat(padding > 0 ? padding : 0)
       },
       boxLength
     )
     boxStrings = drawing.makeRectangular(boxStrings)
-    fullWidth = Math.max(boxStrings[0].length, fullWidth)
-    console.log('', '_'.repeat(fullWidth + 2))
+    FULL_WIDTH = Math.max(boxStrings[0].length, FULL_WIDTH)
+    console.log('', '_'.repeat(FULL_WIDTH + 2))
     for (const boxString of boxStrings) {
       console.log('|', boxString, '|')
     }
-    console.log('', '-'.repeat(fullWidth + 2))
+    console.log('', '-'.repeat(FULL_WIDTH + 2))
     console.log()
   }
   // return strArr.join('\n')
