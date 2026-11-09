@@ -12,6 +12,14 @@ const {
 } = require('./general')
 const { sum, product } = require('./reducers')
 
+// myself.initializeFromOptions = "For the object constructor pattern where an options object is provided as a parameter, and the object's instance variables have the same names as the options. Example: `constructor({ a = 'helf', b = 42, c } = {}) { instanceFromOptions(this, { a, b, c }); }` is equivalent to: `constructor({ a = 'helf', b = 42, c } = {}) { this.a = a; this.b = b; this.c = c; }` (even shorter without defaults--although it isn't self-documenting this way: `constructor(options) { instanceFromOptions(this, options); }`). Can also be used outside of constructors, for (contrived) example: `const myFancySet = instanceFromOptions(new Set(someIterable), { extraProperty: 'helf', secretFunction: () => console.log('You found me!') })`"
+const initializeFromOptions = (obj, options) => {
+  for (const [key, val] of Object.entries(options)) {
+    obj[key] = val
+  }
+  return obj
+}
+
 myself.merge = "Merges a secondary or 'fallback' object into a primary or 'reference' object. Returns a new object that matches the primary, plus all non-empty values from the secondary that are empty in the primary. Uses general.isEmpty to determine what counts as empty."
 const merge = (primary, secondary) => {
   const empty = (thing) => (
@@ -232,6 +240,7 @@ const excludeValOpts = { filterOn: 'values', includeOnMatch: false }
 module.exports = {
   aboutMe: () => myself.aboutMe,
   allAboutMe: () => myself,
+  initializeFromOptions,
   merge,
   recombine,
   remap,
