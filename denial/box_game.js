@@ -208,9 +208,7 @@ const print = (options, indexes, contents, size) => {
   renderBox(contents, options[indexes.unused], size)
 }
 
-const openNewBox = (size = 12, pokeStrat = max, useStrat = min) => {
-  let choosePoke = choose(pokeStrat)
-  let chooseUse = choose(useStrat)
+const openNewBox = (size = 12, choosePoke = max, chooseUse = min) => {
   let contents = replicate(0, size)
   contents.show = _debug
   return {
