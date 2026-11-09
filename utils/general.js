@@ -484,13 +484,6 @@ const arrayify = (item, howMany = 1) => Array.from({ length: howMany }, (_, i) =
   else if (typeof item === 'object') return structuredClone(item)
   else return item
 })
-myself.stringify = "arrayify/replicate, but for a string (or something you want converted to a string before replication). Accepts an additional parameter for what to join the replicates with (defaults to the enpty string)."
-// TODO: rename to 'replicate(As)String'
-const stringify = (snippet = ' ', n = 1, joinWith = '') => {
-  return String(joinWith) === '' ?
-      String(snippet).repeat(n)
-    : arrayify(String(snippet), n).join(joinWith)
-}
 
 myself.swap = "Swaps two elements of an Array (in-place). Returns the modified array."
 const swap = (arr, i, j) => {
@@ -709,7 +702,6 @@ module.exports = {
   findUniques, // seq
   getSorter, // seq(?)
   arrayify, // seq (re-export)
-  stringify,
   swap, // seq
   flattener, // seq
   iterEquals, // seq
