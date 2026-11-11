@@ -117,6 +117,7 @@ const Box = class {
 
   makeChoice(choosesFirst = this.choosesFirst) {
     if (this.contents.length === 0) {
+      console.assert(false, 'This branch never runs, does it? (Unless you try to make a choice from an already-empty box?)')
       // print literally none?? lol
       // printBox(contents)
       console.log()
@@ -129,6 +130,8 @@ const Box = class {
       const last = this.contents.pop()
       last.poke()
       this.renderChoice(last)
+      console.log(ending)
+      console.log()
       return
     }
     const left = randRemove(this.contents)
