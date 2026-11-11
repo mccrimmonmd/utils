@@ -87,7 +87,7 @@ const Box = class {
     const asStrings = repeat(
       (i) => {
         const row = this.contents.slice(BOX_WIDTH * i, BOX_WIDTH * (i + 1))
-        const string = row.map((square) => square.getRender() ?? '').join(' ')
+        const string = row.map((square) => square?.getRender() ?? '').join(' ')
         const padding = FULL_WIDTH - string.length
         return string + ' '.repeat(padding > 0 ? padding : 0)
       },
