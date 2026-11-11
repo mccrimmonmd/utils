@@ -38,10 +38,13 @@ const Square = class {
     this.fresh = true
   }
   getRender() {
-    const num = this.dots
-    if (this.fresh && num > 0) num = num - 1
-    const oldDots = ':'.repeat(Math.trunc(num / 2)) + num % 2 === 0 ? '' : '.'
-    const render = `[${oldDots}${this.fresh ? '*' : ''}]`
+    const num =
+      this.fresh && this.dots > 0 ?
+        this.dots - 1
+      : this.dots
+    const evenDots = ':'.repeat(Math.trunc(num / 2))
+    const oddDot = num % 2 === 0 ? '' : '.'
+    const render = `[${evenDots}${oddDot}${this.fresh ? '*' : ''}]`
     this.fresh = false
     return render
   }
