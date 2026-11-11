@@ -1,5 +1,5 @@
 const {
-  arrayify: replicate,
+  arrayify: repeat,
   random: {
     coinFlip,
     randNum,
@@ -54,7 +54,7 @@ const Box = class {
       showContents = _debug,
     } = {}
   ) {
-    this.contents = replicate(() => new Square(), size)
+    this.contents = repeat(() => new Square(), size)
     this.poke = pokeStrat
     this.use = useStrat
     this.showContents = showContents
@@ -71,7 +71,7 @@ const Box = class {
   }
 
   renderContents() {
-    let render = replicate(
+    const asStrings = repeat(
       (i) => {
         const row = this.contents.slice(BOX_WIDTH * i, BOX_WIDTH * (i + 1))
         const string = row.map((square) => square.getRender() ?? '').join(' ')
@@ -80,7 +80,7 @@ const Box = class {
       },
       Math.ceil(this.contents.length / BOX_WIDTH)
     )
-    render = drawing.makeRectangular(render)
+    const render = drawing.makeRectangular(asStrings)
     const width = Math.max(render[0].length, FULL_WIDTH)
     console.log('', '_'.repeat(width + 2))
     for (const boxString of render) {
@@ -162,7 +162,7 @@ const renderBox = (contents, unused, size = contents.length) => {
   console.log('|', ' '.repeat(boxString.length), '|')
   if (contents?.show) {
     let { BOX_WIDTH, FULL_WIDTH, boxLength } = getDimensions(size)
-    let boxStrings = replicate(
+    let boxStrings = repeat(
       (_, i) => {
         let row = contents.slice(BOX_WIDTH * i, BOX_WIDTH * (i + 1))
         let string = row.map(num => getPic(num) ?? '').join(' ')
@@ -209,7 +209,7 @@ const print = (options, indexes, contents, size) => {
 }
 
 const openNewBox = (size = 12, choosePoke = max, chooseUse = min) => {
-  let contents = replicate(0, size)
+  let contents = repeat(0, size)
   contents.show = _debug
   return {
     makeChoice: () => {
