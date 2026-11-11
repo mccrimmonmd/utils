@@ -92,7 +92,7 @@ const Box = class {
     console.log('\\', blank,   '/')
     console.log('|',  putBack, '|')
     console.log('|',  blank,   '|')
-    if (this.showContents) this.renderContents
+    console.log()
   }
 
   renderContents() {
@@ -162,6 +162,7 @@ const Box = class {
       0,
       usedLeft ? right : left
     )
+    if (this.showContents) this.renderContents()
   }
 }
 
