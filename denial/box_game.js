@@ -52,23 +52,34 @@ const Box = class {
       size = 12,
       pokeStrat = max,
       useStrat = min,
+      choosesFirst = 'none',
       showContents = _debug,
     } = {}
   ) {
     this.contents = repeat(() => new Square(), size)
     initializeFromOptions(
       this,
-      { pokeStrat, useStrat, showContents }
+      { pokeStrat, useStrat, choosesFirst, showContents }
     )
   }
 
-  renderChoice() {
-    // 'print' goes here...
-    const render = putBack?.getRender() ?? '  '
+  renderChoice(left, right, usedLeft, pokedLeft) {
+    let putBack
+    const leftPic = left.getRender()
+    if (right != null) {
+      const rightPic = right.getRender()
+      console.log(leftPic, rightPic)
+      putBack = usedLeft ? rightPic : leftPic
+    }
+    else {
+      console.log(leftPic)
+      putBack = ' '.repeat(2)
+    }
+    const blank = ' '.repeat(putBack.length)
     console.log()
-    console.log('\\', ' '.repeat(render.length), '/')
-    console.log('|', render, '|')
-    console.log('|', ' '.repeat(render.length), '|')
+    console.log('\\', blank,   '/')
+    console.log('|',  putBack, '|')
+    console.log('|',  blank,   '|')
     if (this.showContents) this.renderContents
   }
 
@@ -92,7 +103,7 @@ const Box = class {
     console.log()
   }
 
-  makeChoice(firstChoice = false) {
+  makeChoice(choosesFirst = this.choosesFirst) {
     if (this.contents.length === 0) {
       // print literally none?? lol
       // printBox(contents)
@@ -102,50 +113,43 @@ const Box = class {
     }
     if (this.contents.length === 1) {
       // OR: let 'none' be option here??
-      // (dots === Infinity?)
-      const last = this.contents[0]
+      // (dots = Infinity?)
+      const last = this.contents.pop()
       last.poke()
-      print({ left: last })
-      this.contents.pop()
-      print(
-        { left: last + 1, pokedLeft: true, usedLeft: true },
-        this.contents,
-        this.showContents
-      )
+      this.renderChoice(last)
       return
     }
     const left = randRemove(this.contents)
     const right = randRemove(this.contents)
-    const options = { left, right }
-    print(options)
-
     let pokedLeft
     let usedLeft
-    if (firstChoice === 'poke') {
-      pokedLeft = this.poke(left.dots, right.dots)
-      options[pokedLeft ? 'left' : 'right'].poke()
+    if (choosesFirst === 'poke') {
+      pokedLeft = this.pokeStrat(left.dots, right.dots)
+      (pokedLeft ? left : right).poke()
     }
-    usedLeft = this.use(
+    usedLeft = this.useStrat(
       left.dots,
       right.dots,
       pokedLeft
     )
-    if (firstChoice !== 'poke') {
-      pokedLeft = this.poke(
+    if (choosesFirst !== 'poke') {
+      pokedLeft = this.pokeStrat(
         left.dots,
         right.dots,
-        firstChoice === 'use' ? usedLeft : null
+        choosesFirst === 'use' ? usedLeft : null
       )
-      options[pokedLeft ? 'left' : 'right'].poke()
+      (pokedLeft ? left : right).poke()
     }
+    this.renderChoice(left, right, usedLeft, pokedLeft)
+    // this.contents.push(unused) would be simpler, but it's more
+    // fun visually to put it back in a random spot. If it turns
+    // out to be a performance issue (why would it???), I'll add
+    // a check to use push unless this.showContents is true.
     this.contents.splice(
       randInt(this.contents.length),
       0,
-      options[usedLeft ? 'left' : 'right']
+      usedLeft ? right : left
     )
-    print({ left, right, pokedLeft, usedLeft }, this.contents, this.showContents)
-  }
-}
 
 /*
 
@@ -246,21 +250,25 @@ const openNewBox = (size = 12, choosePoke = max, chooseUse = min) => {
 
 /* -------------------------- */
 
-const useUpTheBox = (box = openNewBox()) => {
-  box.contents.show = true
+const useUpTheBox = (box = new Box()) => {
   while (box.contents.length) {
     box.makeChoice()
   }
-  console.log(ending)
   return box
 }
 
+const quickOptions = {
+  choosesFirst: 'use',
+  showContents: true
+}
+
 const isModule = require.main !== module
-if (!isModule) useUpTheBox()
+if (!isModule) {
+  useUpTheBox(new Box(quickOptions))
+}
 
 module.exports = {
-  useUpTheBox,
-  openNewBox,
+  Box,
   strats: {
     max,
     min,
@@ -268,4 +276,5 @@ module.exports = {
     maxOrOpposite,
     coinFlip,
   },
+  useUpTheBox,
 } // = require('./box_game')
