@@ -68,23 +68,27 @@ const Box = class {
   }
 
   renderChoice(left, right, usedLeft, pokedLeft) {
+    let used
     let putBack
     const leftPic = left.getRender()
     if (right != null) {
       const rightPic = right.getRender()
       console.log(leftPic, rightPic)
-      putBack = usedLeft ? rightPic : leftPic
+      ;[used, putBack] =
+        usedLeft ?
+          [left.getRender(), right.getRender()]
+        : [right.getRender(), left.getRender()]
     }
     else {
       console.log(leftPic)
-      putBack = ' '.repeat(2)
+      ;[used, putBack] = [left.getRender(), ' '.repeat(2)]
     }
-    const blank = ' '.repeat(putBack.length)
     console.log()
 
     console.log(sep, used, /* sep2.repeat(used.dots), sep3 */)
     console.log()
 
+    const blank = ' '.repeat(putBack.length)
     console.log('\\', blank,   '/')
     console.log('|',  putBack, '|')
     console.log('|',  blank,   '|')
