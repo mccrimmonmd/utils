@@ -32,7 +32,7 @@ const Square = class {
     this.dots = 0
     this.fresh = false
   }
-  newDot() {
+  poke() {
     this.dots += howMany
     this.fresh = true
   }
@@ -104,6 +104,7 @@ const Box = class {
       // OR: let 'none' be option here??
       // (dots === Infinity?)
       const last = this.contents[0]
+      last.poke()
       print({ left: last })
       this.contents.pop()
       print(
@@ -122,7 +123,7 @@ const Box = class {
     let usedLeft
     if (firstChoice === 'poke') {
       pokedLeft = this.poke(left.dots, right.dots)
-      options[pokedLeft ? 'left' : 'right'].newDot()
+      options[pokedLeft ? 'left' : 'right'].poke()
     }
     usedLeft = this.use(
       left.dots,
@@ -135,7 +136,7 @@ const Box = class {
         right.dots,
         firstChoice === 'use' ? usedLeft : null
       )
-      options[pokedLeft ? 'left' : 'right'].newDot()
+      options[pokedLeft ? 'left' : 'right'].poke()
     }
     this.contents.splice(
       randInt(this.contents.length),
