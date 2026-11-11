@@ -1,7 +1,7 @@
-// TODO: switch to deno (deno no more???), test
-// TODO: transition to JSDoc
-// TODO: pull some of these functions out into new submodule "iterable"
-// ("sequences"?)
+// TODO: pull some of these functions out into new submodule "sequences"
+// TODO: switch to deno (contribute for Rust practice?) or bun
+// TODO: testing
+// TODO: transition to JSDoc (and/or TypeScript)
 
 const myself = {
   aboutMe: `A collection of ECMAScript functions for many common (and some uncommon) development tasks. The 'general' module contains functions focused on debugging, simple tests, and metaprogramming, along with a few 'just for fun'/niche/miscellaneous functions. Some especially common/useful functions are re-exported from more specialized modules.
