@@ -93,13 +93,13 @@ const Box = class {
       },
       Math.ceil(this.contents.length / BOX_WIDTH)
     )
-    const render = drawing.makeRectangular(asStrings)
-    const width = Math.max(render[0].length, FULL_WIDTH)
-    console.log('', '_'.repeat(width + 2))
-    for (const boxString of render) {
-      console.log('|', boxString, '|')
+    const render = drawing.makeRectangular(asStrings) // is this even necessary?
+    const width = Math.max(render[0].length, FULL_WIDTH) // surely not both of these??
+    console.log(' ' + '_'.repeat(width + 2))
+    for (const line of render) {
+      console.log('|', line, '|')
     }
-    console.log('', '-'.repeat(width + 2))
+    console.log(' ' + '_'.repeat(width + 2))
     console.log()
   }
 
