@@ -91,18 +91,9 @@ const entries = function* (iterable) {
 myself.print = "console.dir shorthand."
 const print = (obj, depth = null) => console.dir(obj, { depth })
 
-myself.printFn = "A functional variant of 'print' that returns the printed object."
-const printFn = (obj, depth = null) => {
-  ;`
-  the main (only?) use-case for printFn is printing and returning something at
-  the same time (for e.g. debugging): 'return printFn(thing)'
-  ;`
-  print(obj, depth)
-  return obj
 }
 
-myself.printVar = "For logging the name, location, and value of a variable in a structured way."
-// TODO?: make functional variant of this, too?
+myself.printVar = "For logging the name, location, and value of a variable in a structured way. Returns an object with the logged information."
 const printVar = (
   value,
   name = '<anonymous>',
@@ -682,7 +673,6 @@ module.exports = {
   zipIter, // seq
   entries, // seq
   print,
-  printFn,
   printVar,
   printVars,
   pluralize,
