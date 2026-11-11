@@ -26,10 +26,6 @@ const maxOrOpposite = (a, b, rivalChoice = null) =>
     rivalChoice ? b : a
   : max(a, b)
 
-// const choose = (strat) => (a, b) => {
-//   return strat(a, b) ? [0, 1] : [1, 0]
-// }
-
 const Square = class {
   constructor() {
     this.dots = 0
@@ -148,7 +144,11 @@ const Box = class {
   }
 }
 
-/* -------------------------- */
+/*
+
+const choose = (strat) => (a, b) => {
+  return strat(a, b) ? [0, 1] : [1, 0]
+}
 
 const renderBox = (contents, unused, size = contents.length) => {
   // let strArr = []
@@ -240,6 +240,8 @@ const openNewBox = (size = 12, choosePoke = max, chooseUse = min) => {
     contents,
   }
 }
+
+/* -------------------------- */
 
 const useUpTheBox = (box = openNewBox()) => {
   box.contents.show = true
