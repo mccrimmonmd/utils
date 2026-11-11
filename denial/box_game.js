@@ -34,7 +34,7 @@ const Square = class {
     this.fresh = false
   }
   poke() {
-    this.dots += howMany
+    this.dots += 1
     this.fresh = true
   }
   getRender() {
