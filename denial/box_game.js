@@ -111,7 +111,7 @@ const Box = class {
     for (const line of render) {
       console.log('|', line, '|')
     }
-    console.log(' ' + '_'.repeat(width + 2))
+    console.log('|' + '_'.repeat(width + 2) + '|')
     console.log()
   }
 
