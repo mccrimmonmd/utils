@@ -140,7 +140,7 @@ const Box = class {
     let usedLeft
     if (choosesFirst === 'poke') {
       pokedLeft = this.pokeStrat(left.dots, right.dots)
-      (pokedLeft ? left : right).poke()
+      ;(pokedLeft ? left : right).poke()
     }
     usedLeft = this.useStrat(
       left.dots,
@@ -153,7 +153,7 @@ const Box = class {
         right.dots,
         choosesFirst === 'use' ? usedLeft : null
       )
-      (pokedLeft ? left : right).poke()
+      ;(pokedLeft ? left : right).poke()
     }
     this.renderChoice(left, right, usedLeft, pokedLeft)
     // this.contents.push(unused) would be simpler, but it's more
