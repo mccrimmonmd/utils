@@ -152,7 +152,9 @@ const TypeCheckedArray = class extends Array {
 }
 
 myself.WrappedBoundsArray = "A subclass of Array that 'wraps around' indicies outside its bounds. More precisely, the index is taken modulo the array's length, and if the result is negative the array's length is added to it: `arr[-1]` will return the last element, `arr[arr.length]` will return the first element, and so on."
-// TODO: see how it handles mutating methods like 'push', as well as copying methods like 'concat' and '+'
+// TODO: fix mutating methods (push, adding with splice, possibly others)
+// (copying and iterating seem to be fine, but
+// probably worth doing extra testing anyway)
 const WrappedBoundsArray = class extends Array {
   constructor (...params) {
     super(...params)
