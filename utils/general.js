@@ -88,9 +88,10 @@ const entries = function* (iterable) {
   }
 }
 
-myself.print = "console.dir shorthand."
-const print = (obj, depth = null) => console.dir(obj, { depth })
-
+myself.print = "console.dir shorthand. Also returns the printed object (instead of undefined)."
+const print = (obj, depth = null) => {
+  console.dir(obj, { depth })
+  return obj
 }
 
 myself.printVar = "For logging the name, location, and value of a variable in a structured way. Returns an object with the logged information."
@@ -105,10 +106,13 @@ const printVar = (
   console.log('-*-'.repeat(20))
   console.dir(value)
   console.log('=*='.repeat(20))
+  return { value, name, location }
 }
 myself.printVars = "Uses printVar to log multiple variables."
 const printVars = (...variables) => {
-  for (const variable of variables) printVar(...ensureIterable(variable))
+  const results = []
+  for (const variable of variables) results.push(printVar(...ensureIterable(variable)))
+  return results
 }
 
 myself.pluralize = "Returns the plural version of the given word if the given number is not 1 or -1. Makes a token attempt to be grammatical, but no guarantees."
