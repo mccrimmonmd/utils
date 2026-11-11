@@ -177,8 +177,8 @@ const useUpTheBox = (box = new Box()) => {
 }
 
 const quickOptions = {
-  choosesFirst: 'use',
-  showContents: true
+  choosesFirst: 'poke',
+  showContents: true,
 }
 
 const isModule = require.main !== module
