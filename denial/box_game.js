@@ -12,8 +12,9 @@ const {
 
 const _debug = false
 const ending = '-> '.repeat(3) + '()'
-const sep = '=> '
-const sep2 = ' {'
+const sep = '=>'
+const sep2 = ' ->'
+const sep3 = '{'
 
 const BOX_WIDTH = 6
 const FULL_WIDTH = BOX_WIDTH * 3 - 1
@@ -77,6 +78,10 @@ const Box = class {
     }
     const blank = ' '.repeat(putBack.length)
     console.log()
+
+    console.log(sep, used, /* sep2.repeat(used.dots), sep3 */)
+    console.log()
+
     console.log('\\', blank,   '/')
     console.log('|',  putBack, '|')
     console.log('|',  blank,   '|')
