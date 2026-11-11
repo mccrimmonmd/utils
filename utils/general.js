@@ -77,7 +77,7 @@ const zipIter = function* (iterables, ...padding) {
 
 myself.entries = "A generic version of Array.prototype.entries that works with any iterable."
 const entries = function* (iterable) {
-  if (typeof iterable.entries === 'function') yield* iterable.entries()
+  if (typeof iterable.entries === 'function') return yield* iterable.entries()
   let i = 0
   const iterator = iterable[Symbol.iterator]()
   let entry = iterator.next()
