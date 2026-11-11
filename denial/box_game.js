@@ -10,7 +10,7 @@ const {
   drawing,
 } = require('../utils')
 
-const _debug = true
+const _debug = false
 const ending = '-> '.repeat(3) + '()'
 const sep = '=> '
 const sep2 = ' {'
