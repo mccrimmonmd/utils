@@ -1,5 +1,6 @@
 const {
   arrayify: repeat,
+  objects: { initializeFromOptions },
   random: {
     coinFlip,
     randNum,
@@ -55,9 +56,10 @@ const Box = class {
     } = {}
   ) {
     this.contents = repeat(() => new Square(), size)
-    this.poke = pokeStrat
-    this.use = useStrat
-    this.showContents = showContents
+    initializeFromOptions(
+      this,
+      { pokeStrat, useStrat, showContents }
+    )
   }
 
   renderChoice() {
