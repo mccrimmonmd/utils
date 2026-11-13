@@ -156,14 +156,7 @@ myself.WrappedBoundsArray = "A subclass of Array that 'wraps around' indicies ou
 // (copying and iterating seem to be fine, but
 // probably worth doing extra testing also)
 const WrappedBoundsArray = class extends Array {
-  constructor (...params) {
-    super(...params)
-    return indexWrapify(this)
-  }
-}
-"A helper function for WrappedBoundsArray. I considered exporting it, but it seems more idiomatic to just do something like `const wrappedArray = new WrappedBoundsArray(...arrayIWantToWrap)` instead. I should probably integrate it into the object's constructor at some point."
-const indexWrapify = (obj) => {
-  const wrapIndex = (arr, prop) => {
+  static #wrapIndex(arr, prop) {
     if (['number', 'bigint', 'string'].includes(typeof prop)) {
       let i = Number(prop)
       if (Number.isInteger(i)) {
@@ -173,16 +166,22 @@ const indexWrapify = (obj) => {
     }
     return prop
   }
-  return new Proxy(obj, {
-    get(target, prop, receiver) {
-      prop = wrapIndex(target, prop)
-      return Reflect.get(target, prop, receiver)
-    },
-    set(target, prop, value, receiver) {
-      prop = wrapIndex(target, prop)
-      return Reflect.set(target, prop, value, receiver)
-    }
-  })
+  constructor (...params) {
+    super(...params)
+    return new Proxy(
+      this,
+      {
+        get(target, prop, receiver) {
+          prop = WrappedBoundsArray.#wrapIndex(target, prop)
+          return Reflect.get(target, prop, receiver)
+        },
+        set(target, prop, value, receiver) {
+          prop = WrappedBoundsArray.#wrapIndex(target, prop)
+          return Reflect.set(target, prop, value, receiver)
+        },
+      }
+    )
+  }
 }
 
 myself.isTruthy = "Javascript's truthiness rules are obnoxious and I always second-guess myself when trying to remember them."
