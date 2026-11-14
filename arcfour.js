@@ -3,7 +3,7 @@ const {
   range,
   arrayify,
   swap,
-  indexWrapify,
+  WrappedBoundsArray,
   random: {
     randInt
   },
@@ -23,7 +23,7 @@ const parseDec = (strings) => new Uint8Array(
 )
 
 const setup = (key, N) => {
-  const state = indexWrapify([...range(256)])
+  const state = new WrappedBoundsArray(...range(256))
   console.assert(state[state.length] === state[0])
   console.assert(state[-1] === state[state.length - 1])
   let j = 0
