@@ -78,7 +78,7 @@ module.exports = {
 ;(async () => {
   await module.exports.decode(
     'ThomasJefferson',
-    { input: 'C:/Users/malcolm.mccrimmon/Downloads/cstest/CKNIGHT.CS1' },
+    { input: './ctest/CKNIGHT.CS1', output: './ctest/CKNIGHT.GIF' },
   )
 })()
 
