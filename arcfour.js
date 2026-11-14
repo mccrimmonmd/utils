@@ -1,7 +1,7 @@
 const fsp = require('fs').promises
 const {
   range,
-  arrayify,
+  arrayify: repeat,
   swap,
   WrappedBoundsArray,
   random: {
@@ -12,11 +12,11 @@ const {
 const bytesToString = (bytes) => String.fromCharCode(...bytes)
 
 const stringToBytes = (string) => new Uint8Array(
-  arrayify( (i) => string.charCodeAt(i), string.length )
+  repeat((i) => string.charCodeAt(i), string.length)
 )
 
 const parseHex = (strings) => new Uint8Array(
-  [...strings].map( (s) => Number('0x' + s) )
+  [...strings].map((s) => Number('0x' + s))
 )
 const parseDec = (strings) => new Uint8Array(
   [...strings].map(Number)
@@ -59,7 +59,7 @@ const saber = (iVec, cipher, keyText, N) => {
 module.exports = {
   encode: async (key, { N = 1, input = './input.cs', output } = {}) => {
     const cipher = new Uint8Array(await fsp.readFile(input))
-    const iVec = arrayify(() => randInt(256), 10)
+    const iVec = repeat(() => randInt(256), 10)
     const outputBytes = new Uint8Array([...iVec, ...saber(iVec, cipher, key, N)])
     console.log(outputBytes)
     if (output != null) await fsp.writeFile(outputBytes, output)
