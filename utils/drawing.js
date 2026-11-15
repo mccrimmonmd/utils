@@ -1,7 +1,8 @@
 const myself = {
   aboutMe: "Functions for drawing and animating ASCII art."
 }
-const { len, print, arrayify } = require('./general')
+const { print } = require('./general')
+const { len, repeat } = require('./sequences')
 
 myself.draw = "Prints the given string or string array to the console as ASCII art."
 const draw = (picture) => {
@@ -17,7 +18,7 @@ const combinePics = (pictures, padding = 0) => {
   pictures = pictures.map(makeRectangular)
   let height = Math.max(...pictures.map(pic => pic.length))
   
-  let lines = arrayify([], height)
+  let lines = repeat([], height)
   for (const pic of pictures) {
     let i = 0
     for (; i < pic.length; i++) {

@@ -1,8 +1,8 @@
 const myself = {
   aboutMe: "Functions for working with numbers and sequences of numbers."
 }
-const { print, len, arrayify, range } = require('./general')
-const { sum, product, diffsCalculator } = require('./reducers')
+const { range } = require('./general')
+const { sum, diffsCalculator } = require('./reducers')
 const op = require('./operators')
 
 myself.Complex = "Complex numbers. Why not??"
@@ -87,7 +87,10 @@ const roundDecimal = (value, places = 2) => {
 
 myself.arithmeticMean = "Calculates the arithmetic mean of a list of numbers. Can also be used to calculate the 'sample mean' (e.g. for finding the variance)."
 const arithmeticMean = (values, isSample = false) => {
-  if (!len(values) || (values.length === 1 && isSample)) return NaN
+  if (values == null
+    || !values.length
+    || (values.length === 1 && isSample)
+  ) return NaN
   return values.reduce(sum) / (isSample ? values.length - 1 : values.length)
 }
 

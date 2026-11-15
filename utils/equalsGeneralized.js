@@ -1,4 +1,4 @@
-const { isIterable, iterEqualsUnordered } = require('./general')
+const { isIterable, iterEqualsUnordered } = require('./sequences')
 
 module.exports = (
   objA,

@@ -1,7 +1,7 @@
 const myself = {
   aboutMe: "Functions for analyzing dice rolls."
 }
-const { print, arrayify } = require('./general')
+const { repeat } = require('./general')
 const { roundDecimal, isInt } = require('./numbers')
 const { rollDie, rollDice } = require('./random')
 const { allKeys } = require('./objects')
@@ -21,7 +21,7 @@ const countSides = (dice = 4, sides, rStyle = false) => {
     dice = [...dice]
     sides = sides ?? Math.max(...dice)
   }
-  const multiples = arrayify(0, sides)
+  const multiples = repeat(0, sides)
   dice.reverse()
   for (const result of dice) {
     if (rStyle && result !== dice[0]) break
@@ -82,7 +82,7 @@ const generateMultiples = (
   dice = 4,
   sides = 6,
   rStyle = false,
-) => arrayify(() => countSides(dice, sides, rStyle), amount)
+) => repeat(() => countSides(dice, sides, rStyle), amount)
 
 myself.printMultiples = "Takes a result from countSides and prints it to the console."
 const printMultiples = (multiples) =>

@@ -10,7 +10,7 @@ const moduleNames = [
   // "common",
   "diceStats",
   "drawing",
-  // "sequences",
+  "sequences",
   // "meta",
   "numbers",
   "objects",
@@ -24,7 +24,7 @@ for (const [ name, module ] of moduleEntries) {
 }
 
 module.exports = {
-  ...general, // ...common,
+  ...general, // ...common, (or compile common functions here, explicitly, to ensure no circular dep.s)
   aboutMe: () => myself,
   op,
   ...Object.fromEntries(moduleEntries)
