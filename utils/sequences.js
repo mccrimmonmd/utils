@@ -1,5 +1,5 @@
 const myself = {
-  aboutMe: "blah blah blah lists and iterables and stuff"
+  aboutMe: "Functions for working with and/or generating lists, Arrays, iterables, and so on."
 }
 
 const { max, min, anyDefault } = require('./reducers')
