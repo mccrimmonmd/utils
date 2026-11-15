@@ -16,11 +16,22 @@ const myself = {
   Run \`allAboutMe()\` within any module to see documentation of its functions.`
 } 
 
-const { anyDefault } = require('./reducers')
-const { range, isIterable, ensureIterable, makeGroups, repeat } = require('./sequences') // for re-export
-
 const backToWork = require('./BACK TO WORK')
 myself.backToWork = backToWork
+
+const { anyDefault } = require('./reducers')
+const {
+  allAboutMe: seqDocs,
+  ensureIterable, // not re-exported
+  range, 
+  isIterable,
+  repeat,
+} = require('./sequences')
+for (const [func, doc] of Object.entries(seqDocs())) {
+  if (['range', 'isIterable', 'repeat',].includes(func)) {
+    myself[func] = doc + " Re-exported from the 'sequences' module."
+  }
+}
 
 myself.print = "console.dir shorthand. Also returns the printed object (instead of undefined)."
 const print = (obj, depth = null) => {
@@ -422,7 +433,6 @@ module.exports = {
   isEmpty,
   memoize,
   timeIt,
-  makeGroups,
   getSorter,
   repeat,
   multilineRegex,
