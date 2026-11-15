@@ -1,7 +1,9 @@
 const {
-  range,
-  zip,
-  arrayify,
+  sequences: {
+    range,
+    zip,
+    repeat,
+  }
   diceStats: {
     dice
   },
@@ -55,8 +57,8 @@ const applyModifiers = (rolls, modifiers) => {
 }
 
 const stats = {}
-const play = (maxRounds = Infinity, totalScore = 0, modifiers = arrayify(0, 5)) => {
-  let locked = arrayify(false, 5)
+const play = (maxRounds = Infinity, totalScore = 0, modifiers = repeat(0, 5)) => {
+  let locked = repeat(false, 5)
   let firstTen = true
   let firstTwelve = true
   let lockTwelves = false

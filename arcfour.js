@@ -1,9 +1,11 @@
 const fsp = require('fs').promises
 const {
-  range,
-  arrayify: repeat,
-  swap,
-  WrappedBoundsArray,
+  sequences: {
+    range,
+    repeat,
+    swap,
+    WrappedBoundsArray,
+  }
   random: {
     randInt
   },

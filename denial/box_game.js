@@ -1,5 +1,5 @@
 const {
-  arrayify: repeat,
+  repeat,
   objects: { initializeFromOptions },
   random: {
     coinFlip,
