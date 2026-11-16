@@ -1,9 +1,11 @@
 const fs = require('fs')
 const path = require('path')
 
-const myself = {
-  aboutMe: "Functions for working with objects, especially JSON."
-}
+/**
+  Functions for working with objects, especially JSON.
+  @module
+*/
+
 const {
   isEmpty,
   isIterable,
@@ -12,7 +14,7 @@ const {
 } = require('./general')
 const { sum, product } = require('./reducers')
 
-// myself.initializeFromOptions = "For the object constructor pattern where an options object is provided as a parameter, and the object's instance variables have the same names as the options. Example: `constructor({ a = 'helf', b = 42, c } = {}) { instanceFromOptions(this, { a, b, c }); }` is equivalent to: `constructor({ a = 'helf', b = 42, c } = {}) { this.a = a; this.b = b; this.c = c; }` (even shorter without defaults--although it isn't self-documenting this way: `constructor(options) { instanceFromOptions(this, options); }`). Can also be used outside of constructors, for (contrived) example: `const myFancySet = instanceFromOptions(new Set(someIterable), { extraProperty: 'helf', secretFunction: () => console.log('You found me!') })`"
+/** For the object constructor pattern where an options object is provided as a parameter, and the object's instance variables have the same names as the options. Example: `constructor({ a = 'helf', b = 42, c } = {}) { instanceFromOptions(this, { a, b, c }); }` is equivalent to: `constructor({ a = 'helf', b = 42, c } = {}) { this.a = a; this.b = b; this.c = c; }` (even shorter without defaults--although it isn't self-documenting this way: `constructor(options) { instanceFromOptions(this, options); }`). Can also be used outside of constructors, for (contrived) example: `const myFancySet = instanceFromOptions(new Set(someIterable), { extraProperty: 'helf', secretFunction: () => console.log('You found me!') })` */
 const initializeFromOptions = (obj, options) => {
   for (const [key, val] of Object.entries(options)) {
     obj[key] = val
@@ -20,7 +22,7 @@ const initializeFromOptions = (obj, options) => {
   return obj
 }
 
-myself.merge = "Merges a secondary or 'fallback' object into a primary or 'reference' object. Returns a new object that matches the primary, plus all non-empty values from the secondary that are empty in the primary. Uses general.isEmpty to determine what counts as empty."
+/** Merges a secondary or 'fallback' object into a primary or 'reference' object. Returns a new object that matches the primary, plus all non-empty values from the secondary that are empty in the primary. Uses general.isEmpty to determine what counts as empty. */
 const merge = (primary, secondary) => {
   const empty = (thing) => (
     ['undefined', 'null'].contains(thing) || isEmpty(thing)
@@ -35,7 +37,7 @@ const merge = (primary, secondary) => {
   return merged
 }
 
-myself.recombine = "Sort of like Python's 'zip' function, generalized for Objects. Or: sort of like an Excel pivot table, generalized for JSON. Haven't come up with a better way to describe it except by example (see source)."
+/** Sort of like Python's 'zip' function, generalized for Objects. Or: sort of like an Excel pivot table, generalized for JSON. Haven't come up with a better way to describe it except by example (see source). */
 ;`
 > data = [{ id: xid, xKey: xVal1 }, { id: xid, xKey: xVal2, xKey2: xVal3 }, { id: yid, yKey: yVal1 }, ...]
 > recombine(data, (obj) => obj.id)
@@ -66,7 +68,7 @@ const recombine = (
   }, {})
 }
 
-myself.remap = "Array.prototype.map, generalized for other iterable and non-iterable objects."
+/** Array.prototype.map, generalized for other iterable and non-iterable objects. */
 const remap = (obj, mapper) => {
   if (isIterable(obj)) return [...obj].map(mapper)
   const remapped = {}
@@ -76,11 +78,11 @@ const remap = (obj, mapper) => {
   return remapped
 }
 
-myself.allValues = "Returns an array of every unique value set to the given key among the provided list of objects."
+/** Returns an array of every unique value set to the given key among the provided list of objects. */
 const allValues = (listOfObjects, field) =>
   [ ...new Set(listOfObjects.map(obj => obj[field])) ]
 
-myself.allKeys = "Returns an array of every unique key among the objects provided. Takes an optional regular expression to filter the results."
+/** Returns an array of every unique key among the objects provided. Takes an optional regular expression to filter the results. */
 const allKeys = (listOfObjects, regex = /(?:)/) => {
   // The empty regex `/(?:)/` matches any string
   const uniqueKeys = new Set(listOfObjects.flatMap(Object.keys))
@@ -144,7 +146,7 @@ const compareBoth   = compareBy('intersection')
 const compareEither = compareBy('union')
 const compareXor    = compareBy('biDiff')
 
-myself.extractNested = "Separates the given object's contents into 'flat' primitives and nested objects (including Arrays, but not including null)."
+/** Separates the given object's contents into 'flat' primitives and nested objects (including Arrays, but not including null). */
 const extractNested = (obj) => {
   return Object.entries(obj).reduce(
     ({ flat, nested }, [ key, value ]) => {
@@ -160,12 +162,12 @@ const extractNested = (obj) => {
   )
 }
 
-myself.escapeCsvEntry = "Helper function for 'toCsv'. Converts an object to a string and escapes any quotes, commas, or newlines."
+/** Helper function for 'toCsv'. Converts an object to a string and escapes any quotes, commas, or newlines. */
 const escapeCsvEntry = (entry) => {
   entry = String(entry ?? '')
   return /,|\n|"/.test(entry) ? `"${entry.replaceAll('"', '""')}"` : entry
 }
-myself.toCsv = "Converts a list of objects into a CSV file and returns the result as a string. Also writes the output to the given destination ('./output.csv' by default), unless fileName or filePath are set to null."
+/** Converts a list of objects into a CSV file and returns the result as a string. Also writes the output to the given destination ('./output.csv' by default), unless fileName or filePath are set to null. */
 const toCsv = (
   listOfObjects,
   {
@@ -207,15 +209,15 @@ const toCsv = (
   return output
 }
 
-myself.count = "Calculates the total of a list of objects. The number each object represents is determined by the given function (default: Number())."
+/** Calculates the total of a list of objects. The number each object represents is determined by the given function (default: Number()). */
 const count = (listOfObjects, getValue = Number) =>
   listOfObjects.map(getValue).reduce(sum, 0)
 
-myself.multiply = "Same as count, but with multiplication instead of addition."
+/** Same as count, but with multiplication instead of addition. */
 const multiply = (listOfObjects, getValue = Number) =>
   listOfObjects.map(getValue).reduce(product, 1)
 
-myself.makeEnum = "Factory for creating enum-like objects that associate Strings with Symbols."
+/** Factory for creating enum-like objects that associate Strings with Symbols. */
 const makeEnum = (...names) => {
   if (names.length === 1 && isIterable(names[0])) {
     names = names[0]
@@ -230,6 +232,7 @@ const makeEnum = (...names) => {
   return enumerable
 }
 
+// TODO: migrate docs
 myself.filter.many = "Convenience function for mapping filter.object to a list of multiple objects."
 myself.filter.xxxx = "Convenience functions for using filter.object with preset options: byKeys (default), byValues, excludeKeys, excludeValues" 
 
@@ -238,8 +241,6 @@ const excludeOpts = { includeOnMatch: false }
 const excludeValOpts = { filterOn: 'values', includeOnMatch: false }
 
 module.exports = {
-  aboutMe: () => myself.aboutMe,
-  allAboutMe: () => myself,
   initializeFromOptions,
   merge,
   recombine,

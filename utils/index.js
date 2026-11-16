@@ -1,10 +1,10 @@
 const general = require('./general')
 const op = require('./operators')
 
-const myself = {
-  utils: general.aboutMe(),
-  op: op('aboutMe'),
-}
+// const myself = {
+//   utils: general.aboutMe(),
+//   op: op('aboutMe'),
+// }
 
 const moduleNames = [
   // "common",
@@ -19,13 +19,13 @@ const moduleNames = [
 ]
 
 const moduleEntries = moduleNames.map(name => [ name, require(`./${name}`) ])
-for (const [ name, module ] of moduleEntries) {
-  myself[name] = module.aboutMe()
-}
+// for (const [ name, module ] of moduleEntries) {
+//   myself[name] = module.aboutMe()
+// }
 
 module.exports = {
   ...general, // ...common, (or compile common functions here, explicitly, to ensure no circular dep.s)
-  aboutMe: () => myself,
+  // aboutMe: () => myself,
   op,
   ...Object.fromEntries(moduleEntries)
 }

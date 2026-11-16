@@ -1,15 +1,18 @@
-const myself = {
-  aboutMe: "Functions for analyzing dice rolls."
-}
+/**
+  Functions for analyzing dice rolls.
+  @module
+*/
 const { repeat } = require('./general')
 const { roundDecimal, isInt } = require('./numbers')
-const { rollDie, rollDice } = require('./random')
+const {
+  /** Simulates a single roll of a die. Defaults to d6. */
+  rollDie,
+  /** Generates a list of random dice rolls. Defaults to 4d6. */
+  rollDice,
+} = require('./random')
 const { allKeys } = require('./objects')
 
-myself.rollDie = "Simulates a single roll of a die. Defaults to d6."
-myself.rollDice = "Generates a list of random dice rolls. Defaults to 4d6."
-
-myself.countSides = "Generates (or takes as a parameter) a list of dice rolls and returns an array counting the number of times each face came up (index 0 = number of 1s, etc.) Takes an optional parameter for using 'Reddit style' multiples, where duplicates only count if they're at the end."
+/** Generates (or takes as a parameter) a list of dice rolls and returns an array counting the number of times each face came up (index 0 = number of 1s, etc.) Takes an optional parameter for using 'Reddit style' multiples, where duplicates only count if they're at the end. */
 const countSides = (dice = 4, sides, rStyle = false) => {
   // 'sides' is optional, but it can't be a default parameter because the
   // default is different depending on whether 'dice' is a number or an array
@@ -30,7 +33,7 @@ const countSides = (dice = 4, sides, rStyle = false) => {
   return multiples
 }
 
-myself.getShortNames = "Takes the counts returned by countSides and determines the number of times any side came up twice, three times, etc. Returns an object with keys in the form '2s', '3s', '4s', ..."
+/** Takes the counts returned by countSides and determines the number of times any side came up twice, three times, etc. Returns an object with keys in the form '2s', '3s', '4s', ... */
 const getShortNames = (multiples) => {
   const names = {}
   for (const count of multiples) {
@@ -41,7 +44,7 @@ const getShortNames = (multiples) => {
   return names
 }
 
-myself.getFullName = "Takes the object returned by getShortNames and translates the corresponding multiple into its english nickname (dubs, trips, etc.) Each possible combination of multiples (e.g. a double and a triple at the same time) is given its own special name."
+/** Takes the object returned by getShortNames and translates the corresponding multiple into its english nickname (dubs, trips, etc.) Each possible combination of multiples (e.g. a double and a triple at the same time) is given its own special name. */
 const getFullName = (...source) => {
   let shortNames
   if (typeof source[0] === 'object') shortNames = source[0]
@@ -76,7 +79,7 @@ const getFullName = (...source) => {
   }
 }
 
-myself.generateMultiples = "Calls countSides the given number of times and aggregates the results in an array (for use by e.g. fullNameStats)."
+/** Calls countSides the given number of times and aggregates the results in an array (for use by e.g. fullNameStats). */
 const generateMultiples = (
   amount = 1000,
   dice = 4,
@@ -84,7 +87,7 @@ const generateMultiples = (
   rStyle = false,
 ) => repeat(() => countSides(dice, sides, rStyle), amount)
 
-myself.printMultiples = "Takes a result from countSides and prints it to the console."
+/** Takes a result from countSides and prints it to the console. */
 const printMultiples = (multiples) =>
   console.log(multiples.sort(), '-', getShortNames(multiples))
 
@@ -117,7 +120,7 @@ const initializeNames = (results) => {
   return fullNames
 }
 
-myself.fullNameStats = "Takes a list of multiples (from countSides) and counts the number of times each type of multiple or combination appears in it. Takes an optional parameter to display the results as percentages instead of raw counts: when provided as a number, it is interpreted as the desired decimal precision (default 0)."
+/** Takes a list of multiples (from countSides) and counts the number of times each type of multiple or combination appears in it. Takes an optional parameter to display the results as percentages instead of raw counts: when provided as a number, it is interpreted as the desired decimal precision (default 0). */
 const fullNameStats = (results, asPercentages = false) => {
   const shortNames = results.map(getShortNames)
   const fullNames = shortNames.map(getFullName).reduce((counts, name) => {
@@ -136,7 +139,7 @@ const fullNameStats = (results, asPercentages = false) => {
   return fullNames
 }
 
-myself.runStatsTest = "Takes a number and sides of dice to roll and the number of iterations to simulate, generates the results, and counts the total number and type of all multiples rolled."
+/** Takes a number and sides of dice to roll and the number of iterations to simulate, generates the results, and counts the total number and type of all multiples rolled. */
 const runStatsTest = (
   {
     iters = 1000,
@@ -163,8 +166,6 @@ const runStatsTest = (
 // runStatsTest({ verbose: true })
 
 module.exports = {
-  aboutMe: () => myself.aboutMe,
-  allAboutMe: () => myself,
   rollDie,
   rollDice,
   countSides,

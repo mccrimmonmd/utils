@@ -1,6 +1,7 @@
-const myself = {
-  aboutMe: "Functional equivalents of JavaScript's native operators. Run 'allAboutMe' to get a list of all of them."
-}
+/**
+  Functional equivalents of JavaScript's native operators. Run 'allAboutMe' to get a list of all of them.
+  @module
+*/
 const { pluralize } = require('./general')
 const { orReducer, andReducer, iterReducer, sum, product } = require('./reducers')
 
@@ -50,8 +51,8 @@ const compare = (type, params) => {
 }
 
 const opFuncs = {
-  aboutMe: myself.aboutMe,
-  allAboutMe: function () { return Object.keys(this) }, // why no worky???
+  // aboutMe: myself.aboutMe,
+  // allAboutMe: function () { return Object.keys(this) }, // why no worky???
 
   // non-chaining operators //
 

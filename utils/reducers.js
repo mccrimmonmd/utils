@@ -1,8 +1,9 @@
-const myself = {
-  aboutMe: "Functions to be provided as the callback to Array.prototype.reduce."
-}
+/**
+  Functions to be provided as the callback to Array.prototype.reduce.
+  @module
+*/
 
-myself.flatten = "Concatenates two items that may or may not be Arrays, using push instead of concat for speed. (You should probably just use Array.prototype.flat instead.)"
+/** Concatenates two items that may or may not be Arrays, using push instead of concat for speed. (You should probably just use Array.prototype.flat instead.) */
 const flatten = (flattened, bump, i) => {
   if (i === 1) {
     // If the first value was not user-provided, we should either wrap it in
@@ -17,10 +18,10 @@ const flatten = (flattened, bump, i) => {
   return flattened
 }
 
-myself.andReducer = "Takes a function that compares two objects and returns a boolean; returns a callback that tests every adjacent pair in the array and returns true iff every test returns true. Used in operators.js for chaining."
+/** Takes a function that compares two objects and returns a boolean; returns a callback that tests every adjacent pair in the array and returns true iff every test returns true. Used in operators.js for chaining. */
 const andReducer = (func) => boolReduce(func, 'and')
 
-myself.orReducer = "Same as andReducer, except the callback returns true iff *any* adjacent pair passes its test."
+/** Same as andReducer, except the callback returns true iff *any* adjacent pair passes its test. */
 const orReducer = (func) => boolReduce(func, 'or')
 
 "Private helper function for orReducer/andReducer"
@@ -42,7 +43,7 @@ const boolReduce = (func, type) => {
   }
 }
 
-myself.iterReducer = "A function for reducing an iterable without having to convert it to an Array first."
+/** A function for reducing an iterable without having to convert it to an Array first. */
 const iterReducer = (iter, func, ...initialValue) => {
   const [ hasInitial, initial ] = anyDefault(initialValue)
   let reduced = initial
@@ -57,32 +58,32 @@ const iterReducer = (iter, func, ...initialValue) => {
   return reduced
 }
 
-myself.anyDefault = "`Un petit` helper function for when you have a parameter that (1) could be *anything* (including undefined, null, false, empty strings and arrays, etc.), AND (2) it's optional, AND (3) you need to know whether a value was provided. One of the most common uses for this function is when you don't use the option unless it's provided, so you don't have to provide an explicit default--but if you do, it will use it. Use like so: `(some, parameters, ...withOption) => { const [ wasProvided, theResult ] = anyDefault(withOption, 42); ...`"
+/** `Un petit` helper function for when you have a parameter that (1) could be *anything* (including undefined, null, false, empty strings and arrays, etc.), AND (2) it's optional, AND (3) you need to know whether a value was provided. One of the most common uses for this function is when you don't use the option unless it's provided, so you don't have to provide an explicit default--but if you do, it will use it. Use like so: `(some, parameters, ...withOption) => { const [ wasProvided, theResult ] = anyDefault(withOption, 42); ...` */
 const anyDefault = (param, deef) => {
   const wasProvided = param.length > 0
   return [ wasProvided, wasProvided ? param[0] : deef ]
 }
 
-myself.diffsCalculator = "Intended as a helper function for numbers.stdDeviation, but can also be used by itself. The function it returns is the callback for Array.prototype.reduce."
+/** Intended as a helper function for numbers.stdDeviation, but can also be used by itself. The function it returns is the callback for Array.prototype.reduce. */
 const diffsCalculator = (mean) => 
   (diffs, value) => diffs.concat((value - mean) ** 2)
 
-myself.sum = "Adds two numbers."
+/** Adds two numbers. */
 const sum = (total, value) => total + value
 
-myself.product = "Multiplies two numbers."
+/** Multiplies two numbers. */
 const product = (total, value) => total * value
 
-myself.average = "Calculates the arithmetic mean of two numbers. Generally, you should use numbers.arithmeticMean instead, as this method is likely to introduce rounding errors for larger arrays."
+/** Calculates the arithmetic mean of two numbers. Generally, you should use numbers.arithmeticMean instead, as this method is likely to introduce rounding errors for larger arrays. */
 const average = (total, value) => (total + value) / 2
 
-myself.max = "Discards the 'context' parameters supplied to the callback (otherwise Math.max tries to interpret them as candidate numbers)."
+/** Discards the 'context' parameters supplied to the callback (otherwise Math.max tries to interpret them as candidate numbers). */
 const max = (a, b) => Math.max(a, b)
 
-myself.min = "See documentation for 'max'"
+/** See documentation for 'max' */
 const min = (a, b) => Math.min(a, b)
 
-myself.stats = "Calculates min, max, total, and count. Can be used in one pass with a single array, or in a loop to accumulate statistics incrementally (see source for examples)."
+/** Calculates min, max, total, and count. Can be used in one pass with a single array, or in a loop to accumulate statistics incrementally (see source for examples). */
 const stats = (totalStats, value) => {
   // initial value when collecting stats from multiple arrays
   if (totalStats == null) {
@@ -101,6 +102,7 @@ const stats = (totalStats, value) => {
   }
 }
 
+// TODO: document private function
 const statsInit = (value) => {
   ;`
   Helper function for 'stats' that allows it to be used incrementally:
@@ -124,8 +126,6 @@ const statsInit = (value) => {
 }
 
 module.exports = {
-  aboutMe: () => myself.aboutMe,
-  allAboutMe: () => myself,
   flatten,
   andReducer,
   orReducer,

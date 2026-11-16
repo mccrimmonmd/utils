@@ -1,18 +1,19 @@
-const myself = {
-  aboutMe: "Functions for drawing and animating ASCII art."
-}
+/**
+  Functions for drawing and animating ASCII art.
+  @module
+*/
 const { print } = require('./general')
 const { len, repeat } = require('./sequences')
 
-myself.draw = "Prints the given string or string array to the console as ASCII art."
+/** Prints the given string or string array to the console as ASCII art. */
 const draw = (picture) => {
   console.log([].concat(picture).join('\n'))
   return picture
 }
-myself.drawRow = "Prints an array of ASCII images side-by-side."
+/** Prints an array of ASCII images side-by-side. */
 const drawRow = (pictures, padding = 0) => draw(combinePics(pictures, padding))
 
-myself.combinePics = "Combines multiple ASCII images, possibly of different sizes."
+/** Combines multiple ASCII images, possibly of different sizes. */
 const combinePics = (pictures, padding = 0) => {
   if (typeof pictures === 'string') return pictures
   pictures = pictures.map(makeRectangular)
@@ -32,7 +33,7 @@ const combinePics = (pictures, padding = 0) => {
 }
 
 // why didn't I name this 'rectanglify'??
-myself.makeRectangular = "Pads an array of strings so all rows are the same length."
+/** Pads an array of strings so all rows are the same length. */
 const makeRectangular = (picture) => {
   if (typeof picture === 'string') picture = picture.split('\n')
   if (picture == null || picture.length === 0) {
@@ -43,7 +44,7 @@ const makeRectangular = (picture) => {
   return picture.map(line => line + ' '.repeat(maxLength - line.length))
 }
 
-myself.animate = "Animates a sequence of ASCII images or image arrays with the given delay. Multiple sequences with different delays can be given as [{ frames, delay }, ...]."
+/** Animates a sequence of ASCII images or image arrays with the given delay. Multiple sequences with different delays can be given as [{ frames, delay }, ...]. */
 const animate = (sequence, defaultDelay = 1000) => {
   console.log()
   if (!len(sequence)) return process.stdout.write('> ')
@@ -67,8 +68,6 @@ const animate = (sequence, defaultDelay = 1000) => {
 }
 
 module.exports = {
-  aboutMe: () => myself.aboutMe,
-  allAboutMe: () => myself,
   draw,
   drawRow,
   animate,

@@ -1,42 +1,43 @@
-const myself = {
-  aboutMe: "Functions for generating and using random numbers."
-}
+/**
+  Functions for generating and using random numbers.
+  @module
+*/
 const { swap, repeat } = require('./sequences')
 
-myself.coinFlip = "Returns a boolean with a 50-50 chance of being true."
+/** Returns a boolean with a 50-50 chance of being true. */
 const coinFlip = () => Math.random() < 0.5
 
-myself.randNum = "Returns a random number in the range [0, lessThan)."
+/** Returns a random number in the range [0, lessThan). */
 const randNum = (lessThan) => Math.random() * lessThan
 
-myself.randInt = "Returns a random integer in the range [0, lessThan)."
+/** Returns a random integer in the range [0, lessThan). */
 const randInt = (lessThan) => Math.trunc(randNum(lessThan))
 
-myself.rollDie = "Same as randInt, but with 1 added to the result."
+/** Same as randInt, but with 1 added to the result. */
 const rollDie = (sides = 6) => randInt(sides) + 1
 
-myself.rollDice = "Returns an array of random integers between 1 and 'sides', inclusive."
+/** Returns an array of random integers between 1 and 'sides', inclusive. */
 const rollDice = (howMany, sides = 6) => repeat(() => rollDie(sides), howMany)
 
-myself.randDigit = "Returns a random integer in the range [0, 9]."
+/** Returns a random integer in the range [0, 9]. */
 const randDigit = () => randInt(10)
 
-myself.randDigitString = "Returns a string of random digits."
+/** Returns a string of random digits. */
 const randDigitString = (length) => repeat(randDigit, length).join('')
 
-myself.randChoice = "Returns a random element from the given array."
+/** Returns a random element from the given array. */
 const randChoice = (arr) => arr[randInt(arr.length)]
 
-myself.randRemove = "Removes (in-place) and returns a random element from the given array."
+/** Removes (in-place) and returns a random element from the given array. */
 const randRemove = (arr) => arr.splice(randInt(arr.length), 1)[0]
 
-myself.grabBag = "A simple closure for implementing removal without replacement."
+/** A simple closure for implementing removal without replacement. */
 const grabBag = (contents) => {
   contents = [...contents]
   return () => randRemove(contents) 
 }
 
-myself.shuffle = "Shuffles (in-place) and returns the given array."
+/** Shuffles (in-place) and returns the given array. */
 const shuffle = (arr) => {
   for (let end = arr.length - 1; end > 0; end--) {
     let swapFrom = randInt(end + 1) // elements can be 'swapped' with themselves
@@ -45,12 +46,10 @@ const shuffle = (arr) => {
   return arr
 }
 
-myself.shuffled = "Returns a shuffled copy of the given array."
+/** Returns a shuffled copy of the given array. */
 const shuffled = (arr) => shuffle([...arr])
 
 module.exports = {
-  aboutMe: () => myself.aboutMe,
-  allAboutMe: () => myself,
   coinFlip,
   randNum,
   randInt,

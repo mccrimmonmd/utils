@@ -1,11 +1,12 @@
-const myself = {
-  aboutMe: "Functions for working with numbers and sequences of numbers."
-}
+/**
+  Functions for working with numbers and sequences of numbers.
+  @module
+*/
 const { range } = require('./general')
 const { sum, diffsCalculator } = require('./reducers')
 const op = require('./operators')
 
-myself.Complex = "Complex numbers. Why not??"
+/** Complex numbers. Why not?? */
 // TODO: make immutable
 const Complex = class {
   constructor(...params) {
@@ -45,7 +46,7 @@ const Complex = class {
   }
 }
 
-myself.sieve = "Sieve of Eratosthenes. Just for funsies."
+/** Sieve of Eratosthenes. Just for funsies. */
 // TODO: add (partially-)precalculated Array/Set parameter
 const sieve = (n, /* precalc = [false, false, true] <-like-a-dis */) => {
   n = Math.abs(n)
@@ -66,26 +67,26 @@ const sieve = (n, /* precalc = [false, false, true] <-like-a-dis */) => {
   }, new Set())
 }
 
-myself.isPrime = "Also just for funsies. Will replace with fancier test (e.g. Miller-Rabin) later."
+/** Also just for funsies. Will replace with fancier test (e.g. Miller-Rabin) later. */
 const isPrime = (n) => sieve(n).has(n)
 
-myself.isNum = "Checks the type of the given value against both 'number' and 'bigint'"
+/** Checks the type of the given value against both 'number' and 'bigint' */
 const isNum = (thing) => ['number', 'bigint'].includes(typeof thing)
 
-myself.isInt = "Checks if the given value is an integer (BigInt OR Number)."
+/** Checks if the given value is an integer (BigInt OR Number). */
 const isInt = (thing) => typeof thing === 'bigint' || Number.isInteger(thing)
 
-myself.absolute = "Math.abs, but also works with BigInts."
+/** Math.abs, but also works with BigInts. */
 const absolute = (num) => num < 0 ? -num : num
 
-myself.roundDecimal = "Rounds (towards zero) to a given number of decimal places."
+/** Rounds (towards zero) to a given number of decimal places. */
 const roundDecimal = (value, places = 2) => {
   if (typeof value !== 'number' || Number.isInteger(value)) return value
   const magnitude = 10 ** places
   return Math.trunc(value * magnitude) / magnitude
 }
 
-myself.arithmeticMean = "Calculates the arithmetic mean of a list of numbers. Can also be used to calculate the 'sample mean' (e.g. for finding the variance)."
+/** Calculates the arithmetic mean of a list of numbers. Can also be used to calculate the 'sample mean' (e.g. for finding the variance). */
 const arithmeticMean = (values, isSample = false) => {
   if (values == null
     || !values.length
@@ -94,7 +95,7 @@ const arithmeticMean = (values, isSample = false) => {
   return values.reduce(sum) / (isSample ? values.length - 1 : values.length)
 }
 
-myself.stdDeviation = "Calculates the standard deviation of a list of numbers. Assumes the list is a sample by default, but can also be used on populations."
+/** Calculates the standard deviation of a list of numbers. Assumes the list is a sample by default, but can also be used on populations. */
 const stdDeviation = (values, isSample = true) => {
   const mean = arithmeticMean(values, isSample)
   const diffs = values.reduce(diffsCalculator(mean), [])
@@ -102,7 +103,7 @@ const stdDeviation = (values, isSample = true) => {
   return Math.sqrt(variance)
 }
 
-myself.timeConverter = "Converts between different units of time. By default, it converts from ms to the smallest unit that gives a result < 100, or the largest supported unit if none do."
+/** Converts between different units of time. By default, it converts from ms to the smallest unit that gives a result < 100, or the largest supported unit if none do. */
 const timeConverter = (
   time,
   fromUnits = 'ms',
@@ -165,7 +166,7 @@ const timeConverter = (
   return log(factored)
 }
 
-myself.niceNumber = "Makes numbers a bit nicer to read by appending their short-form names (but reduces precision)."
+/** Makes numbers a bit nicer to read by appending their short-form names (but reduces precision). */
 const niceNumber = (num) => {
   const postfixes =
     [
@@ -180,7 +181,7 @@ const niceNumber = (num) => {
   return '' + roundDecimal(num) + postfixes[factor]
 }
 
-myself.fromBase = "Computes the decimal equivalent of some other number, given as a radix (base) and two arrays of nonnegative integers representing the digits of the characteristic and mantissa (a.k.a. the digits before and after the decimal point). For example, 0xFF80 would be `fromBase(16, [15, 15, 8, 0])` (which correctly returns 65408). Supports negative and even fractional bases--for example, `fromBase(-10, [1, 9, 3], [5])` reveals that twelve and a half in base minus-ten is 193.5, while the same in base Pi is approximately 102.13002112001101..."
+/** Computes the decimal equivalent of some other number, given as a radix (base) and two arrays of nonnegative integers representing the digits of the characteristic and mantissa (a.k.a. the digits before and after the decimal point). For example, 0xFF80 would be `fromBase(16, [15, 15, 8, 0])` (which correctly returns 65408). Supports negative and even fractional bases--for example, `fromBase(-10, [1, 9, 3], [5])` reveals that twelve and a half in base minus-ten is 193.5, while the same in base Pi is approximately 102.13002112001101... */
 // TODO: support complex radixes, somehow?
 // TODO: implement inverse function that translates a decimal number into
 // an arbitrary-base representation (to some finite precision)
@@ -198,7 +199,7 @@ const fromBase = (radix, intDigits = [], mantissa = []) => {
   return result
 }
 
-myself.fromBaseBigInt = "fromBase, but uses BigInts."
+/** fromBase, but uses BigInts. */
 const fromBaseBigInt = (radix, intDigits = []) => {
   const absBase = absolute(radix)
   let result = 0n
@@ -210,13 +211,11 @@ const fromBaseBigInt = (radix, intDigits = []) => {
 }
 
 // TODO: test, export
-myself.epochToDuration = "Recently encountered an API that mistakenly interpreted durations (number of milliseconds) as timestamps. This function is a wrapper for Date.parse, translating those mistaken dates back into ms."
+/** Recently encountered an API that mistakenly interpreted durations (number of milliseconds) as timestamps. This function is a wrapper for Date.parse, translating those mistaken dates back into ms. */
 const epochToDuration = (dateString) =>
   Date.parse(dateString.replace(' ', 'T'))
 
 module.exports = {
-  aboutMe: () => myself.aboutMe,
-  allAboutMe: () => myself,
   sieve,
   isPrime,
   isNum,

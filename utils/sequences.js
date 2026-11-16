@@ -1,17 +1,18 @@
-const myself = {
-  aboutMe: "Functions for working with and/or generating lists, Arrays, iterables, and so on."
-}
+/**
+  Functions for working with and/or generating lists, Arrays, iterables, and so on.
+  @module
+*/
 
 const { max, min, anyDefault } = require('./reducers')
 
-myself.len = "Python-style function for getting the length of an iterable in a null- and type-safe way (because I'm tired of writing `!arr?.length` over and over)."
+/** Python-style function for getting the length of an iterable in a null- and type-safe way (because I'm tired of writing `!arr?.length` over and over). */
 const len = (thing) =>
   thing == null || !isIterable(thing) ? NaN
   : thing.length != null ? thing.length
   : thing.size != null ? thing.size
   : [...thing].length
 
-myself.range = "Python-style range function (generator)."
+/** Python-style range function (generator). */
 // Alternate version (source: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#sequence_generator_range>)
 // const range = (start, stop, step = 1) =>
 //   Array.from({ length: (stop - start) / step }, (_, i) => start + i * step)
@@ -33,7 +34,7 @@ const range = function* (start = 0, stop, step = 1) {
   }
 }
 
-myself.zip = "Python-style zip function: combines a list of arrays into a list of pairs/triplets/etc. Takes an optional parameter for padding the results when the input arrays are different lengths; if none is provided, the output will be the length of the shortest input array."
+/** Python-style zip function: combines a list of arrays into a list of pairs/triplets/etc. Takes an optional parameter for padding the results when the input arrays are different lengths; if none is provided, the output will be the length of the shortest input array. */
 const zip = (arrays, ...padding) => {
   const [ padResults, padWith ] = anyDefault(padding)
   const zipped = []
@@ -47,7 +48,7 @@ const zip = (arrays, ...padding) => {
   return zipped
 }
 
-myself.zipIter = "Same as zip, but accepts a list of any iterables as input and returns a generator instead of an Array."
+/** Same as zip, but accepts a list of any iterables as input and returns a generator instead of an Array. */
 const zipIter = function* (iterables, ...padding) {
   const [ padResults, padWith ] = anyDefault(padding)
   const iterators = iterables.map(iterable => iterable[Symbol.iterator]())
@@ -59,7 +60,7 @@ const zipIter = function* (iterables, ...padding) {
   }
 }
 
-myself.entries = "A generic version of Array.prototype.entries that works with any iterable."
+/** A generic version of Array.prototype.entries that works with any iterable. */
 const entries = function* (iterable) {
   if (typeof iterable.entries === 'function') return yield* iterable.entries()
   let i = 0
@@ -72,7 +73,7 @@ const entries = function* (iterable) {
   }
 }
 
-myself.TypeCheckedArray = "An Array which can only contain values that are all the same type. Was supposed to be an exercise in inheritance, but ended up mostly being about Proxies instead."
+/** An Array which can only contain values that are all the same type. Was supposed to be an exercise in inheritance, but ended up mostly being about Proxies instead. */
 const TypeCheckedArray = class extends Array {
   #type
   constructor(type, ...params) {
@@ -87,7 +88,7 @@ const TypeCheckedArray = class extends Array {
   }
 }
 
-myself.WrappedBoundsArray = "A subclass of Array that 'wraps around' indicies outside its bounds. More precisely, the index is taken modulo the array's length, and if the result is negative the array's length is added to it: `arr[-1]` will return the last element, `arr[arr.length]` will return the first element, and so on."
+/** A subclass of Array that 'wraps around' indicies outside its bounds. More precisely, the index is taken modulo the array's length, and if the result is negative the array's length is added to it: `arr[-1]` will return the last element, `arr[arr.length]` will return the first element, and so on. */
 // TODO: fix mutating methods (push, splice with 3rd parameter, possibly others)
 // (copying and iterating seem to be fine, but
 // probably worth doing extra testing also)
@@ -120,26 +121,26 @@ const WrappedBoundsArray = class extends Array {
   }
 }
 
-myself.isIterable = "A more concise test for iterability."
+/** A more concise test for iterability. */
 const isIterable = (thing) => typeof thing?.[Symbol.iterator] === 'function'
 
-myself.ensureIterable = "Wraps the parameter in an array, unless it's already iterable."
+/** Wraps the parameter in an array, unless it's already iterable. */
 const ensureIterable = (thing) => isIterable(thing) ? thing : [thing]
 
-myself.ensureArray = "Wraps the parameter in an array and returns it. If the parameter is iterable, it spreads it into the array before returning it. If the parameter is already an array, it is returned as-is. For when you want to avoid making unnecessary copies and/or you're not sure the parameter will be iterable. (If you know the paramater will either be an array OR a non-iterable, and you don't mind making a copy, `[].concat(thing)` is more concise.)"
+/** Wraps the parameter in an array and returns it. If the parameter is iterable, it spreads it into the array before returning it. If the parameter is already an array, it is returned as-is. For when you want to avoid making unnecessary copies and/or you're not sure the parameter will be iterable. (If you know the paramater will either be an array OR a non-iterable, and you don't mind making a copy, `[].concat(thing)` is more concise.) */
 const ensureArray = (thing) =>
   Array.isArray(thing) ? thing
   : isIterable(thing) ? [...thing]
   : [thing]
 
-myself.makeGroups = "Sorts an iterable into caller-determined 'buckets' (default: identity). Returns a Map. (Yet another function I worked super hard on that's already in the spec, lol)"
+/** Sorts an iterable into caller-determined 'buckets' (default: identity). Returns a Map. (Yet another function I worked super hard on that's already in the spec, lol) */
 const makeGroups = (iterable, idFunc = (thing) => thing) =>
   Map.groupBy(iterable, idFunc)
 
-myself.makeWeakGroups = "Same as makeGroups, except it returns an Object instead of a map. For when the 'bucket' names can safely be coerced to strings."
+/** Same as makeGroups, except it returns an Object instead of a map. For when the 'bucket' names can safely be coerced to strings. */
 const makeWeakGroups = (iterable, idFunc = id) => Object.groupBy(iterable, idFunc)
 
-myself.deDup = "Removes duplicates. Caller determines what counts as a dupe, and which duplicate to keep (default: first). Uses Map.groupBy but returns an Array. If you're using identity to determine dupes, you should probably just do `[...new Set(iterable)]` instead."
+/** Removes duplicates. Caller determines what counts as a dupe, and which duplicate to keep (default: first). Uses Map.groupBy but returns an Array. If you're using identity to determine dupes, you should probably just do `[...new Set(iterable)]` instead. */
 const deDup = (
   iterable, 
   identifier, 
@@ -148,19 +149,19 @@ const deDup = (
   return [...makeGroups(iterable, identifier).values()]
     .map(group => group.reduce(decider))
 }
-myself.findDupes = "The complement of deDup."
+/** The complement of deDup. */
 const findDupes = (iterable, identifier) => {
   return [...makeGroups(iterable, identifier).values()]
     .filter(group => group.length > 1)
 }
-myself.findUniques = "The complement of deDup's complement."
+/** The complement of deDup's complement. */
 const findUniques = (iterable, identifier) => {
   return [...makeGroups(iterable, identifier).values()]
     .filter(group => group.length === 1)
     .flat()
 }
 
-myself.repeat = "Returns 'howMany' copies of 'item' (which can be a generator function). If 'item' is copy-by-value (e.g. a primitive), this is equivalent to Array(howMany).fill(item)"
+/** Returns 'howMany' copies of 'item' (which can be a generator function). If 'item' is copy-by-value (e.g. a primitive), this is equivalent to Array(howMany).fill(item) */
 // TODO: refactor to accept any class with a static 'from' method (default Array)?
 const repeat = (item, howMany = 1) => Array.from({ length: howMany }, (_, i) => {
   if (typeof item === 'function') return item(i)
@@ -168,14 +169,14 @@ const repeat = (item, howMany = 1) => Array.from({ length: howMany }, (_, i) => 
   else return item
 })
 
-myself.swap = "Swaps two elements of an Array (in-place). Returns the modified array."
+/** Swaps two elements of an Array (in-place). Returns the modified array. */
 const swap = (arr, i, j) => {
   // Source: <https://stackoverflow.com/questions/872310/swap-array-elements-in-javascript>
   ;[ arr[i], arr[j] ] = [ arr[j], arr[i] ]
   return arr
 }
 
-myself.flattener = "Flattens the given array to the specified depth. Depth must be finite, as there are no checks for circular references. (Whoops, this is already in the JS standard...)"
+/** Flattens the given array to the specified depth. Depth must be finite, as there are no checks for circular references. (Whoops, this is already in the JS standard...) */
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat>
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap>
 
@@ -209,7 +210,7 @@ const flattener = (array, depth = 1) => {
   return array
 }
 
-myself.iterEquals = "Tests two iterables to see if they are equal. Different permutations of the same elements are considered unequal; to ignore ordering use iterEqualsUnordered."
+/** Tests two iterables to see if they are equal. Different permutations of the same elements are considered unequal; to ignore ordering use iterEqualsUnordered. */
 // Generalized from <https://www.freecodecamp.org/news/how-to-compare-arrays-in-javascript/>
 const iterEquals = (a, b) => {
   a = [...a]
@@ -235,7 +236,7 @@ const iterEquals = (a, b) => {
   return true
 }
 
-myself.iterEqualsUnordered = "Tests two iterables to see if they are equal. Ignores ordering (different permutations of the same elements are considered equal)."
+/** Tests two iterables to see if they are equal. Ignores ordering (different permutations of the same elements are considered equal). */
 const iterEqualsUnordered = (a, b) => {
   a = makeGroups(a)
   b = makeGroups(b)
@@ -267,8 +268,6 @@ const getIter = {
 }
 
 module.exports = {
-  aboutMe: () => myself.aboutMe,
-  allAboutMe: () => myself,
   len,
   range,
   zip,

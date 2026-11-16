@@ -10,36 +10,32 @@
 // private 'essential/noDeps' module (to avoid import cycles), re-export
 // those functions to toplevel/wherever needed
 
-const myself = {
-  aboutMe: `A collection of ECMAScript functions for many common (and some uncommon) development tasks. The 'general' module contains functions focused on debugging, property tests, and metaprogramming, along with a few 'just for fun'/niche/miscellaneous functions. Some especially common/useful functions are re-exported from more specialized modules.
+/**
+  A collection of ECMAScript functions for many common (and some uncommon) development tasks. The 'general' module contains functions focused on debugging, property tests, and metaprogramming, along with a few 'just for fun'/niche/miscellaneous functions. Some especially common/useful functions are re-exported from more specialized modules.
 
-  Run \`allAboutMe()\` within any module to see documentation of its functions.`
-} 
+  Run `allAboutMe()` within any module to see documentation of its functions.
+
+  @module utils
+*/
 
 const backToWork = require('./BACK TO WORK')
-myself.backToWork = backToWork
+// myself.backToWork = backToWork
 
 const { anyDefault } = require('./reducers')
 const {
-  allAboutMe: seqDocs,
   ensureIterable, // not re-exported
   range, 
   isIterable,
   repeat,
 } = require('./sequences')
-for (const [func, doc] of Object.entries(seqDocs())) {
-  if (['range', 'isIterable', 'repeat',].includes(func)) {
-    myself[func] = doc + " Re-exported from the 'sequences' module."
-  }
-}
 
-myself.print = "console.dir shorthand. Also returns the printed object (instead of undefined)."
+/** console.dir shorthand. Also returns the printed object (instead of undefined). */
 const print = (obj, depth = null) => {
   console.dir(obj, { depth })
   return obj
 }
 
-myself.printVar = "For logging the name, location, and value of a variable in a structured way. Returns an object with the logged information."
+/** For logging the name, location, and value of a variable in a structured way. Returns an object with the logged information. */
 const printVar = (
   value,
   name = '<anonymous>',
@@ -53,14 +49,14 @@ const printVar = (
   console.log('=*='.repeat(20))
   return { value, name, location }
 }
-myself.printVars = "Uses printVar to log multiple variables."
+/** Uses printVar to log multiple variables. */
 const printVars = (...variables) => {
   const results = []
   for (const variable of variables) results.push(printVar(...ensureIterable(variable)))
   return results
 }
 
-myself.pluralize = "Returns the plural version of the given word if the given number is not 1 or -1. Makes a token attempt to be grammatical, but no guarantees."
+/** Returns the plural version of the given word if the given number is not 1 or -1. Makes a token attempt to be grammatical, but no guarantees. */
 const pluralize = (word, n = 2) => {
   if (Math.abs(n) === 1 || !word.length) return word
   if (word.length > 1) {
@@ -73,7 +69,7 @@ const pluralize = (word, n = 2) => {
   return word + 's'
 }
 
-myself.ifFunc = "Pure-ish 'if' function with short-circuiting. Just because. (Only 'ish' because, without the side effect of assignment, the return value of the executed branch would be lost, making the function useless unless the branches themselves had side effects.)"
+/** Pure-ish 'if' function with short-circuiting. Just because. (Only 'ish' because, without the side effect of assignment, the return value of the executed branch would be lost, making the function useless unless the branches themselves had side effects.) */
 const ifFunc = (condition, onTrue, onFalse = () => {}) => {
   const forceTrue = (thingy) => thingy || true
   let result
@@ -81,10 +77,10 @@ const ifFunc = (condition, onTrue, onFalse = () => {}) => {
   return result
 }
 
-myself.isTruthy = "Javascript's truthiness rules are obnoxious and I always second-guess myself when trying to remember them."
+/** Javascript's truthiness rules are obnoxious and I always second-guess myself when trying to remember them. */
 const isTruthy = (thing) => thing ? 'yes' : 'no'
 
-myself.isEmpty = "Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge. Empty collections, zero-length iterables, and most falsy values are considered empty; but booleans and numbers (including false, 0, and NaN) are *not* considered empty. Defaults can be overridden by <CHECKING 4 EXCEPTIONS URSELF U LAZY BUM>."
+/** Determines whether a value counts as 'something' or 'nothing'. Used in objects.merge. Empty collections, zero-length iterables, and most falsy values are considered empty; but booleans and numbers (including false, 0, and NaN) are *not* considered empty. Defaults can be overridden by <CHECKING 4 EXCEPTIONS URSELF U LAZY BUM>. */
 const isEmpty = (value) => {
   if (value == null) return true
   if (['boolean', 'number', 'bigint'].includes(typeof value)) return false
@@ -113,7 +109,7 @@ const isEmpty = (value) => {
   return !value
 }
 
-myself.memoize = "Wraps a (possibly expensive) function in a closure that memoizes its return value. NOTE: if the original function is anonymous and recursive, it must be set to the same variable--`someFunc = memoize(someFunc)`--or wrapped in a closure first--`memoized = memoize( (() => someFunc)() )`--to be memoized properly."
+/** Wraps a (possibly expensive) function in a closure that memoizes its return value. NOTE: if the original function is anonymous and recursive, it must be set to the same variable--`someFunc = memoize(someFunc)`--or wrapped in a closure first--`memoized = memoize( (() => someFunc)() )`--to be memoized properly. */
 // TODO: fix 'new name must be old name' thing...somehow?
 // ASSUMES that 'func' is an actual function! In particular: When called with the same arguments, it must return the same result; and it should have no side effects (if a cached result is used, any side effects will be skipped!)
 const memoize = (func) => {
@@ -186,7 +182,7 @@ const MultiMap = class extends Map {
   }
 }
 
-myself.timeIt = "Executes the given function with the given parameters and times how long it takes to finish. Returns an object containing the return value of the function and the time taken, in milliseconds."
+/** Executes the given function with the given parameters and times how long it takes to finish. Returns an object containing the return value of the function and the time taken, in milliseconds. */
 const timeIt = (
   func,
   {
@@ -205,7 +201,7 @@ const timeIt = (
   }
 }
 
-myself.dateFilter = "TODO: use with upcoming Temporal object to make utils for searching and filtering dates."
+/** TODO: use with upcoming Temporal object to make utils for searching and filtering dates. */
 // TODO: parse dates/get 'today' with Temporal instead of moment
 // TODO: export all (possibly in separate module)
 ;`
@@ -251,7 +247,7 @@ const beforeDate = (things, date, dateify) => {
 "Not exported or used, just here as a reminder."
 const mapToObject = (someMap) => Object.fromEntries(someMap.entries())
 
-myself.getSorter = "Returns a sorting function that behaves more sanely than the default (specifically: mixed-case text, text with diacritics, and numbers sort the way you would expect; Objects are sorted with util.inspect; and mixed-type arrays are sorted by type first, then value). Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties)."
+/** Returns a sorting function that behaves more sanely than the default (specifically: mixed-case text, text with diacritics, and numbers sort the way you would expect; Objects are sorted with util.inspect; and mixed-type arrays are sorted by type first, then value). Accepts a parameter for what to sort on that can be: undefined/null (identity), a string/symbol (for key lookup), a function (that returns the value to sort on), or an array of any mix of the three (for breaking ties). */
 const getSorter = (sortOn, sortOrder = 'ascending') => {
   // In addition to a saner sort order, this function has a secondary goal of
   // sorting arbitrary permutations *unambiguously.* That is, for any given
@@ -338,7 +334,7 @@ const convertToString = (thing, depth = null) => {
   return String(thing)
 }
 // TODO: export
-myself.convertFromString = "Like msConverter in the numbers module, but for strings (not yet exported). 95% sure this will never be useful."
+/** Like msConverter in the numbers module, but for strings (not yet exported). 95% sure this will never be useful. */
 const convertFromString = (str) => {
   if (typeof str !== 'string') return str
   switch (str) {
@@ -392,7 +388,7 @@ const convertFromString = (str) => {
   return str
 }
 
-myself.multilineRegex = "Create a RegEx that spans multiple lines (so it can be commented)."
+/** Create a RegEx that spans multiple lines (so it can be commented). */
 // Derived from: <https://www.dormant.ninja/multiline-regex-in-javascript-with-comments/>
 const multilineRegex = (...parts) => {
   let flags = ''
@@ -405,7 +401,7 @@ const multilineRegex = (...parts) => {
   ).join(''), flags)
 }
 
-myself.fetchAll = "A convenience function for working with paginated APIs."
+/** A convenience function for working with paginated APIs. */
 const fetchAll = async (uri, getNext, getData = (json) => json.data) => {
   const allData = []
   let next = uri
@@ -419,8 +415,6 @@ const fetchAll = async (uri, getNext, getData = (json) => json.data) => {
 }
 
 module.exports = {
-  aboutMe: () => myself.aboutMe,
-  allAboutMe: () => myself,
   backToWork,
   range,
   print,
