@@ -89,8 +89,10 @@ const allKeys = (listOfObjects, regex = /(?:)/) => {
   return [...uniqueKeys.values().filter(key => regex.test(key))]
 }
 
-myself.filter = {
-  object: "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a single value to match, a function that returns a boolean, an iterable of possible matches, or a regular expression. By default, it filters out falsy keys."
+myself = {
+  filter: {
+    object: "Takes an object and returns a new object containing only the keys (or values) that match (or don't match) the provided filter. The filter can be a single value to match, a function that returns a boolean, an iterable of possible matches, or a regular expression. By default, it filters out falsy keys."
+  }
 }
 const filterObject = (
   obj,
