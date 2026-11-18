@@ -15,8 +15,28 @@ const moduleNames = [
 
 const moduleEntries = moduleNames.map(name => [ name, require(`./${name}`) ])
 
+;`
+const modules = Object.fromEntries(moduleEntries)
+const {
+  sequences: {
+    range,
+    ...and so forth,
+  },
+  meta: {
+    print,
+    ...etc.,
+  },
+} = modules
+modules.common = {
+  all,
+  that,
+  jazz,
+}
+;`
+
 module.exports = {
-  ...general, // ...common, (compile common functions here, explicitly, to ensure no circular dep.s)
+  ...general,
+  // ...common, (compile common functions here, explicitly, to ensure no circular dep.s)
   op,
   ...Object.fromEntries(moduleEntries),
 }
