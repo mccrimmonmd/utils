@@ -52,12 +52,12 @@ const compare = (type, params) => {
 
 const opFuncs = {
   // aboutMe: myself.aboutMe,
-  // allAboutMe: function () { return Object.keys(this) }, // why no worky???
+  // allAboutMe: function() { return Object.keys(this) },
 
   // non-chaining operators //
 
-  id: (thing) => thing, // the identity function
-  identity: function (thing) { return this.id(thing) },
+  identity: (thing) => thing,
+  id: function(thing) { this.identity(thing) }, // why no worky???
   first: (...things) => things[0],
   last: (...things) => things.at(-1),
   err: (message, errType = Error) => (() => { throw new errType(message) })(),
