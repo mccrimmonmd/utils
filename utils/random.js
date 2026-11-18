@@ -34,7 +34,12 @@ const randRemove = (arr) => arr.splice(randInt(arr.length), 1)[0]
 /** A simple closure for implementing removal without replacement. */
 const grabBag = (contents) => {
   contents = [...contents]
-  return () => randRemove(contents) 
+  return {
+    get contents() {
+      return [...contents]
+    },
+    grab: () => randRemove(contents)
+  }
 }
 
 /** Shuffles (in-place) and returns the given array. */
