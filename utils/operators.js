@@ -52,12 +52,12 @@ const compare = (type, params) => {
 
 const opFuncs = {
   // aboutMe: myself.aboutMe,
-  // allAboutMe: function () { return Object.keys(this) }, // why no worky???
+  // allAboutMe: function() { return Object.keys(this) },
 
   // non-chaining operators //
 
-  id: (thing) => thing, // the identity function
-  identity: function (thing) { return this.id(thing) },
+  identity: (thing) => thing,
+  id: function(thing) { this.identity(thing) }, // why no worky???
   first: (...things) => things[0],
   last: (...things) => things.at(-1),
   err: (message, errType = Error) => (() => { throw new errType(message) })(),
@@ -82,6 +82,28 @@ const opFuncs = {
   // (or on/off) -- make fall-through more explicit and allow
   // execution to be 'switched' back on (instead of just breaking
   // out of the op entirely)
+  // Alternatively, make into enum closure/generator/simulator:
+  makeEnum: function mkEn (values) {
+    const names = values
+    const enumerables = names.reduce((enums, name) => {
+      enums[name] = Symbol()
+      return enums
+    }, {})
+    const byValue = Object.entries(enumerables).reduce((vals, [name, value]) => {
+      vals[value] = name
+      return vals
+    }, {})
+    return {
+      names: [...names],
+      name: (sym) => byValue[sym],
+      extend: (newValues) => mkEn(values.concat(newValues)),
+      enumerate: function* () {
+        for (name of names) {
+          yield [name, enumerables[name]]
+        }
+      },
+    }
+  },
   
   switcher: ({
     switchOn,
