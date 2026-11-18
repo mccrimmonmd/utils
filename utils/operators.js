@@ -82,6 +82,28 @@ const opFuncs = {
   // (or on/off) -- make fall-through more explicit and allow
   // execution to be 'switched' back on (instead of just breaking
   // out of the op entirely)
+  // Alternatively, make into enum closure/generator/simulator:
+  makeEnum: function mkEn (values) {
+    const names = values
+    const enumerables = names.reduce((enums, name) => {
+      enums[name] = Symbol()
+      return enums
+    }, {})
+    const byValue = Object.entries(enumerables).reduce((vals, [name, value]) => {
+      vals[value] = name
+      return vals
+    }, {})
+    return {
+      names: [...names],
+      name: (sym) => byValue[sym],
+      extend: (newValues) => mkEn(values.concat(newValues)),
+      enumerate: function* () {
+        for (name of names) {
+          yield [name, enumerables[name]]
+        }
+      },
+    }
+  },
   
   switcher: ({
     switchOn,
