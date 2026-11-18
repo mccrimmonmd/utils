@@ -143,9 +143,10 @@ const timeConverter = (
   }
 
   if (toUnits == null) {
+    const biggestUnit = unitNames.at(-1)
     for (const unit of unitNames) {
       const result = timeConverter(time, fromUnits, { toUnits: unit, verbose: false })
-      if (result < 100 || unit === unitNames.at(-1)) {
+      if (result < 100 || unit === biggestUnit) {
         return log(result, unit, true)
       }
     }
