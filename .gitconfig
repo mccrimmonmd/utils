@@ -28,7 +28,7 @@
   lo = log --oneline -16
   lof = log --oneline --name-status
   gloo = log --oneline --graph
-  glo = log --oneline --graph -20
+  glo = log --oneline --graph -16
   lop = log --patch
   op = log --patch -1
   gol = log --reverse
