@@ -1,12 +1,4 @@
-// TODO: switch to deno (contribute for Rust practice?) or bun
-// TODO: publish to repo! (e.g. npm)
-// TODO: ***testing*** (write own toolset??)
-// TODO: transition to JSDoc (and/or TypeScript)
-//       (mutually exclusive with doing my own testing?)
-
-// TODO: make 'common' module for top-level and rename 'general'
-// (to...? 'development'? 'meta'? 'misc'?)
-// alternate alternatively, move functions used by many other modules to
+// TODO:? move functions used by many other modules to
 // private 'essential/noDeps' module (to avoid import cycles), re-export
 // those functions to toplevel/wherever needed
 
@@ -21,13 +13,7 @@
 const backToWork = require('./BACK TO WORK')
 // myself.backToWork = backToWork
 
-const { anyDefault } = require('./reducers')
-const {
-  ensureIterable, // not re-exported
-  range, 
-  isIterable,
-  repeat,
-} = require('./sequences')
+const { ensureIterable, isIterable } = require('./sequences')
 
 /** console.dir shorthand. Also returns the printed object (instead of undefined). */
 const print = (obj, depth = null) => {
@@ -326,6 +312,12 @@ const getSorter = (sortOn, sortOrder = 'ascending') => {
   }
 }
 
+/** `Un petit` helper function for when you have a parameter that (1) could be *anything* (including undefined, null, false, empty strings and arrays, etc.), AND (2) it's optional, AND (3) you need to know whether a value was provided. One of the most common uses for this function is when you don't use the option unless it's provided, so you don't have to provide an explicit default--but if you do, it will use it. Use like so: `(some, parameters, ...withOption) => { const [ wasProvided, theResult ] = anyDefault(withOption, 42); ...` */
+const anyDefault = (param, deef) => {
+  const wasProvided = param.length > 0
+  return [ wasProvided, wasProvided ? param[0] : deef ]
+}
+
 // TODO: document, export
 const convertToString = (thing, depth = null) => {
   if (typeof thing === 'object') {
@@ -415,21 +407,19 @@ const fetchAll = async (uri, getNext, getData = (json) => json.data) => {
 }
 
 module.exports = {
+  anyDefault,
   backToWork,
-  range,
   print,
   printVar,
   printVars,
   pluralize,
   ifFunc,
   isTruthy,
-  isIterable,
   isEmpty,
   memoize,
   timeIt,
   getSorter,
-  repeat,
   multilineRegex,
   fetchAll,
-} // = require('./general')
+}
 

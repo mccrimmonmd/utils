@@ -2,7 +2,7 @@
   Functions for analyzing dice rolls.
   @module
 */
-const { repeat } = require('./general')
+const { repeat } = require('./sequences')
 const { roundDecimal, isInt } = require('./numbers')
 const {
   /** Simulates a single roll of a die. Defaults to d6. */

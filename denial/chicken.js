@@ -4,9 +4,7 @@ const {
     zip,
     repeat,
   }
-  diceStats: {
-    dice
-  },
+  diceStats: dice,
 } = require('../utils')
 
 const multipleNames = [

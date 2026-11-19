@@ -2,7 +2,7 @@
   Functions for working with numbers and sequences of numbers.
   @module
 */
-const { range } = require('./general')
+const { range } = require('./sequences')
 const { sum, diffsCalculator } = require('./reducers')
 const op = require('./operators')
 

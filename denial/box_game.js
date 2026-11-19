@@ -1,5 +1,5 @@
 const {
-  repeat,
+  sequences: { repeat },
   objects: { initializeFromOptions },
   random: {
     coinFlip,

@@ -2,7 +2,7 @@
   Functional equivalents of JavaScript's native operators. Run 'allAboutMe' to get a list of all of them.
   @module
 */
-const { pluralize } = require('./general')
+const { pluralize } = require('./meta')
 const { orReducer, andReducer, iterReducer, sum, product } = require('./reducers')
 
 const op = (opType = 'aboutMe') => opFuncs[opType] ?? opFuncs.err(

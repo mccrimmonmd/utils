@@ -3,6 +3,8 @@
   @module
 */
 
+const { anyDefault } = require('./meta')
+
 /** Concatenates two items that may or may not be Arrays, using push instead of concat for speed. (You should probably just use Array.prototype.flat instead.) */
 const flatten = (flattened, bump, i) => {
   if (i === 1) {
@@ -58,12 +60,6 @@ const iterReducer = (iter, func, ...initialValue) => {
   return reduced
 }
 
-/** `Un petit` helper function for when you have a parameter that (1) could be *anything* (including undefined, null, false, empty strings and arrays, etc.), AND (2) it's optional, AND (3) you need to know whether a value was provided. One of the most common uses for this function is when you don't use the option unless it's provided, so you don't have to provide an explicit default--but if you do, it will use it. Use like so: `(some, parameters, ...withOption) => { const [ wasProvided, theResult ] = anyDefault(withOption, 42); ...` */
-const anyDefault = (param, deef) => {
-  // TODO: Move to 'meta' module
-  const wasProvided = param.length > 0
-  return [ wasProvided, wasProvided ? param[0] : deef ]
-}
 
 /** Intended as a helper function for numbers.stdDeviation, but can also be used by itself. The function it returns is the callback for Array.prototype.reduce. */
 const diffsCalculator = (mean) => 
@@ -132,7 +128,6 @@ module.exports = {
   orReducer,
   iterReducer,
   diffsCalculator,
-  anyDefault,
   sum,
   product,
   average,

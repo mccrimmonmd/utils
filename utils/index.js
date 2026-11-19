@@ -1,27 +1,26 @@
-const general = require('./general')
-const op = require('./operators')
+// TODO: switch to deno (contribute for Rust practice?) or bun
+// TODO: publish to repo! (e.g. npm)
+// TODO: ***testing*** (write own toolset??)
+// TODO: transition to JSDoc (and/or TypeScript)
+//       (mutually exclusive with doing my own testing?)
 
 const moduleNames = [
   "diceStats",
   "drawing",
   "sequences",
-  // "meta",
+  "meta",
   "numbers",
   "objects",
+  "operators",
   "random",
   "reducers",
 ]
-
-const moduleEntries = moduleNames.map(name => [ name, require(`./${name}`) ])
-
-;`
+const moduleEntries = moduleNames.map(
+  (name) => [name === 'operators' ? 'op' : name, require(`./${name}`)]
+)
 const modules = Object.fromEntries(moduleEntries)
-const {
-  sequences: {
-    isIterable,
-    range,
-    repeat,
-  },
+
+const { // re-export extra-useful/common functions
   meta: {
     anyDefault,
     getSorter,
@@ -32,9 +31,15 @@ const {
     isNum,
     isInt,
   },
+  sequences: {
+    isIterable,
+    range,
+    repeat,
+  },
   // more?
 } = modules
-const common = {
+
+module.exports = {
   anyDefault,
   getSorter,
   isNum,
@@ -44,18 +49,6 @@ const common = {
   print,
   range,
   repeat,
-}
-;`
+  ...modules,
+} // = require('./utils')
 
-module.exports = {
-  ...general,
-  // ...common, (export most-useful functions here, explicitly, to help avoid circular dep.s)
-  op,
-  // ...modules,
-  ...Object.fromEntries(moduleEntries),
-}
-
-/*
-var utils = require('./utils')
-.common
-*/

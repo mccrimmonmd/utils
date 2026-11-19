@@ -1,4 +1,5 @@
-const { range, timeIt, findDupes, repeat } = require('./general')
+const { timeIt } = require('./meta')
+const { range, findDupes, repeat } = require('./sequences')
 const { roundDecimal, arithmeticMean } = require('./numbers')
 const { rollDice } = require('./random')
 const { sum } = require('./reducers')

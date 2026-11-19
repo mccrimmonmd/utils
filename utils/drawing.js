@@ -2,7 +2,7 @@
   Functions for drawing and animating ASCII art.
   @module
 */
-const { print } = require('./general')
+const { print } = require('./meta')
 const { len, repeat } = require('./sequences')
 
 /** Prints the given string or string array to the console as ASCII art. */

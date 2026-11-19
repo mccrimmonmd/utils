@@ -8,10 +8,12 @@ const path = require('path')
 
 const {
   isEmpty,
-  isIterable,
   getSorter,
+} = require('./meta')
+const {
+  isIterable,
   getIter,
-} = require('./general')
+} = require('./sequences')
 const { sum, product } = require('./reducers')
 
 /** For the object constructor pattern where an options object is provided as a parameter, and the object's instance variables have the same names as the options. Example: `constructor({ a = 'helf', b = 42, c } = {}) { instanceFromOptions(this, { a, b, c }); }` is equivalent to: `constructor({ a = 'helf', b = 42, c } = {}) { this.a = a; this.b = b; this.c = c; }` (even shorter without defaults--although it isn't self-documenting this way: `constructor(options) { instanceFromOptions(this, options); }`). Can also be used outside of constructors, for (contrived) example: `const myFancySet = instanceFromOptions(new Set(someIterable), { extraProperty: 'helf', secretFunction: () => console.log('You found me!') })` */
