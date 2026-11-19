@@ -35,7 +35,7 @@ set tabstop=8 softtabstop=0
 augroup malVimrc
   autocmd!
   " change .swp files to the actual file (no accidentally opening swap files)
-  " autocmd VimEnter *.swp :e (...)
+  " autocmd VimEnter *.swp :e <afile>(minus .swp)
 augroup END
 
 call plug#begin()
