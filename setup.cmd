@@ -1,19 +1,24 @@
+REM Run as admin and use cmd.exe (if you use PowerShell, apps don't get added to Path automatically)
+
+REM If WinGet isn't already installed:
+REM powershell -Command "Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe"
+
 REM TODO: set up WSL
 REM TODO: set registry to disable after-snap (Win+direction) popup
 REM TODO: create node 'startup' script (noodle?) for ps and bash, add to path
 REM     (Script would start a REPL with utils automatically loaded)
 
-REM If WinGet isn't already installed (PowerShell):
-REM Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
-
-REM Use cmd.exe instead of PowerShell so apps get added to Path automatically:
 winget install git.git
 winget install vim.vim
 winget install node.js
 winget install python.python.3.13
 winget install chocolatey
-REM install vim-plug
-REM install vscode
+
+REM after running this command and copying _vimrc, run :PlugInstall in vim to complete vim-plug installation
+powershell -Command "iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim | ni $HOME/vimfiles/autoload/plug.vim -Force"
+
+REM install rust
+REM install vscode(?)
 REM install duckduckgo(?)
 REM ...
 winget update
