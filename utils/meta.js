@@ -1,13 +1,7 @@
-// TODO:? move functions used by many other modules to
-// private 'essential/noDeps' module (to avoid import cycles), re-export
-// those functions to toplevel/wherever needed
-
 /**
-  A collection of ECMAScript functions for many common (and some uncommon) development tasks. The 'general' module contains functions focused on debugging, property tests, and metaprogramming, along with a few 'just for fun'/niche/miscellaneous functions. Some especially common/useful functions are re-exported from more specialized modules.
+  Functions focused on debugging, property tests, and metaprogramming, along with a few 'just for fun'/niche/miscellaneous functions. 
 
-  Run `allAboutMe()` within any module to see documentation of its functions.
-
-  @module utils
+  @module meta
 */
 
 const backToWork = require('./BACK TO WORK')

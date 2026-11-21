@@ -1,3 +1,7 @@
+/**
+  A collection of ECMAScript functions for many common (and some uncommon) development tasks. See README.md for no helpful information whatsoever.
+*/
+
 // TODO: switch to deno (contribute for Rust practice?) or bun
 // TODO: publish to repo! (e.g. npm)
 // TODO: ***testing*** (write own toolset??)
