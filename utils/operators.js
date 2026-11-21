@@ -84,7 +84,7 @@ const opFuncs = {
   // out of the op entirely)
   // Alternatively, make into enum closure/generator/simulator:
   makeEnum: function mkEn (values) {
-    const names = values
+    const names = [...values]
     const enumerables = names.reduce((enums, name) => {
       enums[name] = Symbol()
       return enums
@@ -96,7 +96,7 @@ const opFuncs = {
     return {
       names: [...names],
       name: (sym) => byValue[sym],
-      extend: (newValues) => mkEn(values.concat(newValues)),
+      extend: (newValues) => mkEn(names.concat(newValues)),
       enumerate: function* () {
         for (name of names) {
           yield [name, enumerables[name]]
