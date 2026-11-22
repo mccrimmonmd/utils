@@ -221,6 +221,40 @@ const count = (listOfObjects, getValue = Number) =>
 const multiply = (listOfObjects, getValue = Number) =>
   listOfObjects.map(getValue).reduce(product, 1)
 
+/** TODO */
+const Enum = class {
+  constructor(...names) {
+    if (names.length === 1 && isIterable(names[0])) {
+      names = names[0]
+    }
+    for (const name of names) {
+      this[name] = Symbol()
+    }
+    return this
+  }
+  
+  static enumerate(
+    enums,
+    {
+      match,
+      cases = [],
+      defaultCase = null
+    },
+  ) {
+    const allCases = Object.keys(enums)
+    for (const [test, exec] of cases) {
+      if (condition === test) {
+        exec()
+      }
+      allCases.remove(test)
+    }
+    if (allCases.size !== 0) {
+      if (defaultCase != null) return defaultCase()
+      // else throw something
+    }
+  }
+}
+
 /** Factory for creating enum-like objects that associate Strings with Symbols. */
 const makeEnum = (...names) => {
   if (names.length === 1 && isIterable(names[0])) {
