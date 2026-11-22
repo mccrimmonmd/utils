@@ -3,8 +3,6 @@
   @module
 */
 
-const { anyDefault } = require('./meta')
-
 /** Concatenates two items that may or may not be Arrays, using push instead of concat for speed. (You should probably just use Array.prototype.flat instead.) */
 const flatten = (flattened, bump, i) => {
   if (i === 1) {
@@ -47,13 +45,15 @@ const boolReduce = (func, type) => {
 
 /** A function for reducing an iterable without having to convert it to an Array first. */
 const iterReducer = (iter, func, ...initialValue) => {
-  const [ hasInitial, initial ] = anyDefault(initialValue)
-  let reduced = initial
+  // can't use `anyDefault` here due to a circular dependency
+  const hasInitial = initialValue.length
+  let reduced = hasInitial && initialValue[0]
+  // can't use generic `entries` function for the same reason
   let i = 0
-  for (const item of iter) { // TODO: use generic 'entries' function
+  for (const item of iter) {
     reduced =
       i === 0 ?
-        hasInitial ? func(initial, item, i, iter) : item
+        hasInitial ? func(reduced, item, i, iter) : item
       : func(reduced, item, i, iter)
     i += 1
   }
