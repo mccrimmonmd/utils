@@ -40,7 +40,6 @@ const { // re-export extra-useful/common functions
     range,
     repeat,
   },
-  // more?
 } = modules
 
 module.exports = {
