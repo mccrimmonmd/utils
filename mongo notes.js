@@ -19,6 +19,10 @@ db.getCollection('slingmetrics.CMW')
 db.getCollection('slingmetrics.CMW')
   .aggregate([{$match: {'endpoints.totalRequests': {$gt: 0}}}])
 
+// find objects with missing data (empty array)
+db.getCollection('incidents')
+  .find({locations: {$size: 0}})
+
 // search using regular expression literal
 db.getCollection('locations')
   .find({name: /Meridian/})
