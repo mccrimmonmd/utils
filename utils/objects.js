@@ -223,6 +223,7 @@ const multiply = (listOfObjects, getValue = Number) =>
 
 /** TODO */
 const Enum = class {
+  const exclude = ['keys', 'values', 'entries', 'match']
   constructor(...names) {
     if (names.length === 1 && isIterable(names[0])) {
       names = names[0]
@@ -230,32 +231,45 @@ const Enum = class {
     for (const name of names) {
       this[name] = Symbol()
     }
-    return this
+    return Object.freeze(this)
+  }
+
+  get keys() {
+    return this.entries.map(([key, _]) => key)
+  }
+
+  get values() {
+    return this.entries.map(([_, value]) => value)
+  }
+
+  get entries() {
+    return Object.entries(this).filter(([key, value]) => !exclude.includes(key))
   }
   
-  static enumerate(
-    enums,
-    {
-      match,
-      cases = [],
-      defaultCase = null
-    },
-  ) {
-    const allCases = Object.keys(enums)
-    for (const [test, exec] of cases) {
-      if (condition === test) {
-        exec()
+  match(matchAgainst, cases = {}, defaultCase) {
+    const err = (case) => Error(`Non-exhaustive match: ${case} is unaccounted for with no defaultCase`)
+    let returnValue
+    let matched = false
+    for (const [name, sym] of this.entries) {
+      const exec = cases[sym] ?? defaultCase ?? throw err(`'${name}'`)
+      if (sym === matchAgainst) {
+        if (matched) continue
+        else {
+          returnValue = exec()
+          matched = true
+        }
       }
-      allCases.remove(test)
     }
-    if (allCases.size !== 0) {
-      if (defaultCase != null) return defaultCase()
-      // else throw something
-    }
+    if (matched) return returnValue
+    else if (defaultCase != null) return defaultCase()
+    else throw err('symbol to match')
   }
 }
 
-/** Factory for creating enum-like objects that associate Strings with Symbols. */
+/**
+ * Factory for creating enum-like objects that associate Strings with Symbols.
+ * (deprecated; use Enum class instead)
+ */
 const makeEnum = (...names) => {
   if (names.length === 1 && isIterable(names[0])) {
     names = names[0]
@@ -299,5 +313,6 @@ module.exports = {
   toCsv,
   count,
   multiply,
+  Enum,
   makeEnum,
 }
