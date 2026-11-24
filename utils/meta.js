@@ -1,8 +1,8 @@
 /**
-  Functions focused on debugging, property tests, and metaprogramming, along with a few 'just for fun'/niche/miscellaneous functions. 
-
-  @module meta
-*/
+ * Functions focused on debugging, property tests, and metaprogramming, along with a few 'just for fun'/niche/miscellaneous functions.
+ *
+ * @module meta
+ */
 
 const backToWork = require('./BACK TO WORK')
 // myself.backToWork = backToWork

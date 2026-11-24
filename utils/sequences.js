@@ -137,8 +137,9 @@ const ensureArray = (thing) =>
 const makeGroups = (iterable, idFunc = (thing) => thing) =>
   Map.groupBy(iterable, idFunc)
 
-/** Same as makeGroups, except it returns an Object instead of a map. For when the 'bucket' names can safely be coerced to strings. */
-const makeWeakGroups = (iterable, idFunc = id) => Object.groupBy(iterable, idFunc)
+/** Same as makeGroups, except it returns an null-prototype Object instead of a map. For when the 'bucket' names can safely be coerced to strings (or Symbols). */
+const makeWeakGroups = (iterable, idFunc = (thing) => thing) =>
+  Object.groupBy(iterable, idFunc)
 
 /** Removes duplicates. Caller determines what counts as a dupe, and which duplicate to keep (default: first). Uses Map.groupBy but returns an Array. If you're using identity to determine dupes, you should probably just do `[...new Set(iterable)]` instead. */
 const deDup = (
