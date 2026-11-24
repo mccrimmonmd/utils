@@ -57,6 +57,8 @@ module.exports = (
    
     if (maxDepth === Infinity) {
       // circular reference tracking
+      // TODO: implement WeakSet tracking as detailed on MDN:
+      // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet#detecting_circular_references>
       let wasComparedTo = Symbol.for('circularRefKey')
       let aComps = objA[wasComparedTo] ?? []
       let bComps = objB[wasComparedTo] ?? []
