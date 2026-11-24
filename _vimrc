@@ -3,8 +3,8 @@ source $VIMRUNTIME/defaults.vim
 
 inoremap jj <ESC>
 nnoremap <C-j> i<CR><ESC>
-nnoremap <C-o> o<ESC>
-nnoremap <A-o> O<ESC>
+nnoremap <A-o> o<ESC>
+nnoremap <A-O> O<ESC>
 
 inoremap <C-PageUp> <C-PageDown>
 inoremap <C-PageDown> <C-PageUp>
