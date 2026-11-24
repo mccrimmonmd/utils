@@ -73,8 +73,8 @@ filetype plugin indent on
 " endfunction
 " 
 " noremap <Leader>ss :call SaveSession(input("session name: "))<CR>
-" noremap <Leader>sm :call SaveSession(input("M"))<CR>
-" noremap <Leader>sc :call SaveSession(input("C"))<CR>
+" noremap <Leader>sm :call SaveSession("M")<CR>
+" noremap <Leader>sc :call SaveSession("C")<CR>
 " noremap <Leader>ll :so ~/Documents/sessions/
 " noremap <Leader>lm :so ~/Documents/sessions/main.vim<CR>
 " noremap <Leader>lc :so ~/Documents/sessions/coding.vim<CR>
