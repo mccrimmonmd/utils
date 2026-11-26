@@ -223,7 +223,6 @@ const multiply = (listOfObjects, getValue = Number) =>
 
 /** TODO */
 const Enum = class {
-  const exclude = ['keys', 'values', 'entries', 'match']
   constructor(...names) {
     if (names.length === 1 && isIterable(names[0])) {
       names = names[0]
@@ -234,23 +233,16 @@ const Enum = class {
     return Object.freeze(this)
   }
 
-  get keys() {
-    return this.entries.map(([key, _]) => key)
-  }
-
-  get values() {
-    return this.entries.map(([_, value]) => value)
-  }
-
-  get entries() {
-    return Object.entries(this).filter(([key, value]) => !exclude.includes(key))
+  const exclude = ['entries', 'match']
+  *entries() {
+    yield* Object.entries(this).filter(([key, value]) => !exclude.includes(key))
   }
   
   match(matchAgainst, cases = {}, defaultCase) {
     const err = (case) => Error(`Non-exhaustive match: ${case} is unaccounted for with no defaultCase`)
     let returnValue
     let matched = false
-    for (const [name, sym] of this.entries) {
+    for (const [name, sym] of this.entries()) {
       const exec = cases[sym] ?? defaultCase ?? throw err(`'${name}'`)
       if (sym === matchAgainst) {
         if (matched) continue
