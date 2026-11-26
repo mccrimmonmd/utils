@@ -55,7 +55,7 @@ filetype plugin indent on
 " function! SaveSession(sessionType)
 "   let sessionType=a:sessionType
 "   if sessionType == "?"
-"     let sessionType=input("Options: E/M/C/D/<n>=savE/Main/Coding/Discard/<name> of new session: ")
+"     let sessionType=input("Options: E/M/C/D/<f>=savE/Main/Coding/Discard/<filename> of new session: ")
 "   endif
 "   if sessionType == "M"
 "     :mks! ~/Documents/sessions/main.vim
@@ -93,7 +93,7 @@ filetype plugin indent on
 "   autocmd!
 "   autocmd BufLeave,FocusLost * silent! wall
 "   autocmd VimEnter *.vim :so <afile>
-"   autocmd VimLeavePre * let s:save_session=input("Save session? E/M/C/D/?/<n> ")
+"   autocmd VimLeavePre * let s:save_session=input("Save session? E/M/C/D/?/<f> ")
 "   autocmd VimLeave * call SaveSession(s:save_session)
 " augroup END
 " 
