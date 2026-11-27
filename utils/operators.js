@@ -85,6 +85,7 @@ const opFuncs = {
   // Alternatively, make into enum closure/generator/simulator:
   makeEnum: function mkEn (values) {
     const names = [...values]
+    const entries = names.map((name) => [Symbol(), name])
     const enumerables = names.reduce((enums, name) => {
       enums[name] = Symbol()
       return enums
@@ -93,8 +94,8 @@ const opFuncs = {
       vals[value] = name
       return vals
     }, {})
-    return {
-      names: [...names],
+    const en = {
+      get names() { [...names] },
       name: (sym) => byValue[sym],
       extend: (newValues) => mkEn(names.concat(newValues)),
       enumerate: function* () {
@@ -103,6 +104,10 @@ const opFuncs = {
         }
       },
     }
+    for (const name of names) {
+      en[Symbol()] = name
+    }
+    return en
   },
   
   switcher: ({
