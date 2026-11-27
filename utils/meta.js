@@ -5,7 +5,6 @@
  */
 
 const backToWork = require('./BACK TO WORK')
-// myself.backToWork = backToWork
 
 const { ensureIterable, isIterable } = require('./sequences')
 
