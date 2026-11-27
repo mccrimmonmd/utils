@@ -32,6 +32,7 @@ cd utils
 copy .gitconfig %USERPROFILE%\
 copy .prettierrc %USERPROFILE%\
 copy _vimrc %USERPROFILE%\
+copy _gvimrc %USERPROFILE%\
 REM copy <.ps config file> %USERPROFILE%\
 
 REM clone any other repos?
