@@ -1,0 +1,47 @@
+set guifont=Cascadia\ Code:h11
+
+function! SaveSession(sessionType)
+  let sessionType=a:sessionType
+  if sessionType == "?"
+    let sessionType=input("Options: E/M/C/D/<f>=savE/Main/Coding/Discard/<filename> of new session: ")
+  endif
+  if sessionType == "M"
+    :mks! ~/Documents/sessions/main.vim
+  elseif sessionType == "C"
+    :mks! ~/Documents/sessions/coding.vim
+  elseif sessionType == "E"
+    :mks! ~/Documents/sessions/savedSession.vim
+  elseif sessionType == ""
+    :mks! ~/Documents/sessions/autosave.vim
+  elseif sessionType == "D"
+    :execute ""
+  else
+    :execute "mks! ~/Documents/sessions/" .. sessionType .. ".vim"
+  endif
+endfunction
+
+noremap <Leader>ss :call SaveSession(input("session name: "))<CR>
+noremap <Leader>sm :call SaveSession("M")<CR>
+noremap <Leader>sc :call SaveSession("C")<CR>
+noremap <Leader>ll :so ~/Documents/sessions/
+noremap <Leader>lm :so ~/Documents/sessions/main.vim<CR>
+noremap <Leader>lc :so ~/Documents/sessions/coding.vim<CR>
+
+" TODO:
+"   - ~~figure out how to automatically load .vim files as sessions (but
+"   only in gVim, so console vim sessions still edit the non-vim file)~~
+"   - do the same for .swp files (but in reverse?)
+"   - figure out how to load a session only when opening a 'null' window
+"   (otherwise, edit it)
+"   - ~~use `M/C/E/n` options on exit to save session as main, coding, or new~~
+"   - run Prettier when tab/window loses focus(?) on JS files(?) in gVim(?)
+"   `autocmd BufLeave,FocusLost *.js Prettier`
+
+augroup malGvimrc
+  autocmd!
+  autocmd BufLeave,FocusLost * silent! wall
+  autocmd VimEnter *.vim :so <afile>
+  autocmd VimLeavePre * let s:save_session=input("Save session? E/M/C/D/?/<f> ")
+  autocmd VimLeave * call SaveSession(s:save_session)
+augroup END
+
